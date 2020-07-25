@@ -1,0 +1,12 @@
+overwrite: true
+schema: "https://api.damonzucconi.com/graph"
+documents: "src/**/*.tsx"
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-urql"
+    config:
+      withComponent: false
+      withHooks: true
