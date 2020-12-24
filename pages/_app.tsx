@@ -1,15 +1,20 @@
 import { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
-import { GlobalStyles } from "../components/core/GlobalStyles";
-import { THEME } from "../tokens/theme";
+import { ApolloProvider } from "@apollo/client";
+import { useApollo } from "../lib/apolloClient";
+import { THEME, GlobalStyles } from "@auspices/eos";
 
 const App = ({ Component, pageProps }: AppProps) => {
-  return (
-    <ThemeProvider theme={THEME}>
-      <GlobalStyles />
+  const apolloClient = useApollo(pageProps.initialApolloState);
 
-      <Component {...pageProps} />
-    </ThemeProvider>
+  return (
+    <ApolloProvider client={apolloClient}>
+      <ThemeProvider theme={{ ...THEME, rootFontSize: "15px" }}>
+        <GlobalStyles />
+
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </ApolloProvider>
   );
 };
 

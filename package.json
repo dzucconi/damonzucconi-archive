@@ -5,21 +5,35 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "gql": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
+    "@apollo/client": "^3.2.5",
+    "@auspices/eos": "^2.14.2",
+    "@graphql-codegen/cli": "^1.19.0",
+    "@graphql-codegen/typescript-operations": "^1.17.8",
+    "@graphql-codegen/typescript-react-apollo": "^2.0.7",
+    "@seznam/compose-react-refs": "^1.0.4",
+    "@styled-system/theme-get": "^5.1.2",
+    "graphql": "^15.3.0",
     "next": "9.5.5",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "proportional-scale": "^4.0.0",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-transition-group": "^4.4.1",
     "styled-components": "^5.2.0",
     "styled-reset": "^4.2.3",
     "styled-system": "^5.1.5"
   },
   "devDependencies": {
-    "@types/node": "^14.11.8",
-    "@types/react": "^16.9.51",
+    "@types/node": "^14.14.3",
+    "@types/react": "^16.9.53",
+    "@types/react-transition-group": "^4.4.0",
     "@types/styled-components": "^5.1.4",
     "@types/styled-system": "^5.1.10",
+    "@types/styled-system__theme-get": "^5.0.1",
+    "babel-plugin-styled-components": "^1.11.1",
     "typescript": "^4.0.3"
   },
   "resolutions": {
