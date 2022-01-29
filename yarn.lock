@@ -27,16 +27,16 @@
   dependencies:
     tslib "~2.0.1"
 
-"@auspices/eos@^2.14.2":
-  version "2.22.1"
-  resolved "https://registry.yarnpkg.com/@auspices/eos/-/eos-2.22.1.tgz#f5428c777c30f645e40f2826973aab82f1566b77"
-  integrity sha512-A4LDyJAau3eA8WIFwQUhBz6dGf7VdTyT4tKWkG7JN9a5Y3y5vl7OEaxDnneijlGyzIRjqFcn/PXzZMqllHyDlQ==
+"@auspices/eos@^2.23.0":
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/@auspices/eos/-/eos-2.23.0.tgz#0223447815e7bd09522faf0c6f48ef8f115a8fcc"
+  integrity sha512-H6fc/aKMgs77AQZrlVEQhKsHl9WpoUQwSIar3vhcdpP7h8+yjmE8oOZkzZRTcv4BiLNBJoInT/70g/hTKgLQng==
   dependencies:
     "@popperjs/core" "^2.6.0"
     "@seznam/compose-react-refs" "^1.0.5"
     "@styled-system/theme-get" "^5.1.2"
-    "@types/styled-system" "5.1.10"
-    "@types/styled-system__theme-get" "5.0.1"
+    "@types/styled-system" "5.1.15"
+    "@types/styled-system__theme-get" "5.0.2"
     proportional-scale "^4.0.0"
     react-focus-on "^3.5.1"
     styled-reset "^4.3.4"
@@ -1268,26 +1268,14 @@
     "@types/react" "*"
     csstype "^3.0.2"
 
-"@types/styled-system@5.1.10":
-  version "5.1.10"
-  resolved "https://registry.yarnpkg.com/@types/styled-system/-/styled-system-5.1.10.tgz#dcf5690dd837ca49b8de1f23cb99d510c7f4ecb3"
-  integrity sha512-OmVjC9OzyUckAgdavJBc+t5oCJrNXTlzWl9vo2x47leqpX1REq2qJC49SEtzbu1OnWSzcD68Uq3Aj8TeX+Kvtg==
-  dependencies:
-    csstype "^3.0.2"
-
-"@types/styled-system@^5.1.10":
+"@types/styled-system@5.1.15", "@types/styled-system@^5.1.10":
   version "5.1.15"
   resolved "https://registry.yarnpkg.com/@types/styled-system/-/styled-system-5.1.15.tgz#075f969cc028a895dba916c07708e2fe828d7077"
   integrity sha512-1uls4wipZn8FtYFZ7upRVFDoEeOXTQTs2zuyOZPn02T6rjIxtvj2P2lG5qsxXHhKuKsu3thveCZrtaeLE/ibLg==
   dependencies:
     csstype "^3.0.2"
 
-"@types/styled-system__theme-get@5.0.1":
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/@types/styled-system__theme-get/-/styled-system__theme-get-5.0.1.tgz#c3884e8f15641603503dc1d49f9d282dce11e5fb"
-  integrity sha512-+i4VZ5wuYKMU8oKPmUlzc9r2RhpSNOK061Khtrr7X0sOQEcIyhUtrDusuMkp5ZR3D05Xopn3zybTPyUSQkKGAA==
-
-"@types/styled-system__theme-get@^5.0.1":
+"@types/styled-system__theme-get@5.0.2", "@types/styled-system__theme-get@^5.0.1":
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/@types/styled-system__theme-get/-/styled-system__theme-get-5.0.2.tgz#ebd5bb465f1aaa24c729ebb09fdfa6ead01d2106"
   integrity sha512-tvGRyzADAn2qQ8Z/fw9YOBTL1EttDQ0zrmHq/N+/K/9tF1l2lsZ9334hls1zie32FCxjPJEhzzXVHxKwqXslog==
@@ -4276,7 +4264,7 @@ use-callback-ref@^1.2.3, use-callback-ref@^1.2.5:
   resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.2.5.tgz#6115ed242cfbaed5915499c0a9842ca2912f38a5"
   integrity sha512-gN3vgMISAgacF7sqsLPByqoePooY3n2emTH59Ur5d/M8eg4WTWu1xp8i8DHjohftIyEx0S08RiYxbffr4j8Peg==
 
-use-keyboard-list-navigation@^2.2.0:
+use-keyboard-list-navigation@^2.2.0, use-keyboard-list-navigation@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/use-keyboard-list-navigation/-/use-keyboard-list-navigation-2.4.2.tgz#d237e6cc35886c0f541d9e65eb5b3d2a65e6498d"
   integrity sha512-PCoIDKsEmYaoce6pOwgU5xsqBjrRuUwcNNdIP1ZTmxyz9716zOAFJJHAp44QE74Zmnxc1VvgYxAfIkaCbq105A==

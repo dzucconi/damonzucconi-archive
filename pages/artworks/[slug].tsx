@@ -10,14 +10,17 @@ import {
   Dropdown,
   Ellipsis,
   PaneOption,
+  Clickable,
 } from "@auspices/eos";
 import { Tombstone } from "../../components/pages/Tombstone";
 import { UrlBar } from "../../components/pages/UrlBar";
 import { SkeletonBox, SkeletonText } from "../../components/core/Skeleton";
 import { useArtworksShowQuery } from "../../generated/graphql";
-import { Bleed, Page } from "../../components/core/Page";
+import { Page } from "../../components/core/Page";
+import styled from "styled-components";
+import { Embed } from "../../components/pages/Embed";
 
-const ARTWORKS_SHOW_QUERY = gql`
+gql`
   query ArtworksShowQuery($id: ID!) {
     artwork(id: $id) {
       ...TombstoneArtworkFragment
@@ -26,14 +29,33 @@ const ARTWORKS_SHOW_QUERY = gql`
       src
       title
       year
+      intent
       description(format: HTML)
-      collector_byline
+      descriptionPlain: description(format: PLAIN)
+      attachments {
+        id
+        url
+        title
+      }
+      links(kind: DEFAULT, state: PUBLISHED) {
+        title
+        url
+      }
+      embeds {
+        id
+        html
+      }
       images(state: PUBLISHED) {
         id
         width
         height
         url
-        display: resized(width: 1400, height: 1400) {
+        placeholder: resized(width: 50, height: 50) {
+          urls {
+            src: _1x
+          }
+        }
+        display: resized(width: 1200, height: 1200) {
           width
           height
           srcs: urls {
@@ -67,8 +89,8 @@ export const ArtworksShowPage: React.FC = () => {
           <AspectRatioBox
             aspectWidth={4}
             aspectHeight={3}
-            maxWidth={2000}
-            maxHeight={2000}
+            maxWidth={1200}
+            maxHeight={1200}
           >
             <SkeletonBox width="100%" height="100%" />
           </AspectRatioBox>
@@ -90,11 +112,11 @@ export const ArtworksShowPage: React.FC = () => {
       </Head>
 
       <Page>
-        <Stack direction="vertical" spacing={6}>
+        <Stack direction="vertical" spacing={8}>
           {artwork.src && (
-            <Stack direction="vertical" spacing={6} pb={6}>
+            <Stack direction="vertical" spacing={6}>
               <Box position="relative">
-                <UrlBar as="a" href={artwork.src} target="_blank">
+                <UrlBar href={artwork.src} target="_blank">
                   {artwork.src}
                 </UrlBar>
 
@@ -112,60 +134,111 @@ export const ArtworksShowPage: React.FC = () => {
             </Stack>
           )}
 
-          {artwork.images.length > 0 && (
+          {artwork.embeds.length > 0 && (
             <Stack direction="vertical" spacing={6}>
-              {artwork.images.map((image) => {
-                return (
-                  <Box key={image.id} position="relative">
-                    <Dropdown
-                      label={<Ellipsis />}
-                      position="absolute"
-                      zIndex={2}
-                      top={5}
-                      right={5}
-                    >
-                      <PaneOption as="a" href={image.url} target="_blank">
-                        Download file @{image.width}&times;{image.height}
-                      </PaneOption>
-                    </Dropdown>
+              {artwork.embeds.map((embed) => (
+                <Embed key={embed.id} html={embed.html!} mx="auto" />
+              ))}
+            </Stack>
+          )}
 
-                    <ResponsiveImage
-                      srcs={[
-                        image.display.srcs._1x,
-                        image.display.srcs._2x,
-                        image.display.srcs._3x,
-                      ]}
-                      aspectWidth={image.display.width}
-                      aspectHeight={image.display.height}
-                      maxWidth={image.display.width}
-                      maxHeight={image.display.height}
-                      alt={artwork.title}
-                      indicator
-                    />
+          {["default", "canonical"].includes(artwork.intent) &&
+            artwork.images.length > 0 && (
+              <Stack direction="vertical" spacing={6}>
+                {artwork.images.map((image) => {
+                  return (
+                    <Figure key={image.id}>
+                      <ResponsiveImage
+                        indicator
+                        placeholder={image.placeholder.urls.src}
+                        srcs={[
+                          image.display.srcs._1x,
+                          image.display.srcs._2x,
+                          image.display.srcs._3x,
+                        ]}
+                        aspectWidth={image.display.width}
+                        aspectHeight={image.display.height}
+                        maxWidth={image.display.width}
+                        maxHeight={image.display.height}
+                        alt={artwork.title}
+                      >
+                        <Dropdown
+                          label={
+                            <Clickable bg="background" p={3}>
+                              <Ellipsis />
+                            </Clickable>
+                          }
+                          position="absolute"
+                          zIndex={1}
+                          top={5}
+                          right={5}
+                        >
+                          <PaneOption as="a" href={image.url} target="_blank">
+                            Download image @{image.width}&times;{image.height}
+                          </PaneOption>
+                        </Dropdown>
+                      </ResponsiveImage>
+                    </Figure>
+                  );
+                })}
+              </Stack>
+            )}
+
+          {artwork.attachments.length > 0 && (
+            <Stack direction="vertical" spacing={2} textAlign="center">
+              {artwork.attachments.map((attachment) => {
+                return (
+                  <Box
+                    as="a"
+                    href={attachment.url}
+                    target="_blank"
+                    fontSize={1}
+                    color="external"
+                  >
+                    {attachment.title}
                   </Box>
                 );
               })}
             </Stack>
           )}
 
-          <Tombstone artwork={artwork} />
-
-          {artwork.collector_byline && (
-            <Box lineHeight={2} color="primary" mx="auto">
-              {artwork.collector_byline}
-            </Box>
+          {artwork.links.length > 0 && (
+            <Stack direction="vertical" spacing={2} textAlign="center">
+              {artwork.links.map((link) => {
+                return (
+                  <Box
+                    as="a"
+                    href={link.url}
+                    target="_blank"
+                    fontSize={1}
+                    color="external"
+                  >
+                    {link.title}
+                  </Box>
+                );
+              })}
+            </Stack>
           )}
 
           {artwork.description && (
-            <HTML
-              mx="auto"
-              textColor="primary"
-              lineHeight={1}
-              fontSize={3}
-              maxWidth={["100%", "85%", "75%", "60%"]}
-              html={artwork.description}
-            />
+            <Box>
+              <HTML
+                html={artwork.description}
+                my={6}
+                mx="auto"
+                lineHeight={1.4}
+                fontSize={22}
+                maxWidth={["100%", "85%", "75%", "60%"]}
+                textAlign={
+                  (artwork.descriptionPlain?.length ?? 0) > 99
+                    ? "left"
+                    : "center"
+                }
+              />
+            </Box>
           )}
+
+          <Tombstone artwork={artwork} />
         </Stack>
       </Page>
     </>
@@ -173,3 +246,16 @@ export const ArtworksShowPage: React.FC = () => {
 };
 
 export default ArtworksShowPage;
+
+const Figure = styled(Box).attrs({ as: "figure" })`
+  button {
+    opacity: 0;
+    transition: 100ms opacity;
+  }
+
+  &:hover {
+    button {
+      opacity: 1;
+    }
+  }
+`;

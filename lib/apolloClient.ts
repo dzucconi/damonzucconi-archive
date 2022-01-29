@@ -7,6 +7,7 @@ import {
 } from "@apollo/client";
 
 export const GRAPHQL_ENDPOINT = "https://api.damonzucconi.com/graph";
+// export const GRAPHQL_ENDPOINT = "http://localhost:5001/graph";
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 

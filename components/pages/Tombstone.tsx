@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import { Stack, StackProps, Cell } from "@auspices/eos";
 import React from "react";
+import styled from "styled-components";
 import { TombstoneArtworkFragment } from "../../generated/graphql";
 
 gql`
@@ -17,6 +18,7 @@ gql`
         to_s
       }
     }
+    collector_byline
   }
 `;
 
@@ -28,40 +30,71 @@ export const Tombstone: React.FC<TombstoneProps> = ({ artwork, ...rest }) => {
   return (
     <Stack width="fit-content" {...rest}>
       <Stack direction="horizontal">
-        <Cell>title</Cell>
-        <Cell as="h1" flex="1">
+        <TombstoneCell>title</TombstoneCell>
+        <TombstoneCell as="h1" flex="1">
           {artwork.title}
-        </Cell>
+        </TombstoneCell>
       </Stack>
 
       {artwork.material && (
         <Stack direction="horizontal">
-          <Cell>material</Cell>
-          <Cell flex="1">{artwork.material}</Cell>
+          <TombstoneCell>material</TombstoneCell>
+
+          <TombstoneCell flex="1">{artwork.material}</TombstoneCell>
         </Stack>
       )}
 
       {artwork.duration && (
         <Stack direction="horizontal">
-          <Cell>duration</Cell>
-          <Cell flex="1">{artwork.duration}</Cell>
+          <TombstoneCell>duration</TombstoneCell>
+
+          <TombstoneCell flex="1">{artwork.duration}</TombstoneCell>
         </Stack>
       )}
 
       {artwork.dimensions && (
         <Stack direction="horizontal">
-          <Cell>dimensions</Cell>
-          <Cell flex="1">
-            {artwork.dimensions.inches.to_s} (
-            {artwork.dimensions.centimeters.to_s})
-          </Cell>
+          <TombstoneCell>dimensions</TombstoneCell>
+
+          <Stack flex="1">
+            <Stack direction="horizontal">
+              <TombstoneCell>in</TombstoneCell>
+              <TombstoneCell flex="1">
+                {artwork.dimensions.inches.to_s?.replace("in", "")}
+              </TombstoneCell>
+            </Stack>
+
+            <Stack direction="horizontal">
+              <TombstoneCell>cm</TombstoneCell>
+              <TombstoneCell flex="1">
+                {artwork.dimensions.centimeters.to_s?.replace("cm", "")}
+              </TombstoneCell>
+            </Stack>
+          </Stack>
         </Stack>
       )}
 
       <Stack direction="horizontal">
-        <Cell>year</Cell>
-        <Cell flex="1">{artwork.year}</Cell>
+        <TombstoneCell>year</TombstoneCell>
+
+        <TombstoneCell flex="1">{artwork.year}</TombstoneCell>
       </Stack>
+
+      {artwork.collector_byline && (
+        <Stack direction="horizontal">
+          <TombstoneCell>notes</TombstoneCell>
+
+          <TombstoneCell flex="1">{artwork.collector_byline}</TombstoneCell>
+        </Stack>
+      )}
     </Stack>
   );
+};
+
+const TombstoneCell = styled(Cell)``;
+
+TombstoneCell.defaultProps = {
+  fontSize: 1,
+  px: 3,
+  py: 2,
 };

@@ -1,12 +1,17 @@
 import { gql } from "@apollo/client";
 import Head from "next/head";
 import Link from "next/link";
-import { Box, Cell, Stack } from "@auspices/eos";
+import {
+  AspectRatioBox,
+  Box,
+  File,
+  Grid,
+  ResponsiveImage,
+  Stack,
+} from "@auspices/eos";
 import { Page } from "../components/core/Page";
-import { Table } from "../components/core/Table";
-import { Navigation } from "../components/pages/Navigation";
+import { Search } from "../components/pages/Search";
 import { useArtworksIndexQuery } from "../generated/graphql";
-import { initApolloClient } from "../lib/apolloClient";
 
 const ARTWORKS_INDEX_QUERY = gql`
   query ArtworksIndexQuery {
@@ -16,6 +21,22 @@ const ARTWORKS_INDEX_QUERY = gql`
       title
       material
       year
+      images(limit: 1, state: PUBLISHED) {
+        placeholder: resized(width: 50, height: 50) {
+          urls {
+            src: _1x
+          }
+        }
+        resized(width: 200, height: 200) {
+          width
+          height
+          urls {
+            _1x
+            _2x
+            _3x
+          }
+        }
+      }
     }
   }
 `;
@@ -34,15 +55,9 @@ const ArtworksIndexPage: React.FC = () => {
           <title>Loading | Damon Zucconi</title>
         </Head>
 
-        <>
-          <Cell borderWidth={0} borderBottom="1px solid">
-            loading...
-          </Cell>
-
-          <Page>
-            <Navigation />
-          </Page>
-        </>
+        <Page>
+          <Search />
+        </Page>
       </>
     );
   }
@@ -55,79 +70,62 @@ const ArtworksIndexPage: React.FC = () => {
         <title>Damon Zucconi</title>
       </Head>
 
-      <>
-        <Cell borderWidth={0} borderBottom="1px solid">
-          —
-        </Cell>
+      <Page>
+        <Search />
 
-        <Page>
-          <Stack spacing={6}>
-            <Navigation />
+        <Grid>
+          {artworks.map((artwork) => {
+            const [image] = artwork.images;
 
-            <Box maxHeight={600} overflowY="auto" border="1px solid">
-              <Table position="relative" borderWidth={0}>
-                <thead>
-                  <tr>
-                    <th>
-                      <Cell borderWidth={0}>title</Cell>
-                    </th>
-                    <th>
-                      <Cell borderWidth={0}>material</Cell>
-                    </th>
-                    <th>
-                      <Cell borderWidth={0} textAlign="center">
-                        year
-                      </Cell>
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {artworks.map((artwork) => {
-                    return (
-                      <tr>
-                        <td>
-                          <Link
-                            key={artwork.id}
-                            href={`/artworks/${artwork.slug}`}
-                            aria-label={`${artwork.title}; ${artwork.material} (${artwork.year})`}
-                            passHref
-                          >
-                            <Cell as="a" borderWidth={0} display="block">
-                              {artwork.title}
-                            </Cell>
-                          </Link>
-                        </td>
-
-                        <td>
-                          <Cell borderWidth={0}>{artwork.material}</Cell>
-                        </td>
-
-                        <td>
-                          <Cell borderWidth={0} textAlign="center">
-                            {artwork.year}
-                          </Cell>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </Table>
-            </Box>
-          </Stack>
-        </Page>
-      </>
+            return (
+              <Link
+                key={artwork.id}
+                href={`/artworks/${artwork.slug}`}
+                aria-label={`${artwork.title}; ${artwork.material} (${artwork.year})`}
+                passHref
+              >
+                <File
+                  name={artwork.title}
+                  selected
+                  // @ts-ignore
+                  as="a"
+                >
+                  {image ? (
+                    <ResponsiveImage
+                      placeholder={image.placeholder.urls.src}
+                      srcs={[
+                        image.resized.urls._1x,
+                        image.resized.urls._2x,
+                        image.resized.urls._3x,
+                      ]}
+                      aspectWidth={image.resized.width}
+                      aspectHeight={image.resized.height}
+                      maxWidth={image.resized.width}
+                      maxHeight={image.resized.height}
+                      alt={artwork.title}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <AspectRatioBox
+                      aspectWidth={
+                        Math.floor(Math.random() * (100 - 1 + 1)) + 1
+                      }
+                      aspectHeight={
+                        Math.floor(Math.random() * (100 - 1 + 1)) + 1
+                      }
+                      maxWidth={200}
+                      maxHeight={200}
+                      bg="tertiary"
+                    />
+                  )}
+                </File>
+              </Link>
+            );
+          })}
+        </Grid>
+      </Page>
     </>
   );
 };
-
-// export const getStaticProps = async () => {
-//   const apolloClient = initApolloClient();
-//   await apolloClient.query({ query: ARTWORKS_INDEX_QUERY });
-//   return {
-//     props: { initialApolloState: apolloClient.cache.extract() },
-//     revalidate: 1,
-//   };
-// };
 
 export default ArtworksIndexPage;

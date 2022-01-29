@@ -2,6 +2,9 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions =  {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -237,6 +240,9 @@ export type ImageResizedArgs = {
   width?: Maybe<Scalars['Int']>;
   height?: Maybe<Scalars['Int']>;
   scale?: Maybe<Scalars['Float']>;
+  quality?: Maybe<Scalars['Int']>;
+  blur?: Maybe<Scalars['Float']>;
+  sharpen?: Maybe<Scalars['Float']>;
 };
 
 export enum Kind {
@@ -403,9 +409,20 @@ export type UpdateArtworkMutationPayload = {
   clientMutationId?: Maybe<Scalars['String']>;
 };
 
+export type SearchQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SearchQuery = (
+  { __typename?: 'Query' }
+  & { artworks: Array<(
+    { __typename?: 'Artwork' }
+    & Pick<Artwork, 'id' | 'slug' | 'title'>
+  )> }
+);
+
 export type TombstoneArtworkFragment = (
   { __typename?: 'Artwork' }
-  & Pick<Artwork, 'title' | 'material' | 'duration' | 'year'>
+  & Pick<Artwork, 'title' | 'material' | 'duration' | 'year' | 'collector_byline'>
   & { dimensions?: Maybe<(
     { __typename?: 'Dimensions' }
     & { inches: (
@@ -427,11 +444,27 @@ export type ArtworksShowQuery = (
   { __typename?: 'Query' }
   & { artwork: (
     { __typename?: 'Artwork' }
-    & Pick<Artwork, 'id' | 'slug' | 'src' | 'title' | 'year' | 'description' | 'collector_byline'>
-    & { images: Array<(
+    & Pick<Artwork, 'id' | 'slug' | 'src' | 'title' | 'year' | 'intent' | 'description'>
+    & { descriptionPlain: Artwork['description'] }
+    & { attachments: Array<(
+      { __typename?: 'Attachment' }
+      & Pick<Attachment, 'id' | 'url' | 'title'>
+    )>, links: Array<(
+      { __typename?: 'Link' }
+      & Pick<Link, 'title' | 'url'>
+    )>, embeds: Array<(
+      { __typename?: 'Embed' }
+      & Pick<Embed, 'id' | 'html'>
+    )>, images: Array<(
       { __typename?: 'Image' }
       & Pick<Image, 'id' | 'width' | 'height' | 'url'>
-      & { display: (
+      & { placeholder: (
+        { __typename?: 'ResizedImage' }
+        & { urls: (
+          { __typename?: 'RetinaImage' }
+          & { src: RetinaImage['_1x'] }
+        ) }
+      ), display: (
         { __typename?: 'ResizedImage' }
         & Pick<ResizedImage, 'width' | 'height'>
         & { srcs: (
@@ -448,6 +481,34 @@ export type ArtworksIndexQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ArtworksIndexQuery = (
+  { __typename?: 'Query' }
+  & { artworks: Array<(
+    { __typename?: 'Artwork' }
+    & Pick<Artwork, 'id' | 'slug' | 'title' | 'material' | 'year'>
+    & { images: Array<(
+      { __typename?: 'Image' }
+      & { placeholder: (
+        { __typename?: 'ResizedImage' }
+        & { urls: (
+          { __typename?: 'RetinaImage' }
+          & { src: RetinaImage['_1x'] }
+        ) }
+      ), resized: (
+        { __typename?: 'ResizedImage' }
+        & Pick<ResizedImage, 'width' | 'height'>
+        & { urls: (
+          { __typename?: 'RetinaImage' }
+          & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
+        ) }
+      ) }
+    )> }
+  )> }
+);
+
+export type ArtworksTableQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ArtworksTableQuery = (
   { __typename?: 'Query' }
   & { artworks: Array<(
     { __typename?: 'Artwork' }
@@ -469,8 +530,45 @@ export const TombstoneArtworkFragmentDoc = gql`
       to_s
     }
   }
+  collector_byline
 }
     `;
+export const SearchQueryDocument = gql`
+    query SearchQuery {
+  artworks(state: [SELECTED, PUBLISHED]) {
+    id
+    slug
+    title
+  }
+}
+    `;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSearchQuery(baseOptions?: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchQueryDocument, options);
+      }
+export function useSearchQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchQueryDocument, options);
+        }
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchQueryLazyQueryHookResult = ReturnType<typeof useSearchQueryLazyQuery>;
+export type SearchQueryQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
 export const ArtworksShowQueryDocument = gql`
     query ArtworksShowQuery($id: ID!) {
   artwork(id: $id) {
@@ -480,14 +578,33 @@ export const ArtworksShowQueryDocument = gql`
     src
     title
     year
+    intent
     description(format: HTML)
-    collector_byline
+    descriptionPlain: description(format: PLAIN)
+    attachments {
+      id
+      url
+      title
+    }
+    links(kind: DEFAULT, state: PUBLISHED) {
+      title
+      url
+    }
+    embeds {
+      id
+      html
+    }
     images(state: PUBLISHED) {
       id
       width
       height
       url
-      display: resized(width: 1400, height: 1400) {
+      placeholder: resized(width: 50, height: 50) {
+        urls {
+          src: _1x
+        }
+      }
+      display: resized(width: 1200, height: 1200) {
         width
         height
         srcs: urls {
@@ -517,11 +634,13 @@ export const ArtworksShowQueryDocument = gql`
  *   },
  * });
  */
-export function useArtworksShowQuery(baseOptions?: Apollo.QueryHookOptions<ArtworksShowQuery, ArtworksShowQueryVariables>) {
-        return Apollo.useQuery<ArtworksShowQuery, ArtworksShowQueryVariables>(ArtworksShowQueryDocument, baseOptions);
+export function useArtworksShowQuery(baseOptions: Apollo.QueryHookOptions<ArtworksShowQuery, ArtworksShowQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ArtworksShowQuery, ArtworksShowQueryVariables>(ArtworksShowQueryDocument, options);
       }
 export function useArtworksShowQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArtworksShowQuery, ArtworksShowQueryVariables>) {
-          return Apollo.useLazyQuery<ArtworksShowQuery, ArtworksShowQueryVariables>(ArtworksShowQueryDocument, baseOptions);
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ArtworksShowQuery, ArtworksShowQueryVariables>(ArtworksShowQueryDocument, options);
         }
 export type ArtworksShowQueryHookResult = ReturnType<typeof useArtworksShowQuery>;
 export type ArtworksShowQueryLazyQueryHookResult = ReturnType<typeof useArtworksShowQueryLazyQuery>;
@@ -534,6 +653,22 @@ export const ArtworksIndexQueryDocument = gql`
     title
     material
     year
+    images(limit: 1, state: PUBLISHED) {
+      placeholder: resized(width: 50, height: 50) {
+        urls {
+          src: _1x
+        }
+      }
+      resized(width: 200, height: 200) {
+        width
+        height
+        urls {
+          _1x
+          _2x
+          _3x
+        }
+      }
+    }
   }
 }
     `;
@@ -554,11 +689,51 @@ export const ArtworksIndexQueryDocument = gql`
  * });
  */
 export function useArtworksIndexQuery(baseOptions?: Apollo.QueryHookOptions<ArtworksIndexQuery, ArtworksIndexQueryVariables>) {
-        return Apollo.useQuery<ArtworksIndexQuery, ArtworksIndexQueryVariables>(ArtworksIndexQueryDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ArtworksIndexQuery, ArtworksIndexQueryVariables>(ArtworksIndexQueryDocument, options);
       }
 export function useArtworksIndexQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArtworksIndexQuery, ArtworksIndexQueryVariables>) {
-          return Apollo.useLazyQuery<ArtworksIndexQuery, ArtworksIndexQueryVariables>(ArtworksIndexQueryDocument, baseOptions);
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ArtworksIndexQuery, ArtworksIndexQueryVariables>(ArtworksIndexQueryDocument, options);
         }
 export type ArtworksIndexQueryHookResult = ReturnType<typeof useArtworksIndexQuery>;
 export type ArtworksIndexQueryLazyQueryHookResult = ReturnType<typeof useArtworksIndexQueryLazyQuery>;
 export type ArtworksIndexQueryQueryResult = Apollo.QueryResult<ArtworksIndexQuery, ArtworksIndexQueryVariables>;
+export const ArtworksTableQueryDocument = gql`
+    query ArtworksTableQuery {
+  artworks(state: [SELECTED, PUBLISHED]) {
+    id
+    slug
+    title
+    material
+    year
+  }
+}
+    `;
+
+/**
+ * __useArtworksTableQuery__
+ *
+ * To run a query within a React component, call `useArtworksTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useArtworksTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useArtworksTableQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useArtworksTableQuery(baseOptions?: Apollo.QueryHookOptions<ArtworksTableQuery, ArtworksTableQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ArtworksTableQuery, ArtworksTableQueryVariables>(ArtworksTableQueryDocument, options);
+      }
+export function useArtworksTableQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArtworksTableQuery, ArtworksTableQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ArtworksTableQuery, ArtworksTableQueryVariables>(ArtworksTableQueryDocument, options);
+        }
+export type ArtworksTableQueryHookResult = ReturnType<typeof useArtworksTableQuery>;
+export type ArtworksTableQueryLazyQueryHookResult = ReturnType<typeof useArtworksTableQueryLazyQuery>;
+export type ArtworksTableQueryQueryResult = Apollo.QueryResult<ArtworksTableQuery, ArtworksTableQueryVariables>;

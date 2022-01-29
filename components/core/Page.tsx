@@ -3,7 +3,6 @@ import { Box } from "@auspices/eos";
 
 export const Page = styled(Box)`
   box-sizing: content-box;
-  max-width: 1200px;
 
   > * {
     box-sizing: border-box;
@@ -11,9 +10,7 @@ export const Page = styled(Box)`
 `;
 
 Page.defaultProps = {
-  py: 6,
-  px: 3,
-  mx: "auto",
+  p: 6,
 };
 
 export const Bleed = styled(Box)`

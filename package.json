@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.2.5",
-    "@auspices/eos": "^2.14.2",
+    "@auspices/eos": "^2.23.0",
     "@graphql-codegen/cli": "^1.19.0",
     "@graphql-codegen/typescript-operations": "^1.17.8",
     "@graphql-codegen/typescript-react-apollo": "^2.0.7",
@@ -24,7 +24,8 @@
     "react-transition-group": "^4.4.1",
     "styled-components": "^5.2.0",
     "styled-reset": "^4.2.3",
-    "styled-system": "^5.1.5"
+    "styled-system": "^5.1.5",
+    "use-keyboard-list-navigation": "^2.4.2"
   },
   "devDependencies": {
     "@types/node": "^14.14.3",
