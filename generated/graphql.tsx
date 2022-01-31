@@ -647,7 +647,7 @@ export type ArtworksShowQueryLazyQueryHookResult = ReturnType<typeof useArtworks
 export type ArtworksShowQueryQueryResult = Apollo.QueryResult<ArtworksShowQuery, ArtworksShowQueryVariables>;
 export const ArtworksIndexQueryDocument = gql`
     query ArtworksIndexQuery {
-  artworks(state: [SELECTED, PUBLISHED]) {
+  artworks(state: [SELECTED]) {
     id
     slug
     title

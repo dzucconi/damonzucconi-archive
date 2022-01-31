@@ -1,6 +1,6 @@
 import { Box, CELL, color, themeGet } from "@auspices/eos";
-import { FC, useCallback, useEffect, useRef, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import { FC, useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 import { wait } from "../../lib/wait";
 
 type UrlBarProps = {
@@ -35,6 +35,9 @@ export const UrlBar: FC<UrlBarProps> = ({ children, href, target }) => {
 
   return (
     <Container as="a" href={href} target={target}>
+      <Hover />
+      <Fade />
+
       <Url
         ref={ref as any}
         style={{
@@ -52,20 +55,32 @@ export const UrlBar: FC<UrlBarProps> = ({ children, href, target }) => {
   );
 };
 
-const Container = styled(Box).attrs({
-  ...CELL,
-  borderWidth: 0,
-  justifyContent: "center",
-  borderRadius: 8,
-  textAlign: "center",
-  color: "primary",
-  bg: "hint",
-  truncate: true,
-})`
+const Hover = styled(Box)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  background-color: ${color("tertiary", 0.5)};
+  transition: opacity 250ms;
+  opacity: 0;
+`;
+
+const Url = styled(Box)`
   position: relative;
-  display: block;
-  overflow: hidden;
-  transition: background-color 250ms;
+  white-space: nowrap;
+  z-index: 2;
+`;
+
+const Fade = styled(Box)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  transition: opacity 250ms;
 
   &:before,
   &:after {
@@ -74,7 +89,6 @@ const Container = styled(Box).attrs({
     top: 0;
     bottom: 0;
     width: ${themeGet("space.6")};
-    z-index: 1;
   }
 
   &:before {
@@ -90,12 +104,28 @@ const Container = styled(Box).attrs({
       ${color("hint")}
     );
   }
-
-  &:hover {
-    background-color: ${color("tertiary", 0.25)};
-  }
 `;
 
-const Url = styled(Box)`
-  white-space: nowrap;
+const Container = styled(Box).attrs({
+  ...CELL,
+  borderWidth: 0,
+  justifyContent: "center",
+  borderRadius: 8,
+  textAlign: "center",
+  color: "primary",
+  bg: "hint",
+})`
+  display: block;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    ${Hover} {
+      opacity: 1;
+    }
+
+    ${Fade} {
+      opacity: 0;
+    }
+  }
 `;

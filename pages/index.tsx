@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 import Head from "next/head";
 import Link from "next/link";
 import {
-  AspectRatioBox,
   Box,
+  EmptyFrame,
   File,
   Grid,
   ResponsiveImage,
@@ -13,9 +13,9 @@ import { Page } from "../components/core/Page";
 import { Search } from "../components/pages/Search";
 import { useArtworksIndexQuery } from "../generated/graphql";
 
-const ARTWORKS_INDEX_QUERY = gql`
+gql`
   query ArtworksIndexQuery {
-    artworks(state: [SELECTED, PUBLISHED]) {
+    artworks(state: [SELECTED]) {
       id
       slug
       title
@@ -56,7 +56,7 @@ const ArtworksIndexPage: React.FC = () => {
         </Head>
 
         <Page>
-          <Search />
+          <Search loading />
         </Page>
       </>
     );
@@ -71,58 +71,59 @@ const ArtworksIndexPage: React.FC = () => {
       </Head>
 
       <Page>
-        <Search />
+        <Stack spacing={6}>
+          <Box>
+            <Search />
+          </Box>
 
-        <Grid>
-          {artworks.map((artwork) => {
-            const [image] = artwork.images;
+          <Grid>
+            {artworks.map((artwork) => {
+              const [image] = artwork.images;
 
-            return (
-              <Link
-                key={artwork.id}
-                href={`/artworks/${artwork.slug}`}
-                aria-label={`${artwork.title}; ${artwork.material} (${artwork.year})`}
-                passHref
-              >
-                <File
-                  name={artwork.title}
-                  selected
-                  // @ts-ignore
-                  as="a"
+              return (
+                <Link
+                  key={artwork.id}
+                  href={`/artworks/${artwork.slug}`}
+                  aria-label={`${artwork.title}; ${artwork.material} (${artwork.year})`}
+                  passHref
                 >
-                  {image ? (
-                    <ResponsiveImage
-                      placeholder={image.placeholder.urls.src}
-                      srcs={[
-                        image.resized.urls._1x,
-                        image.resized.urls._2x,
-                        image.resized.urls._3x,
-                      ]}
-                      aspectWidth={image.resized.width}
-                      aspectHeight={image.resized.height}
-                      maxWidth={image.resized.width}
-                      maxHeight={image.resized.height}
-                      alt={artwork.title}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <AspectRatioBox
-                      aspectWidth={
-                        Math.floor(Math.random() * (100 - 1 + 1)) + 1
-                      }
-                      aspectHeight={
-                        Math.floor(Math.random() * (100 - 1 + 1)) + 1
-                      }
-                      maxWidth={200}
-                      maxHeight={200}
-                      bg="tertiary"
-                    />
-                  )}
-                </File>
-              </Link>
-            );
-          })}
-        </Grid>
+                  <File
+                    name={artwork.title}
+                    meta={`${artwork.year}`}
+                    selected
+                    // @ts-ignore
+                    as="a"
+                  >
+                    {image ? (
+                      <ResponsiveImage
+                        placeholder={image.placeholder.urls.src}
+                        srcs={[
+                          image.resized.urls._1x,
+                          image.resized.urls._2x,
+                          image.resized.urls._3x,
+                        ]}
+                        aspectWidth={image.resized.width}
+                        aspectHeight={image.resized.height}
+                        maxWidth={image.resized.width}
+                        maxHeight={image.resized.height}
+                        alt={artwork.title}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <EmptyFrame
+                        width="100%"
+                        height="100%"
+                        color="hint"
+                        border="1px solid"
+                        borderColor="hint"
+                      />
+                    )}
+                  </File>
+                </Link>
+              );
+            })}
+          </Grid>
+        </Stack>
       </Page>
     </>
   );

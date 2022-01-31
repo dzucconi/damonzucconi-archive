@@ -127,6 +127,10 @@ export const ArtworksShowPage: React.FC = () => {
                   top="100%"
                   p={3}
                   color="secondary"
+                  as="a"
+                  href={artwork.src}
+                  target="_blank"
+                  tabIndex={-1}
                 >
                   Open work in new tab
                 </Box>
@@ -192,7 +196,9 @@ export const ArtworksShowPage: React.FC = () => {
                     as="a"
                     href={attachment.url}
                     target="_blank"
-                    fontSize={1}
+                    // fontSize={1}
+                    lineHeight={1.4}
+                    fontSize={22}
                     color="external"
                   >
                     {attachment.title}
@@ -210,7 +216,9 @@ export const ArtworksShowPage: React.FC = () => {
                     as="a"
                     href={link.url}
                     target="_blank"
-                    fontSize={1}
+                    // fontSize={1}
+                    lineHeight={1.4}
+                    fontSize={22}
                     color="external"
                   >
                     {link.title}

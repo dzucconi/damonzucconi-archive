@@ -4,6 +4,7 @@ import {
   Button,
   ClearableInput,
   ClearableInputProps,
+  Loading,
   Stack,
 } from "@auspices/eos";
 import { FC, useEffect, useRef, useState } from "react";
@@ -11,9 +12,6 @@ import { useSearchQuery } from "../../generated/graphql";
 import Link from "next/link";
 import { useKeyboardListNavigation } from "use-keyboard-list-navigation";
 import { useRouter } from "next/router";
-
-// TODO
-// - Highlight search results
 
 gql`
   query SearchQuery {
@@ -25,7 +23,14 @@ gql`
   }
 `;
 
-export const Search: FC<ClearableInputProps> = (props) => {
+type SearchProps = ClearableInputProps & {
+  loading?: boolean;
+};
+
+export const Search: FC<SearchProps> = ({
+  loading: _loading = false,
+  ...rest
+}) => {
   const ref = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -62,8 +67,8 @@ export const Search: FC<ClearableInputProps> = (props) => {
 
   const { index } = useKeyboardListNavigation({
     list: filtered,
-    onEnter: () => {
-      router.push(`/artworks/${filtered[index].slug}`);
+    onEnter: ({ element }) => {
+      router.push(`/artworks/${element.slug}`);
     },
   });
 
@@ -72,30 +77,39 @@ export const Search: FC<ClearableInputProps> = (props) => {
   }
 
   return (
-    <Stack width={["100%", "85%", "75%", "60%"]} mx="auto">
-      <ClearableInput
-        ref={ref}
-        placeholder="Search"
-        onChange={setQuery}
-        {...props}
-      />
-      <Box position="relative" zIndex={1}>
-        {filtered.length > 0 && (
-          <Stack position="absolute" top={0} left={0} right={0}>
-            {filtered.slice(0, 5).map((artwork, i) => {
-              return (
-                <Box key={artwork.id}>
-                  <Link href={`/artworks/${artwork.slug}`} passHref>
-                    <Button as="a" width="100%" highlighted={index === i}>
-                      {artwork.title}
-                    </Button>
-                  </Link>
-                </Box>
-              );
-            })}
-          </Stack>
-        )}
-      </Box>
-    </Stack>
+    <Box position="relative" width={["100%", "85%", "75%", "60%"]} mx="auto">
+      <Loading px={0} py={0} borderWidth={0} loading={_loading}>
+        <ClearableInput
+          ref={ref}
+          placeholder={_loading ? "Loading" : "Search"}
+          onChange={setQuery}
+          flex={1}
+          {...rest}
+        />
+      </Loading>
+
+      {filtered.length > 0 && (
+        <Stack
+          position="absolute"
+          top="100%"
+          marginTop="-1px"
+          left={0}
+          right={0}
+          zIndex={2}
+        >
+          {filtered.slice(0, 5).map((artwork, i) => {
+            return (
+              <Box key={artwork.id}>
+                <Link href={`/artworks/${artwork.slug}`} passHref>
+                  <Button as="a" width="100%" highlighted={index === i}>
+                    {artwork.title}
+                  </Button>
+                </Link>
+              </Box>
+            );
+          })}
+        </Stack>
+      )}
+    </Box>
   );
 };

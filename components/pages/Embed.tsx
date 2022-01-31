@@ -1,4 +1,4 @@
-import { HTML, HTMLProps } from "@auspices/eos";
+import { color, HTML, HTMLProps } from "@auspices/eos";
 import { FC } from "react";
 import styled from "styled-components";
 
@@ -9,8 +9,14 @@ export const Embed: FC<EmbedProps> = (props) => {
 };
 
 const Container = styled(HTML)`
-  > iframe {
+  background-color: ${color("hint")};
+  width: 100%;
+
+  iframe,
+  img {
+    display: block;
     max-width: 100%;
     vertical-align: bottom;
+    margin: 0 auto;
   }
 `;
