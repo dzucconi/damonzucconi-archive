@@ -84,7 +84,6 @@ export const Search: FC<SearchProps> = ({
           ref={ref}
           placeholder={_loading ? "Loading" : "Search"}
           onChange={setQuery}
-          flex={1}
           {...rest}
         />
       </Loading>
@@ -96,7 +95,7 @@ export const Search: FC<SearchProps> = ({
           marginTop="-1px"
           left={0}
           right={0}
-          zIndex={2}
+          zIndex={10}
         >
           {filtered.slice(0, 5).map((artwork, i) => {
             return (

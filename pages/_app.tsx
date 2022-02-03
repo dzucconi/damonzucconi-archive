@@ -6,11 +6,19 @@ import {
   Box,
   Clickable,
   GlobalStyles,
+  Stack,
   ThemerProvider,
   useThemer,
 } from "@auspices/eos";
-import { FC, useEffect } from "react";
+import { FC, ReactElement, useEffect, ReactNode } from "react";
 import { Loader } from "../components/core/Loader";
+import { Navigation } from "../components/pages/Navigation";
+import { Page } from "../components/core/Page";
+import { NextPage } from "next";
+
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
 
 const App: FC = ({ children }) => {
   const { theme, toggleScheme } = useThemer();
@@ -53,15 +61,19 @@ const App: FC = ({ children }) => {
   );
 };
 
-export default ({ Component, pageProps }: AppProps) => {
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+export default ({ Component, pageProps }: AppPropsWithLayout) => {
   const apolloClient = useApollo(pageProps.initialApolloState);
+
+  const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <ApolloProvider client={apolloClient}>
       <ThemerProvider>
-        <App>
-          <Component {...pageProps} />
-        </App>
+        <App>{getLayout(<Component {...pageProps} />)}</App>
       </ThemerProvider>
     </ApolloProvider>
   );

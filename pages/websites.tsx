@@ -1,13 +1,10 @@
 import Head from "next/head";
 import { Box, Stack } from "@auspices/eos";
-import { FC } from "react";
-import { Page } from "../components/core/Page";
-import { Spinner } from "../components/core/Spinner";
+import { ReactElement } from "react";
 import { gql } from "@apollo/client";
 import { useWebsitesQuery } from "../generated/graphql";
-import { UrlBar } from "../components/pages/UrlBar";
 import { prettifyUrl } from "../lib/prettifyUrl";
-import { Navigation } from "../components/pages/Navigation";
+import { NavigationLayout } from "../components/layouts/NavigationLayout";
 
 gql`
   query WebsitesQuery {
@@ -21,7 +18,7 @@ gql`
   }
 `;
 
-const WebsitesPage: FC = () => {
+const WebsitesPage = () => {
   const { data, loading, error } = useWebsitesQuery();
 
   if (error) {
@@ -30,15 +27,9 @@ const WebsitesPage: FC = () => {
 
   if (loading || !data) {
     return (
-      <>
-        <Head>
-          <title>Loading | Damon Zucconi</title>
-        </Head>
-
-        <Page>
-          <Navigation loading />
-        </Page>
-      </>
+      <Head>
+        <title>Loading | Damon Zucconi</title>
+      </Head>
     );
   }
 
@@ -52,27 +43,27 @@ const WebsitesPage: FC = () => {
         <title>Only Websites | Damon Zucconi</title>
       </Head>
 
-      <Page>
-        <Stack spacing={6}>
-          <Navigation />
-
-          {links.map((link) => (
-            <Box
-              key={link.url}
-              as="a"
-              href={link.url}
-              target="_blank"
-              color="external"
-              textAlign="center"
-              style={{ wordBreak: "break-all" }}
-            >
-              {prettifyUrl(link.url)}
-            </Box>
-          ))}
-        </Stack>
-      </Page>
+      <Stack spacing={6}>
+        {links.map((link) => (
+          <Box
+            key={link.url}
+            as="a"
+            href={link.url}
+            target="_blank"
+            color="external"
+            textAlign="center"
+            style={{ wordBreak: "break-all" }}
+          >
+            {prettifyUrl(link.url)}
+          </Box>
+        ))}
+      </Stack>
     </>
   );
 };
+
+WebsitesPage.getLayout = (page: ReactElement) => (
+  <NavigationLayout>{page}</NavigationLayout>
+);
 
 export default WebsitesPage;

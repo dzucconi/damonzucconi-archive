@@ -5,16 +5,25 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
+import { createNetworkStatusNotifier } from "react-apollo-network-status";
 
 export const GRAPHQL_ENDPOINT = "https://api.damonzucconi.com/graph";
 // export const GRAPHQL_ENDPOINT = "http://localhost:5001/graph";
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
+export const { link: statusLink, useApolloNetworkStatus } =
+  createNetworkStatusNotifier();
+
 const createApolloClient = () => {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: new HttpLink({ uri: GRAPHQL_ENDPOINT, credentials: "same-origin" }),
+    link: statusLink.concat(
+      new HttpLink({
+        uri: GRAPHQL_ENDPOINT,
+        credentials: "same-origin",
+      })
+    ),
     cache: new InMemoryCache(),
   });
 };

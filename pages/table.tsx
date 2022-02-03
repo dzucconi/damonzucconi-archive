@@ -2,10 +2,10 @@ import { gql } from "@apollo/client";
 import Head from "next/head";
 import Link from "next/link";
 import { Cell, Stack } from "@auspices/eos";
-import { Page } from "../components/core/Page";
 import { Table } from "../components/core/Table";
-import { Navigation } from "../components/pages/Navigation";
 import { useArtworksTableQuery } from "../generated/graphql";
+import { ReactElement } from "react";
+import { NavigationLayout } from "../components/layouts/NavigationLayout";
 
 gql`
   query ArtworksTableQuery {
@@ -19,7 +19,7 @@ gql`
   }
 `;
 
-const ArtworksTablePage: React.FC = () => {
+const ArtworksTablePage = () => {
   const { loading, error, data } = useArtworksTableQuery();
 
   if (error) {
@@ -28,17 +28,9 @@ const ArtworksTablePage: React.FC = () => {
 
   if (loading || !data) {
     return (
-      <>
-        <Head>
-          <title>Loading | Damon Zucconi</title>
-        </Head>
-
-        <>
-          <Page>
-            <Navigation />
-          </Page>
-        </>
-      </>
+      <Head>
+        <title>Loading | Damon Zucconi</title>
+      </Head>
     );
   }
 
@@ -51,63 +43,63 @@ const ArtworksTablePage: React.FC = () => {
       </Head>
 
       <>
-        <Page>
-          <Stack spacing={6}>
-            <Navigation />
+        <Stack spacing={6}>
+          <Table position="relative" borderWidth={0}>
+            <thead>
+              <tr>
+                <th>
+                  <Cell borderWidth={0}>title</Cell>
+                </th>
+                <th>
+                  <Cell borderWidth={0}>material</Cell>
+                </th>
+                <th>
+                  <Cell borderWidth={0} textAlign="center">
+                    year
+                  </Cell>
+                </th>
+              </tr>
+            </thead>
 
-            <Table position="relative" borderWidth={0}>
-              <thead>
-                <tr>
-                  <th>
-                    <Cell borderWidth={0}>title</Cell>
-                  </th>
-                  <th>
-                    <Cell borderWidth={0}>material</Cell>
-                  </th>
-                  <th>
-                    <Cell borderWidth={0} textAlign="center">
-                      year
-                    </Cell>
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {artworks.map((artwork) => {
-                  return (
-                    <tr>
-                      <td>
-                        <Link
-                          key={artwork.id}
-                          href={`/artworks/${artwork.slug}`}
-                          aria-label={`${artwork.title}; ${artwork.material} (${artwork.year})`}
-                          passHref
-                        >
-                          <Cell as="a" borderWidth={0} display="block">
-                            {artwork.title}
-                          </Cell>
-                        </Link>
-                      </td>
-
-                      <td>
-                        <Cell borderWidth={0}>{artwork.material}</Cell>
-                      </td>
-
-                      <td>
-                        <Cell borderWidth={0} textAlign="center">
-                          {artwork.year}
+            <tbody>
+              {artworks.map((artwork) => {
+                return (
+                  <tr>
+                    <td>
+                      <Link
+                        key={artwork.id}
+                        href={`/artworks/${artwork.slug}`}
+                        aria-label={`${artwork.title}; ${artwork.material} (${artwork.year})`}
+                        passHref
+                      >
+                        <Cell as="a" borderWidth={0} display="block">
+                          {artwork.title}
                         </Cell>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </Stack>
-        </Page>
+                      </Link>
+                    </td>
+
+                    <td>
+                      <Cell borderWidth={0}>{artwork.material}</Cell>
+                    </td>
+
+                    <td>
+                      <Cell borderWidth={0} textAlign="center">
+                        {artwork.year}
+                      </Cell>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </Stack>
       </>
     </>
   );
 };
+
+ArtworksTablePage.getLayout = (page: ReactElement) => (
+  <NavigationLayout>{page}</NavigationLayout>
+);
 
 export default ArtworksTablePage;

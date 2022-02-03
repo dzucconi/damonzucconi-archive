@@ -5,7 +5,6 @@ import {
   Box,
   Stack,
   ResponsiveImage,
-  AspectRatioBox,
   HTML,
   Dropdown,
   Ellipsis,
@@ -15,10 +14,11 @@ import {
 import { Tombstone } from "../../components/pages/Tombstone";
 import { UrlBar } from "../../components/pages/UrlBar";
 import { useArtworksShowQuery } from "../../generated/graphql";
-import { Page } from "../../components/core/Page";
 import styled from "styled-components";
 import { Embed } from "../../components/pages/Embed";
 import { Spinner } from "../../components/core/Spinner";
+import { PageLayout } from "../../components/layouts/PageLayout";
+import { ReactElement } from "react";
 
 gql`
   query ArtworksShowQuery($id: ID!) {
@@ -69,7 +69,7 @@ gql`
   }
 `;
 
-export const ArtworksShowPage: React.FC = () => {
+export const ArtworksShowPage = () => {
   const {
     query: { slug },
   } = useRouter();
@@ -83,7 +83,15 @@ export const ArtworksShowPage: React.FC = () => {
   }
 
   if (loading || !data) {
-    return <Spinner />;
+    return (
+      <>
+        <Head>
+          <title>Loading | Damon Zucconi</title>
+        </Head>
+
+        <Spinner />
+      </>
+    );
   }
 
   const { artwork } = data;
@@ -96,144 +104,144 @@ export const ArtworksShowPage: React.FC = () => {
         </title>
       </Head>
 
-      <Page>
-        <Stack direction="vertical" spacing={8}>
-          {artwork.src && (
-            <Stack direction="vertical" spacing={6}>
-              <Box position="relative">
-                <UrlBar href={artwork.src} target="_blank">
-                  {artwork.src}
-                </UrlBar>
+      <Stack direction="vertical" spacing={8}>
+        {artwork.src && (
+          <Stack direction="vertical" spacing={6}>
+            <Box position="relative">
+              <UrlBar href={artwork.src} target="_blank">
+                {artwork.src}
+              </UrlBar>
 
-                <Box
-                  position="absolute"
-                  fontSize={0}
-                  right={0}
-                  top="100%"
-                  p={3}
-                  color="secondary"
-                  as="a"
-                  href={artwork.src}
-                  target="_blank"
-                  tabIndex={-1}
-                >
-                  Open work in new tab
-                </Box>
+              <Box
+                position="absolute"
+                fontSize={0}
+                right={0}
+                top="100%"
+                p={3}
+                color="secondary"
+                as="a"
+                href={artwork.src}
+                target="_blank"
+                tabIndex={-1}
+              >
+                Open work in new tab
               </Box>
-            </Stack>
-          )}
-
-          {artwork.embeds.length > 0 && (
-            <Stack direction="vertical" spacing={6}>
-              {artwork.embeds.map((embed) => (
-                <Embed key={embed.id} html={embed.html!} mx="auto" />
-              ))}
-            </Stack>
-          )}
-
-          {["default", "canonical"].includes(artwork.intent) &&
-            artwork.images.length > 0 && (
-              <Stack direction="vertical" spacing={6}>
-                {artwork.images.map((image) => {
-                  return (
-                    <Figure key={image.id}>
-                      <ResponsiveImage
-                        indicator
-                        placeholder={image.placeholder.urls.src}
-                        srcs={[
-                          image.display.srcs._1x,
-                          image.display.srcs._2x,
-                          image.display.srcs._3x,
-                        ]}
-                        aspectWidth={image.display.width}
-                        aspectHeight={image.display.height}
-                        maxWidth={image.display.width}
-                        maxHeight={image.display.height}
-                        alt={artwork.title}
-                      >
-                        <Dropdown
-                          label={
-                            <Clickable bg="background" p={3}>
-                              <Ellipsis />
-                            </Clickable>
-                          }
-                          position="absolute"
-                          zIndex={1}
-                          top={5}
-                          right={5}
-                        >
-                          <PaneOption as="a" href={image.url} target="_blank">
-                            Download image @{image.width}&times;{image.height}
-                          </PaneOption>
-                        </Dropdown>
-                      </ResponsiveImage>
-                    </Figure>
-                  );
-                })}
-              </Stack>
-            )}
-
-          {artwork.attachments.length > 0 && (
-            <Stack direction="vertical" spacing={2} textAlign="center">
-              {artwork.attachments.map((attachment) => {
-                return (
-                  <Box
-                    as="a"
-                    href={attachment.url}
-                    target="_blank"
-                    lineHeight={2}
-                    fontSize={3}
-                    color="external"
-                  >
-                    {attachment.title}
-                  </Box>
-                );
-              })}
-            </Stack>
-          )}
-
-          {artwork.links.length > 0 && (
-            <Stack direction="vertical" spacing={2} textAlign="center">
-              {artwork.links.map((link) => {
-                return (
-                  <Box
-                    as="a"
-                    href={link.url}
-                    target="_blank"
-                    lineHeight={2}
-                    fontSize={3}
-                    color="external"
-                  >
-                    {link.title}
-                  </Box>
-                );
-              })}
-            </Stack>
-          )}
-
-          {artwork.description && (
-            <Box>
-              <HTML
-                html={artwork.description}
-                mx="auto"
-                lineHeight={2}
-                fontSize={3}
-                maxWidth={["100%", "85%", "75%", "60%"]}
-                textAlign={
-                  (artwork.descriptionPlain?.length ?? 0) > 99
-                    ? "left"
-                    : "center"
-                }
-              />
             </Box>
+          </Stack>
+        )}
+
+        {artwork.embeds.length > 0 && (
+          <Stack direction="vertical" spacing={6}>
+            {artwork.embeds.map((embed) => (
+              <Embed key={embed.id} html={embed.html!} mx="auto" />
+            ))}
+          </Stack>
+        )}
+
+        {["default", "canonical"].includes(artwork.intent) &&
+          artwork.images.length > 0 && (
+            <Stack direction="vertical" spacing={6}>
+              {artwork.images.map((image) => {
+                return (
+                  <Figure key={image.id}>
+                    <ResponsiveImage
+                      indicator
+                      placeholder={image.placeholder.urls.src}
+                      srcs={[
+                        image.display.srcs._1x,
+                        image.display.srcs._2x,
+                        image.display.srcs._3x,
+                      ]}
+                      aspectWidth={image.display.width}
+                      aspectHeight={image.display.height}
+                      maxWidth={image.display.width}
+                      maxHeight={image.display.height}
+                      alt={artwork.title}
+                    >
+                      <Dropdown
+                        label={
+                          <Clickable bg="background" p={3}>
+                            <Ellipsis />
+                          </Clickable>
+                        }
+                        position="absolute"
+                        zIndex={1}
+                        top={5}
+                        right={5}
+                      >
+                        <PaneOption as="a" href={image.url} target="_blank">
+                          Download image @{image.width}&times;{image.height}
+                        </PaneOption>
+                      </Dropdown>
+                    </ResponsiveImage>
+                  </Figure>
+                );
+              })}
+            </Stack>
           )}
 
-          <Tombstone artwork={artwork} />
-        </Stack>
-      </Page>
+        {artwork.attachments.length > 0 && (
+          <Stack direction="vertical" spacing={2} textAlign="center">
+            {artwork.attachments.map((attachment) => {
+              return (
+                <Box
+                  as="a"
+                  href={attachment.url}
+                  target="_blank"
+                  lineHeight={2}
+                  fontSize={3}
+                  color="external"
+                >
+                  {attachment.title}
+                </Box>
+              );
+            })}
+          </Stack>
+        )}
+
+        {artwork.links.length > 0 && (
+          <Stack direction="vertical" spacing={2} textAlign="center">
+            {artwork.links.map((link) => {
+              return (
+                <Box
+                  as="a"
+                  href={link.url}
+                  target="_blank"
+                  lineHeight={2}
+                  fontSize={3}
+                  color="external"
+                >
+                  {link.title}
+                </Box>
+              );
+            })}
+          </Stack>
+        )}
+
+        {artwork.description && (
+          <Box>
+            <HTML
+              html={artwork.description}
+              mx="auto"
+              lineHeight={2}
+              fontSize={3}
+              maxWidth={["100%", "85%", "75%", "60%"]}
+              textAlign={
+                (artwork.descriptionPlain?.length ?? 0) > 99 ? "left" : "center"
+              }
+            />
+          </Box>
+        )}
+
+        <Tombstone artwork={artwork} />
+      </Stack>
     </>
   );
 };
+
+ArtworksShowPage.getLayout = (page: ReactElement) => (
+  <PageLayout>{page}</PageLayout>
+);
 
 export default ArtworksShowPage;
 

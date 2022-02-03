@@ -1,19 +1,18 @@
+import { ReactElement } from "react";
 import { gql } from "@apollo/client";
 import Head from "next/head";
-import Link from "next/link";
+import { useExhibitionsIndexQuery } from "../generated/graphql";
 import { EmptyFrame, File, Grid, ResponsiveImage, Stack } from "@auspices/eos";
-import { State, useArtworksIndexQuery } from "../generated/graphql";
-import { useRouter } from "next/router";
-import { ReactElement } from "react";
+import Link from "next/link";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 
 gql`
-  query ArtworksIndexQuery($state: [State]) {
-    artworks(state: $state) {
+  query ExhibitionsIndexQuery {
+    exhibitions(state: [SELECTED, PUBLISHED]) {
       id
       slug
       title
-      material
+      city
       year
       images(limit: 1, state: PUBLISHED) {
         placeholder: resized(width: 50, height: 50, blur: 10) {
@@ -35,16 +34,8 @@ gql`
   }
 `;
 
-const ArtworksIndexPage = () => {
-  const router = useRouter();
-  const state =
-    router.asPath === "/"
-      ? [State.Selected]
-      : [State.Selected, State.Published];
-
-  const { loading, error, data } = useArtworksIndexQuery({
-    variables: { state },
-  });
+const ExhibitionsIndexPage = () => {
+  const { loading, error, data } = useExhibitionsIndexQuery();
 
   if (error) {
     throw error;
@@ -52,37 +43,35 @@ const ArtworksIndexPage = () => {
 
   if (loading || !data) {
     return (
-      <>
-        <Head>
-          <title>Loading | Damon Zucconi</title>
-        </Head>
-      </>
+      <Head>
+        <title>Loading | Damon Zucconi</title>
+      </Head>
     );
   }
 
-  const { artworks } = data;
+  const { exhibitions } = data;
 
   return (
     <>
       <Head>
-        <title>Damon Zucconi</title>
+        <title>Loading | Damon Zucconi</title>
       </Head>
 
       <Stack spacing={6}>
         <Grid cellSize="14rem">
-          {artworks.map((artwork) => {
-            const [image] = artwork.images;
+          {exhibitions.map((exhibition) => {
+            const [image] = exhibition.images;
 
             return (
               <Link
-                key={artwork.id}
-                href={`/artworks/${artwork.slug}`}
-                aria-label={`${artwork.title}; ${artwork.material} (${artwork.year})`}
+                key={exhibition.id}
+                href={`/exhibitions/${exhibition.slug}`}
+                aria-label={`${exhibition.title}, ${exhibition.city}; (${exhibition.year})`}
                 passHref
               >
                 <File
-                  name={artwork.title}
-                  meta={`${artwork.year}`}
+                  name={[exhibition.title, exhibition.city].join(", ")}
+                  meta={`${exhibition.year}`}
                   selected
                   // @ts-ignore
                   as="a"
@@ -99,7 +88,8 @@ const ArtworksIndexPage = () => {
                       aspectHeight={image.resized.height}
                       maxWidth={image.resized.width}
                       maxHeight={image.resized.height}
-                      alt={artwork.title}
+                      // TODO: Should be non-nullable
+                      alt={exhibition.title!}
                       loading="lazy"
                     />
                   ) : (
@@ -121,8 +111,8 @@ const ArtworksIndexPage = () => {
   );
 };
 
-ArtworksIndexPage.getLayout = (page: ReactElement) => (
+ExhibitionsIndexPage.getLayout = (page: ReactElement) => (
   <NavigationLayout>{page}</NavigationLayout>
 );
 
-export default ArtworksIndexPage;
+export default ExhibitionsIndexPage;

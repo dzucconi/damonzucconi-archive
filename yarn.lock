@@ -3429,6 +3429,11 @@ rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-apollo-network-status@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/react-apollo-network-status/-/react-apollo-network-status-5.1.0.tgz#c74159e55f6b3e4ce7e06d727cdf3075e31a74f8"
+  integrity sha512-/YL9BqWdhDZxndD9lrRMA/ywLn5UdgAUrZcXx38Ff4sh9rmVBmJyOLA4Aq0PJJDBRLAr3IQ/ufoIeVgqSwgM/g==
+
 react-clientside-effect@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.5.tgz#e2c4dc3c9ee109f642fac4f5b6e9bf5bcd2219a3"

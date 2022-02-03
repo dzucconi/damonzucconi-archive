@@ -477,6 +477,34 @@ export type ArtworksShowQuery = (
   ) }
 );
 
+export type ExhibitionsIndexQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ExhibitionsIndexQuery = (
+  { __typename?: 'Query' }
+  & { exhibitions: Array<(
+    { __typename?: 'Exhibition' }
+    & Pick<Exhibition, 'id' | 'slug' | 'title' | 'city' | 'year'>
+    & { images: Array<(
+      { __typename?: 'Image' }
+      & { placeholder: (
+        { __typename?: 'ResizedImage' }
+        & { urls: (
+          { __typename?: 'RetinaImage' }
+          & { src: RetinaImage['_1x'] }
+        ) }
+      ), resized: (
+        { __typename?: 'ResizedImage' }
+        & Pick<ResizedImage, 'width' | 'height'>
+        & { urls: (
+          { __typename?: 'RetinaImage' }
+          & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
+        ) }
+      ) }
+    )> }
+  )> }
+);
+
 export type ArtworksIndexQueryVariables = Exact<{
   state?: Maybe<Array<Maybe<State>> | Maybe<State>>;
 }>;
@@ -662,6 +690,60 @@ export function useArtworksShowQueryLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type ArtworksShowQueryHookResult = ReturnType<typeof useArtworksShowQuery>;
 export type ArtworksShowQueryLazyQueryHookResult = ReturnType<typeof useArtworksShowQueryLazyQuery>;
 export type ArtworksShowQueryQueryResult = Apollo.QueryResult<ArtworksShowQuery, ArtworksShowQueryVariables>;
+export const ExhibitionsIndexQueryDocument = gql`
+    query ExhibitionsIndexQuery {
+  exhibitions(state: [SELECTED, PUBLISHED]) {
+    id
+    slug
+    title
+    city
+    year
+    images(limit: 1, state: PUBLISHED) {
+      placeholder: resized(width: 50, height: 50, blur: 10) {
+        urls {
+          src: _1x
+        }
+      }
+      resized(width: 200, height: 200) {
+        width
+        height
+        urls {
+          _1x
+          _2x
+          _3x
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useExhibitionsIndexQuery__
+ *
+ * To run a query within a React component, call `useExhibitionsIndexQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExhibitionsIndexQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExhibitionsIndexQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useExhibitionsIndexQuery(baseOptions?: Apollo.QueryHookOptions<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>(ExhibitionsIndexQueryDocument, options);
+      }
+export function useExhibitionsIndexQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>(ExhibitionsIndexQueryDocument, options);
+        }
+export type ExhibitionsIndexQueryHookResult = ReturnType<typeof useExhibitionsIndexQuery>;
+export type ExhibitionsIndexQueryLazyQueryHookResult = ReturnType<typeof useExhibitionsIndexQueryLazyQuery>;
+export type ExhibitionsIndexQueryQueryResult = Apollo.QueryResult<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>;
 export const ArtworksIndexQueryDocument = gql`
     query ArtworksIndexQuery($state: [State]) {
   artworks(state: $state) {
