@@ -57,7 +57,7 @@ export const Search: FC<SearchProps> = ({
   const { loading, error, data } = useSearchQuery();
 
   const filtered =
-    !loading && data && query !== "" && query.length > 1
+    !loading && data && query !== ""
       ? data.artworks.filter((artwork) => {
           return artwork.title.toLowerCase().includes(query.toLowerCase());
         })
@@ -68,6 +68,7 @@ export const Search: FC<SearchProps> = ({
   const { index } = useKeyboardListNavigation({
     list: filtered,
     onEnter: ({ element }) => {
+      if (!element) return;
       router.push(`/artworks/${element.slug}`);
     },
   });
@@ -77,7 +78,7 @@ export const Search: FC<SearchProps> = ({
   }
 
   return (
-    <Box position="relative" width={["100%", "85%", "75%", "60%"]} mx="auto">
+    <Box position="relative">
       <Loading px={0} py={0} borderWidth={0} loading={_loading}>
         <ClearableInput
           ref={ref}
@@ -101,7 +102,12 @@ export const Search: FC<SearchProps> = ({
             return (
               <Box key={artwork.id}>
                 <Link href={`/artworks/${artwork.slug}`} passHref>
-                  <Button as="a" width="100%" highlighted={index === i}>
+                  <Button
+                    as="a"
+                    width="100%"
+                    highlighted={index === i}
+                    justifyContent="flex-start"
+                  >
                     {artwork.title}
                   </Button>
                 </Link>

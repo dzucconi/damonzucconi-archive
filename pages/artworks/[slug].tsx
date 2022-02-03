@@ -14,11 +14,11 @@ import {
 } from "@auspices/eos";
 import { Tombstone } from "../../components/pages/Tombstone";
 import { UrlBar } from "../../components/pages/UrlBar";
-import { SkeletonBox, SkeletonText } from "../../components/core/Skeleton";
 import { useArtworksShowQuery } from "../../generated/graphql";
 import { Page } from "../../components/core/Page";
 import styled from "styled-components";
 import { Embed } from "../../components/pages/Embed";
+import { Spinner } from "../../components/core/Spinner";
 
 gql`
   query ArtworksShowQuery($id: ID!) {
@@ -50,7 +50,7 @@ gql`
         width
         height
         url
-        placeholder: resized(width: 50, height: 50) {
+        placeholder: resized(width: 50, height: 50, blur: 10) {
           urls {
             src: _1x
           }
@@ -83,22 +83,7 @@ export const ArtworksShowPage: React.FC = () => {
   }
 
   if (loading || !data) {
-    return (
-      <Page>
-        <Stack spacing={6}>
-          <AspectRatioBox
-            aspectWidth={4}
-            aspectHeight={3}
-            maxWidth={1200}
-            maxHeight={1200}
-          >
-            <SkeletonBox width="100%" height="100%" />
-          </AspectRatioBox>
-
-          <SkeletonText>Untitled, Non-material, xx x xxx, 0000</SkeletonText>
-        </Stack>
-      </Page>
-    );
+    return <Spinner />;
   }
 
   const { artwork } = data;

@@ -1,13 +1,13 @@
 import { gql } from "@apollo/client";
 import Head from "next/head";
 import Link from "next/link";
-import { Box, Cell, Stack } from "@auspices/eos";
+import { Cell, Stack } from "@auspices/eos";
 import { Page } from "../components/core/Page";
 import { Table } from "../components/core/Table";
 import { Navigation } from "../components/pages/Navigation";
 import { useArtworksTableQuery } from "../generated/graphql";
 
-const ARTWORKS_INDEX_QUERY = gql`
+gql`
   query ArtworksTableQuery {
     artworks(state: [SELECTED, PUBLISHED]) {
       id

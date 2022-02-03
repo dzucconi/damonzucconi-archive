@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import {
   Box,
+  Button,
   EmptyFrame,
   File,
   Grid,
@@ -11,18 +12,20 @@ import {
 } from "@auspices/eos";
 import { Page } from "../components/core/Page";
 import { Search } from "../components/pages/Search";
-import { useArtworksIndexQuery } from "../generated/graphql";
+import { State, useArtworksIndexQuery } from "../generated/graphql";
+import { Navigation } from "../components/pages/Navigation";
+import { useRouter } from "next/router";
 
 gql`
-  query ArtworksIndexQuery {
-    artworks(state: [SELECTED]) {
+  query ArtworksIndexQuery($state: [State]) {
+    artworks(state: $state) {
       id
       slug
       title
       material
       year
       images(limit: 1, state: PUBLISHED) {
-        placeholder: resized(width: 50, height: 50) {
+        placeholder: resized(width: 50, height: 50, blur: 10) {
           urls {
             src: _1x
           }
@@ -42,7 +45,15 @@ gql`
 `;
 
 const ArtworksIndexPage: React.FC = () => {
-  const { loading, error, data } = useArtworksIndexQuery();
+  const router = useRouter();
+  const state =
+    router.asPath === "/"
+      ? [State.Selected]
+      : [State.Selected, State.Published];
+
+  const { loading, error, data } = useArtworksIndexQuery({
+    variables: { state },
+  });
 
   if (error) {
     throw error;
@@ -56,7 +67,7 @@ const ArtworksIndexPage: React.FC = () => {
         </Head>
 
         <Page>
-          <Search loading />
+          <Navigation loading />
         </Page>
       </>
     );
@@ -72,11 +83,9 @@ const ArtworksIndexPage: React.FC = () => {
 
       <Page>
         <Stack spacing={6}>
-          <Box>
-            <Search />
-          </Box>
+          <Navigation />
 
-          <Grid>
+          <Grid cellSize="14rem">
             {artworks.map((artwork) => {
               const [image] = artwork.images;
 

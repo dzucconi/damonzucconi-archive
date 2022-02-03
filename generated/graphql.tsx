@@ -477,7 +477,9 @@ export type ArtworksShowQuery = (
   ) }
 );
 
-export type ArtworksIndexQueryVariables = Exact<{ [key: string]: never; }>;
+export type ArtworksIndexQueryVariables = Exact<{
+  state?: Maybe<Array<Maybe<State>> | Maybe<State>>;
+}>;
 
 
 export type ArtworksIndexQuery = (
@@ -513,6 +515,21 @@ export type ArtworksTableQuery = (
   & { artworks: Array<(
     { __typename?: 'Artwork' }
     & Pick<Artwork, 'id' | 'slug' | 'title' | 'material' | 'year'>
+  )> }
+);
+
+export type WebsitesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type WebsitesQuery = (
+  { __typename?: 'Query' }
+  & { artworks: Array<(
+    { __typename?: 'Artwork' }
+    & Pick<Artwork, 'id'>
+    & { links: Array<(
+      { __typename?: 'Link' }
+      & Pick<Link, 'kind' | 'url'>
+    )> }
   )> }
 );
 
@@ -599,7 +616,7 @@ export const ArtworksShowQueryDocument = gql`
       width
       height
       url
-      placeholder: resized(width: 50, height: 50) {
+      placeholder: resized(width: 50, height: 50, blur: 10) {
         urls {
           src: _1x
         }
@@ -646,15 +663,15 @@ export type ArtworksShowQueryHookResult = ReturnType<typeof useArtworksShowQuery
 export type ArtworksShowQueryLazyQueryHookResult = ReturnType<typeof useArtworksShowQueryLazyQuery>;
 export type ArtworksShowQueryQueryResult = Apollo.QueryResult<ArtworksShowQuery, ArtworksShowQueryVariables>;
 export const ArtworksIndexQueryDocument = gql`
-    query ArtworksIndexQuery {
-  artworks(state: [SELECTED]) {
+    query ArtworksIndexQuery($state: [State]) {
+  artworks(state: $state) {
     id
     slug
     title
     material
     year
     images(limit: 1, state: PUBLISHED) {
-      placeholder: resized(width: 50, height: 50) {
+      placeholder: resized(width: 50, height: 50, blur: 10) {
         urls {
           src: _1x
         }
@@ -685,6 +702,7 @@ export const ArtworksIndexQueryDocument = gql`
  * @example
  * const { data, loading, error } = useArtworksIndexQuery({
  *   variables: {
+ *      state: // value for 'state'
  *   },
  * });
  */
@@ -737,3 +755,41 @@ export function useArtworksTableQueryLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type ArtworksTableQueryHookResult = ReturnType<typeof useArtworksTableQuery>;
 export type ArtworksTableQueryLazyQueryHookResult = ReturnType<typeof useArtworksTableQueryLazyQuery>;
 export type ArtworksTableQueryQueryResult = Apollo.QueryResult<ArtworksTableQuery, ArtworksTableQueryVariables>;
+export const WebsitesQueryDocument = gql`
+    query WebsitesQuery {
+  artworks(state: [SELECTED, PUBLISHED]) {
+    id
+    links {
+      kind
+      url
+    }
+  }
+}
+    `;
+
+/**
+ * __useWebsitesQuery__
+ *
+ * To run a query within a React component, call `useWebsitesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWebsitesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWebsitesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useWebsitesQuery(baseOptions?: Apollo.QueryHookOptions<WebsitesQuery, WebsitesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WebsitesQuery, WebsitesQueryVariables>(WebsitesQueryDocument, options);
+      }
+export function useWebsitesQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WebsitesQuery, WebsitesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WebsitesQuery, WebsitesQueryVariables>(WebsitesQueryDocument, options);
+        }
+export type WebsitesQueryHookResult = ReturnType<typeof useWebsitesQuery>;
+export type WebsitesQueryLazyQueryHookResult = ReturnType<typeof useWebsitesQueryLazyQuery>;
+export type WebsitesQueryQueryResult = Apollo.QueryResult<WebsitesQuery, WebsitesQueryVariables>;
