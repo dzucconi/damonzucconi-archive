@@ -1,11 +1,11 @@
 import { Box, BoxProps, Cell as _Cell, Stack, StackProps } from "@auspices/eos";
-import { FC } from "react";
+import { AnchorHTMLAttributes, FC } from "react";
 import styled from "styled-components";
 
 type Definition = {
   term: string;
   definition?: string | number | null | Definition[];
-};
+} & AnchorHTMLAttributes<HTMLAnchorElement>;
 
 type DefinitionListProps = BoxProps & {
   definitions: Definition[];
@@ -20,7 +20,7 @@ export const DefinitionList: FC<DefinitionListProps> = ({
   return (
     <Box as="dl" {...rest}>
       <Stack width={nested ? undefined : "fit-content"}>
-        {definitions.map(({ term, definition }, index) => {
+        {definitions.map(({ term, definition, href, ...link }, index) => {
           if (!definition) return null;
 
           return (
@@ -36,9 +36,11 @@ export const DefinitionList: FC<DefinitionListProps> = ({
                   />
                 </Cell>
               ) : (
-                <Cell as="dd" flex="1">
-                  {definition}
-                </Cell>
+                <Box as="dd" flex="1">
+                  <Cell {...(href ? { as: "a", href, ...link } : {})}>
+                    {definition}
+                  </Cell>
+                </Box>
               )}
             </Stack>
           );
