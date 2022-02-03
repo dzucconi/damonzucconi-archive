@@ -181,9 +181,8 @@ export const ArtworksShowPage: React.FC = () => {
                     as="a"
                     href={attachment.url}
                     target="_blank"
-                    // fontSize={1}
-                    lineHeight={1.4}
-                    fontSize={22}
+                    lineHeight={2}
+                    fontSize={3}
                     color="external"
                   >
                     {attachment.title}
@@ -201,9 +200,8 @@ export const ArtworksShowPage: React.FC = () => {
                     as="a"
                     href={link.url}
                     target="_blank"
-                    // fontSize={1}
-                    lineHeight={1.4}
-                    fontSize={22}
+                    lineHeight={2}
+                    fontSize={3}
                     color="external"
                   >
                     {link.title}
@@ -217,10 +215,9 @@ export const ArtworksShowPage: React.FC = () => {
             <Box>
               <HTML
                 html={artwork.description}
-                my={6}
                 mx="auto"
-                lineHeight={1.4}
-                fontSize={22}
+                lineHeight={2}
+                fontSize={3}
                 maxWidth={["100%", "85%", "75%", "60%"]}
                 textAlign={
                   (artwork.descriptionPlain?.length ?? 0) > 99
