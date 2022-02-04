@@ -8,6 +8,7 @@ import { Spinner } from "../../components/core/Spinner";
 import { DefinitionList } from "../../components/core/DefinitionList";
 import { HTML, Stack, ResponsiveImage, Box, Grid, File } from "@auspices/eos";
 import styled from "styled-components";
+import { Back } from "../../components/core/Back";
 
 gql`
   query ExhibitionsShowQuery($id: ID!) {
@@ -89,19 +90,23 @@ const ExhibitionsShowPage = () => {
       </Head>
 
       <Stack spacing={8}>
-        <DefinitionList
-          definitions={[
-            { term: "Title", definition: exhibition.title },
-            {
-              term: "Venue",
-              definition: exhibition.venue,
-              href: exhibition.external_url!,
-              target: "_blank",
-            },
-            { term: "City", definition: exhibition.city },
-            { term: "Dates", definition: `${start} – ${end}` },
-          ]}
-        />
+        <Stack width="fit-content">
+          <Back />
+
+          <DefinitionList
+            definitions={[
+              { term: "Title", definition: exhibition.title },
+              {
+                term: "Venue",
+                definition: exhibition.venue,
+                href: exhibition.external_url!,
+                target: "_blank",
+              },
+              { term: "City", definition: exhibition.city },
+              { term: "Dates", definition: `${start} – ${end}` },
+            ]}
+          />
+        </Stack>
 
         {exhibition.description && (
           <Box>

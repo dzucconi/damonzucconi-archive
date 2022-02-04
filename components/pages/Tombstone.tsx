@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
-import { Stack, StackProps, Cell } from "@auspices/eos";
+import { StackProps } from "@auspices/eos";
 import React from "react";
-import styled from "styled-components";
 import { TombstoneArtworkFragment } from "../../generated/graphql";
 import { DefinitionList } from "../core/DefinitionList";
 

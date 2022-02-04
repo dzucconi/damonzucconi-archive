@@ -10,6 +10,7 @@ import {
   Ellipsis,
   PaneOption,
   Clickable,
+  Button,
 } from "@auspices/eos";
 import { Tombstone } from "../../components/pages/Tombstone";
 import { UrlBar } from "../../components/pages/UrlBar";
@@ -19,6 +20,7 @@ import { Embed } from "../../components/pages/Embed";
 import { Spinner } from "../../components/core/Spinner";
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { ReactElement } from "react";
+import { Back } from "../../components/core/Back";
 
 gql`
   query ArtworksShowQuery($id: ID!) {
@@ -105,7 +107,11 @@ export const ArtworksShowPage = () => {
       </Head>
 
       <Stack direction="vertical" spacing={8}>
-        <Tombstone artwork={artwork} />
+        <Stack width="fit-content">
+          <Back />
+
+          <Tombstone artwork={artwork} />
+        </Stack>
 
         {artwork.src && (
           <Stack direction="vertical" spacing={6}>
