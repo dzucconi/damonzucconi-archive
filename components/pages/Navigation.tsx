@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Stack, StackProps, Button, Box } from "@auspices/eos";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -9,8 +9,8 @@ const ITEMS = [
   { label: "Not Everything", href: "/" },
   { label: "Mostly Everything", href: "/artworks" },
   { label: "Only Websites", href: "/websites" },
-  { label: "Information", href: "/information" },
   { label: "Exhibitions", href: "/exhibitions" },
+  { label: "Information", href: "/information" },
 ];
 
 type NavigationProps = StackProps;
@@ -20,15 +20,8 @@ export const Navigation: FC<NavigationProps> = ({ ...rest }) => {
 
   const status = useApolloNetworkStatus();
 
-  const [key, setKey] = useState(Math.random());
-
-  // HACK: Prevent focus ring from remaining after disabling
-  const handleClick = () => {
-    setKey(Math.random());
-  };
-
   return (
-    <Stack key={key} width={["100%", "100%", "fit-content"]} {...rest}>
+    <Stack width={["100%", "100%", "fit-content"]} {...rest}>
       <Stack direction={["vertical", "vertical", "horizontal"]}>
         {ITEMS.map(({ label, href }) => {
           return (
@@ -40,8 +33,7 @@ export const Navigation: FC<NavigationProps> = ({ ...rest }) => {
                   py={2}
                   as="a"
                   width="100%"
-                  disabled={router.asPath === href}
-                  onClick={handleClick}
+                  textDecoration={router.asPath === href ? "underline" : "none"}
                 >
                   {label}
                 </Button>

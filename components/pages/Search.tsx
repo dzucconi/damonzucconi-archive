@@ -106,6 +106,9 @@ export const Search: FC<SearchProps> = ({
                     width="100%"
                     highlighted={index === i}
                     justifyContent="flex-start"
+                    fontSize={1}
+                    px={4}
+                    py={2}
                   >
                     {artwork.title}
                   </Button>

@@ -505,6 +505,38 @@ export type ExhibitionsIndexQuery = (
   )> }
 );
 
+export type ExhibitionsShowQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type ExhibitionsShowQuery = (
+  { __typename?: 'Query' }
+  & { exhibition: (
+    { __typename?: 'Exhibition' }
+    & Pick<Exhibition, 'title' | 'venue' | 'city' | 'year' | 'start_date' | 'end_date' | 'external_url' | 'description'>
+    & { start_year: Exhibition['start_date'], end_year: Exhibition['end_date'] }
+    & { images: Array<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'id' | 'width' | 'height' | 'url' | 'title' | 'description'>
+      & { placeholder: (
+        { __typename?: 'ResizedImage' }
+        & { urls: (
+          { __typename?: 'RetinaImage' }
+          & { src: RetinaImage['_1x'] }
+        ) }
+      ), display: (
+        { __typename?: 'ResizedImage' }
+        & Pick<ResizedImage, 'width' | 'height'>
+        & { srcs: (
+          { __typename?: 'RetinaImage' }
+          & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
+        ) }
+      ) }
+    )> }
+  ) }
+);
+
 export type ArtworksIndexQueryVariables = Exact<{
   state?: Maybe<Array<Maybe<State>> | Maybe<State>>;
 }>;
@@ -744,6 +776,72 @@ export function useExhibitionsIndexQueryLazyQuery(baseOptions?: Apollo.LazyQuery
 export type ExhibitionsIndexQueryHookResult = ReturnType<typeof useExhibitionsIndexQuery>;
 export type ExhibitionsIndexQueryLazyQueryHookResult = ReturnType<typeof useExhibitionsIndexQueryLazyQuery>;
 export type ExhibitionsIndexQueryQueryResult = Apollo.QueryResult<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>;
+export const ExhibitionsShowQueryDocument = gql`
+    query ExhibitionsShowQuery($id: ID!) {
+  exhibition(id: $id) {
+    title
+    venue
+    city
+    year
+    start_date(format: "%B %e")
+    end_date(format: "%B %e")
+    start_year: start_date(format: "%Y")
+    end_year: end_date(format: "%Y")
+    external_url
+    description(format: HTML)
+    images(state: [SELECTED, PUBLISHED]) {
+      id
+      width
+      height
+      url
+      title
+      description
+      placeholder: resized(width: 50, height: 50, blur: 10) {
+        urls {
+          src: _1x
+        }
+      }
+      display: resized(width: 200, height: 200) {
+        width
+        height
+        srcs: urls {
+          _1x
+          _2x
+          _3x
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useExhibitionsShowQuery__
+ *
+ * To run a query within a React component, call `useExhibitionsShowQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExhibitionsShowQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExhibitionsShowQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useExhibitionsShowQuery(baseOptions: Apollo.QueryHookOptions<ExhibitionsShowQuery, ExhibitionsShowQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExhibitionsShowQuery, ExhibitionsShowQueryVariables>(ExhibitionsShowQueryDocument, options);
+      }
+export function useExhibitionsShowQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExhibitionsShowQuery, ExhibitionsShowQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExhibitionsShowQuery, ExhibitionsShowQueryVariables>(ExhibitionsShowQueryDocument, options);
+        }
+export type ExhibitionsShowQueryHookResult = ReturnType<typeof useExhibitionsShowQuery>;
+export type ExhibitionsShowQueryLazyQueryHookResult = ReturnType<typeof useExhibitionsShowQueryLazyQuery>;
+export type ExhibitionsShowQueryQueryResult = Apollo.QueryResult<ExhibitionsShowQuery, ExhibitionsShowQueryVariables>;
 export const ArtworksIndexQueryDocument = gql`
     query ArtworksIndexQuery($state: [State]) {
   artworks(state: $state) {

@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { useRouter } from "next/dist/client/router";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import {
   Box,
@@ -105,6 +105,8 @@ export const ArtworksShowPage = () => {
       </Head>
 
       <Stack direction="vertical" spacing={8}>
+        <Tombstone artwork={artwork} />
+
         {artwork.src && (
           <Stack direction="vertical" spacing={6}>
             <Box position="relative">
@@ -232,8 +234,6 @@ export const ArtworksShowPage = () => {
             />
           </Box>
         )}
-
-        <Tombstone artwork={artwork} />
       </Stack>
     </>
   );
@@ -245,6 +245,7 @@ ArtworksShowPage.getLayout = (page: ReactElement) => (
 
 export default ArtworksShowPage;
 
+// TODO: Extract
 const Figure = styled(Box).attrs({ as: "figure" })`
   button {
     opacity: 0;

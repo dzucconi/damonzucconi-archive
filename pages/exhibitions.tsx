@@ -54,7 +54,7 @@ const ExhibitionsIndexPage = () => {
   return (
     <>
       <Head>
-        <title>Loading | Damon Zucconi</title>
+        <title>Exhibitions | Damon Zucconi</title>
       </Head>
 
       <Stack spacing={6}>
