@@ -1,7 +1,9 @@
 # damonzucconi-archive
 
-## Getting Started
+## Meta
 
-```bash
-yarn dev
-```
+- **State**: development
+- **Production**:
+  - **URL**: https://damonzucconi-archive-dzucconi.vercel.app/
+- **Host**: https://vercel.com/dzucconi/damonzucconi-archive
+- **Deploys**: Merged PRs to `dzucconi/damonzucconi-archive#master` are automatically deployed to production.
