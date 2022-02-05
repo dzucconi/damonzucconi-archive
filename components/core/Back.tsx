@@ -2,12 +2,16 @@ import { Button, ButtonProps } from "@auspices/eos";
 import { useRouter } from "next/router";
 import { FC } from "react";
 
-export const Back: FC<ButtonProps> = (props) => {
+type BackProps = ButtonProps & {
+  href?: string;
+};
+
+export const Back: FC<BackProps> = ({ href = "/", ...rest }) => {
   const router = useRouter();
 
   const handleClick = () => {
     if (window.history.state.idx === 0) {
-      router.push("/");
+      router.push(href);
       return;
     }
 
@@ -15,7 +19,7 @@ export const Back: FC<ButtonProps> = (props) => {
   };
 
   return (
-    <Button fontSize={1} px={3} py={2} onClick={handleClick} {...props}>
+    <Button fontSize={1} px={3} py={2} onClick={handleClick} {...rest}>
       ←
     </Button>
   );

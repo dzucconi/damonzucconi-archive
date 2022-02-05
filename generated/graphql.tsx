@@ -409,6 +409,25 @@ export type UpdateArtworkMutationPayload = {
   clientMutationId?: Maybe<Scalars['String']>;
 };
 
+export type Figure_ImageFragment = (
+  { __typename?: 'Image' }
+  & Pick<Image, 'id' | 'width' | 'height' | 'url' | 'title' | 'description'>
+  & { placeholder: (
+    { __typename?: 'ResizedImage' }
+    & { urls: (
+      { __typename?: 'RetinaImage' }
+      & { src: RetinaImage['_1x'] }
+    ) }
+  ), display: (
+    { __typename?: 'ResizedImage' }
+    & Pick<ResizedImage, 'width' | 'height'>
+    & { srcs: (
+      { __typename?: 'RetinaImage' }
+      & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
+    ) }
+  ) }
+);
+
 export type SearchQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -418,6 +437,25 @@ export type SearchQuery = (
     { __typename?: 'Artwork' }
     & Pick<Artwork, 'id' | 'slug' | 'title'>
   )> }
+);
+
+export type Thumbnail_ImageFragment = (
+  { __typename?: 'Image' }
+  & Pick<Image, 'width' | 'height' | 'title' | 'description' | 'url'>
+  & { placeholder: (
+    { __typename?: 'ResizedImage' }
+    & { urls: (
+      { __typename?: 'RetinaImage' }
+      & { src: RetinaImage['_1x'] }
+    ) }
+  ), thumb: (
+    { __typename?: 'ResizedImage' }
+    & Pick<ResizedImage, 'width' | 'height'>
+    & { srcs: (
+      { __typename?: 'RetinaImage' }
+      & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
+    ) }
+  ) }
 );
 
 export type TombstoneArtworkFragment = (
@@ -457,21 +495,9 @@ export type ArtworksShowQuery = (
       & Pick<Embed, 'id' | 'html'>
     )>, images: Array<(
       { __typename?: 'Image' }
-      & Pick<Image, 'id' | 'width' | 'height' | 'url'>
-      & { placeholder: (
-        { __typename?: 'ResizedImage' }
-        & { urls: (
-          { __typename?: 'RetinaImage' }
-          & { src: RetinaImage['_1x'] }
-        ) }
-      ), display: (
-        { __typename?: 'ResizedImage' }
-        & Pick<ResizedImage, 'width' | 'height'>
-        & { srcs: (
-          { __typename?: 'RetinaImage' }
-          & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
-        ) }
-      ) }
+      & Pick<Image, 'id'>
+      & Figure_ImageFragment
+      & Thumbnail_ImageFragment
     )> }
     & TombstoneArtworkFragment
   ) }
@@ -518,21 +544,8 @@ export type ExhibitionsShowQuery = (
     & { start_year: Exhibition['start_date'], end_year: Exhibition['end_date'] }
     & { images: Array<(
       { __typename?: 'Image' }
-      & Pick<Image, 'id' | 'width' | 'height' | 'url' | 'title' | 'description'>
-      & { placeholder: (
-        { __typename?: 'ResizedImage' }
-        & { urls: (
-          { __typename?: 'RetinaImage' }
-          & { src: RetinaImage['_1x'] }
-        ) }
-      ), display: (
-        { __typename?: 'ResizedImage' }
-        & Pick<ResizedImage, 'width' | 'height'>
-        & { srcs: (
-          { __typename?: 'RetinaImage' }
-          & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
-        ) }
-      ) }
+      & Pick<Image, 'id'>
+      & Thumbnail_ImageFragment
     )> }
   ) }
 );
@@ -593,6 +606,53 @@ export type WebsitesQuery = (
   )> }
 );
 
+export const Figure_ImageFragmentDoc = gql`
+    fragment Figure_image on Image {
+  id
+  width
+  height
+  url
+  title
+  description
+  placeholder: resized(width: 50, height: 50, blur: 10) {
+    urls {
+      src: _1x
+    }
+  }
+  display: resized(width: 1200, height: 1200) {
+    width
+    height
+    srcs: urls {
+      _1x
+      _2x
+      _3x
+    }
+  }
+}
+    `;
+export const Thumbnail_ImageFragmentDoc = gql`
+    fragment Thumbnail_image on Image {
+  width
+  height
+  title
+  description
+  url
+  placeholder: resized(width: 50, height: 50, blur: 10) {
+    urls {
+      src: _1x
+    }
+  }
+  thumb: resized(width: 200, height: 200) {
+    width
+    height
+    srcs: urls {
+      _1x
+      _2x
+      _3x
+    }
+  }
+}
+    `;
 export const TombstoneArtworkFragmentDoc = gql`
     fragment TombstoneArtworkFragment on Artwork {
   title
@@ -673,27 +733,14 @@ export const ArtworksShowQueryDocument = gql`
     }
     images(state: PUBLISHED) {
       id
-      width
-      height
-      url
-      placeholder: resized(width: 50, height: 50, blur: 10) {
-        urls {
-          src: _1x
-        }
-      }
-      display: resized(width: 1200, height: 1200) {
-        width
-        height
-        srcs: urls {
-          _1x
-          _2x
-          _3x
-        }
-      }
+      ...Figure_image
+      ...Thumbnail_image
     }
   }
 }
-    ${TombstoneArtworkFragmentDoc}`;
+    ${TombstoneArtworkFragmentDoc}
+${Figure_ImageFragmentDoc}
+${Thumbnail_ImageFragmentDoc}`;
 
 /**
  * __useArtworksShowQuery__
@@ -791,29 +838,11 @@ export const ExhibitionsShowQueryDocument = gql`
     description(format: HTML)
     images(state: [SELECTED, PUBLISHED]) {
       id
-      width
-      height
-      url
-      title
-      description
-      placeholder: resized(width: 50, height: 50, blur: 10) {
-        urls {
-          src: _1x
-        }
-      }
-      display: resized(width: 200, height: 200) {
-        width
-        height
-        srcs: urls {
-          _1x
-          _2x
-          _3x
-        }
-      }
+      ...Thumbnail_image
     }
   }
 }
-    `;
+    ${Thumbnail_ImageFragmentDoc}`;
 
 /**
  * __useExhibitionsShowQuery__
