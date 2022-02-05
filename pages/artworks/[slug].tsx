@@ -1,26 +1,17 @@
 import { gql } from "@apollo/client";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import {
-  Box,
-  Stack,
-  ResponsiveImage,
-  HTML,
-  Dropdown,
-  Ellipsis,
-  PaneOption,
-  Clickable,
-  Button,
-} from "@auspices/eos";
+import { Box, Stack, HTML, Grid } from "@auspices/eos";
 import { Tombstone } from "../../components/pages/Tombstone";
 import { UrlBar } from "../../components/pages/UrlBar";
 import { useArtworksShowQuery } from "../../generated/graphql";
-import styled from "styled-components";
 import { Embed } from "../../components/pages/Embed";
 import { Spinner } from "../../components/core/Spinner";
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { ReactElement } from "react";
 import { Back } from "../../components/core/Back";
+import { Figure } from "../../components/pages/Figure";
+import { Thumbnail } from "../../components/pages/Thumbnail";
 
 gql`
   query ArtworksShowQuery($id: ID!) {
@@ -49,23 +40,8 @@ gql`
       }
       images(state: PUBLISHED) {
         id
-        width
-        height
-        url
-        placeholder: resized(width: 50, height: 50, blur: 10) {
-          urls {
-            src: _1x
-          }
-        }
-        display: resized(width: 1200, height: 1200) {
-          width
-          height
-          srcs: urls {
-            _1x
-            _2x
-            _3x
-          }
-        }
+        ...Figure_image
+        ...Thumbnail_image
       }
     }
   }
@@ -146,47 +122,21 @@ export const ArtworksShowPage = () => {
           </Stack>
         )}
 
-        {["default", "canonical"].includes(artwork.intent) &&
-          artwork.images.length > 0 && (
-            <Stack direction="vertical" spacing={6}>
-              {artwork.images.map((image) => {
-                return (
-                  <Figure key={image.id}>
-                    <ResponsiveImage
-                      indicator
-                      placeholder={image.placeholder.urls.src}
-                      srcs={[
-                        image.display.srcs._1x,
-                        image.display.srcs._2x,
-                        image.display.srcs._3x,
-                      ]}
-                      aspectWidth={image.display.width}
-                      aspectHeight={image.display.height}
-                      maxWidth={image.display.width}
-                      maxHeight={image.display.height}
-                      alt={artwork.title}
-                    >
-                      <Dropdown
-                        label={
-                          <Clickable bg="background" p={3}>
-                            <Ellipsis />
-                          </Clickable>
-                        }
-                        position="absolute"
-                        zIndex={1}
-                        top={5}
-                        right={5}
-                      >
-                        <PaneOption as="a" href={image.url} target="_blank">
-                          Download image @{image.width}&times;{image.height}
-                        </PaneOption>
-                      </Dropdown>
-                    </ResponsiveImage>
-                  </Figure>
-                );
-              })}
-            </Stack>
-          )}
+        {artwork.intent === "default" && artwork.images.length > 0 && (
+          <Stack direction="vertical" spacing={6}>
+            {artwork.images.map((image) => {
+              return <Figure key={image.id} image={image} />;
+            })}
+          </Stack>
+        )}
+
+        {artwork.intent === "canonical" && artwork.images.length > 0 && (
+          <Grid cellSize="14rem">
+            {artwork.images.map((image) => {
+              return <Thumbnail key={image.id} image={image} />;
+            })}
+          </Grid>
+        )}
 
         {artwork.attachments.length > 0 && (
           <Stack direction="vertical" spacing={2} textAlign="center">
@@ -250,17 +200,3 @@ ArtworksShowPage.getLayout = (page: ReactElement) => (
 );
 
 export default ArtworksShowPage;
-
-// TODO: Extract
-const Figure = styled(Box).attrs({ as: "figure" })`
-  button {
-    opacity: 0;
-    transition: 100ms opacity;
-  }
-
-  &:hover {
-    button {
-      opacity: 1;
-    }
-  }
-`;

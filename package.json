@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.5.8",
-    "@auspices/eos": "2.26.0",
+    "@auspices/eos": "2.27.1",
     "@graphql-codegen/cli": "^1.19.0",
     "@graphql-codegen/typescript-operations": "^1.17.8",
     "@graphql-codegen/typescript-react-apollo": "^2.0.7",
@@ -18,6 +18,7 @@
     "@styled-system/theme-get": "^5.1.2",
     "graphql": "^15.3.0",
     "next": "12.0.9",
+    "openseadragon": "^3.0.0",
     "proportional-scale": "^4.0.0",
     "react": "17.0.2",
     "react-apollo-network-status": "^5.1.0",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@types/node": "^14.14.3",
+    "@types/openseadragon": "^3.0.0",
     "@types/react": "^16.9.53",
     "@types/react-transition-group": "^4.4.0",
     "@types/styled-components": "^5.1.4",

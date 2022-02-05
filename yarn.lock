@@ -27,10 +27,10 @@
   dependencies:
     tslib "~2.0.1"
 
-"@auspices/eos@2.26.0":
-  version "2.26.0"
-  resolved "https://registry.yarnpkg.com/@auspices/eos/-/eos-2.26.0.tgz#5b4e0dc80acc2a10ea4474457bbf6dc1df2e3f2f"
-  integrity sha512-i4xc2aKYW1PI7msJBe5ZbTyb9ARBoSrLpFXKaWKxV3OQmWGEp1S6TkyGl/yCWLzzbtu7RaaVZ3iZ+Cwu30CMuA==
+"@auspices/eos@2.27.1":
+  version "2.27.1"
+  resolved "https://registry.yarnpkg.com/@auspices/eos/-/eos-2.27.1.tgz#0ed13a7912a38c602411af93a0780df7fabadeaa"
+  integrity sha512-/vX6jKQmt1y6DIyqYAYzlA/a8NjFOmqV+wlqeJOBepERcbwqXTO+qKK6pstcr4tlTMYsrwnAiNIVPJf0hUxCkA==
   dependencies:
     "@popperjs/core" "^2.6.0"
     "@seznam/compose-react-refs" "^1.0.5"
@@ -1198,6 +1198,11 @@
   version "14.18.9"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.9.tgz#0e5944eefe2b287391279a19b407aa98bd14436d"
   integrity sha512-j11XSuRuAlft6vLDEX4RvhqC0KxNxx6QIyMXNb0vHHSNPXTPeiy3algESWmOOIzEtiEL0qiowPU3ewW9hHVa7Q==
+
+"@types/openseadragon@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/openseadragon/-/openseadragon-3.0.0.tgz#152c877f034e96a28e19c977d3fdc0895dace388"
+  integrity sha512-jN9pQmxEgGkld3lqKeyQLBLK40JJYl1r4zzHSzZF1BXVKDY6L4MKtKfnU5vOb0/DCL6GIJnIKsnkvr0Xdo20QA==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -3219,6 +3224,11 @@ onetime@^5.1.0:
   integrity sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==
   dependencies:
     mimic-fn "^2.1.0"
+
+openseadragon@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/openseadragon/-/openseadragon-3.0.0.tgz#efaf47514eac24637e27482217d2e9fc3a3441de"
+  integrity sha512-IIl90uMZ8mi+W4IWJ0W6/xyz2SCcHeEMT6U5dcAN7UYJYAXWLYbmu3diWzoz4KE0JvMXbXC5wjRoACdTVrgaog==
 
 optimism@^0.16.1:
   version "0.16.1"

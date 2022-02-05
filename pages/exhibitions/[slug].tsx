@@ -6,9 +6,9 @@ import { useExhibitionsShowQuery } from "../../generated/graphql";
 import Head from "next/head";
 import { Spinner } from "../../components/core/Spinner";
 import { DefinitionList } from "../../components/core/DefinitionList";
-import { HTML, Stack, ResponsiveImage, Box, Grid, File } from "@auspices/eos";
-import styled from "styled-components";
+import { HTML, Stack, Box, Grid } from "@auspices/eos";
 import { Back } from "../../components/core/Back";
+import { Thumbnail } from "../../components/pages/Thumbnail";
 
 gql`
   query ExhibitionsShowQuery($id: ID!) {
@@ -25,25 +25,7 @@ gql`
       description(format: HTML)
       images(state: [SELECTED, PUBLISHED]) {
         id
-        width
-        height
-        url
-        title
-        description
-        placeholder: resized(width: 50, height: 50, blur: 10) {
-          urls {
-            src: _1x
-          }
-        }
-        display: resized(width: 200, height: 200) {
-          width
-          height
-          srcs: urls {
-            _1x
-            _2x
-            _3x
-          }
-        }
+        ...Thumbnail_image
       }
     }
   }
@@ -91,7 +73,7 @@ const ExhibitionsShowPage = () => {
 
       <Stack spacing={8}>
         <Stack width="fit-content">
-          <Back />
+          <Back href="/exhibitions" />
 
           <DefinitionList
             definitions={[
@@ -123,30 +105,7 @@ const ExhibitionsShowPage = () => {
         {exhibition.images.length > 0 && (
           <Grid cellSize="14rem">
             {exhibition.images.map((image) => {
-              return (
-                <File
-                  name={image.title!}
-                  meta={image.description!}
-                  selected
-                  // @ts-ignore
-                  as="a"
-                >
-                  <ResponsiveImage
-                    placeholder={image.placeholder.urls.src}
-                    srcs={[
-                      image.display.srcs._1x,
-                      image.display.srcs._2x,
-                      image.display.srcs._3x,
-                    ]}
-                    aspectWidth={image.display.width}
-                    aspectHeight={image.display.height}
-                    maxWidth={image.display.width}
-                    maxHeight={image.display.height}
-                    alt={exhibition.title ?? ""}
-                    loading="lazy"
-                  />
-                </File>
-              );
+              return <Thumbnail key={image.id} image={image} />;
             })}
           </Grid>
         )}
@@ -160,17 +119,3 @@ export default ExhibitionsShowPage;
 ExhibitionsShowPage.getLayout = (page: ReactElement) => (
   <PageLayout>{page}</PageLayout>
 );
-
-// TODO: Extract
-const Figure = styled(Box).attrs({ as: "figure" })`
-  button {
-    opacity: 0;
-    transition: 100ms opacity;
-  }
-
-  &:hover {
-    button {
-      opacity: 1;
-    }
-  }
-`;

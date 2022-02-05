@@ -83,7 +83,6 @@ const ArtworksIndexPage = () => {
                 <File
                   name={artwork.title}
                   meta={`${artwork.year}`}
-                  selected
                   // @ts-ignore
                   as="a"
                 >
