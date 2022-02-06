@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.5.8",
-    "@auspices/eos": "2.27.1",
+    "@auspices/eos": "2.28.0",
     "@graphql-codegen/cli": "^1.19.0",
     "@graphql-codegen/typescript-operations": "^1.17.8",
     "@graphql-codegen/typescript-react-apollo": "^2.0.7",

@@ -57,7 +57,6 @@ export const Thumbnail: FC<ThumbnailProps> = ({ image }) => {
 
       <Box
         width="100%"
-        maxWidth={250}
         position="relative"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
