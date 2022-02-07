@@ -5,6 +5,7 @@ import { Cell, Stack } from "@auspices/eos";
 import { Table } from "../components/core/Table";
 import { useArtworksTableQuery } from "../generated/graphql";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
+import { Spinner } from "../components/core/Spinner";
 
 gql`
   query ArtworksTableQuery {
@@ -27,9 +28,13 @@ const ArtworksTablePage = () => {
 
   if (loading || !data) {
     return (
-      <Head>
-        <title>Loading | Damon Zucconi</title>
-      </Head>
+      <>
+        <Head>
+          <title>Loading | Damon Zucconi</title>
+        </Head>
+
+        <Spinner />
+      </>
     );
   }
 

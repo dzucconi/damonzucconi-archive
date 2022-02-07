@@ -4,6 +4,7 @@ import { useExhibitionsIndexQuery } from "../generated/graphql";
 import { EmptyFrame, File, Grid, ResponsiveImage, Stack } from "@auspices/eos";
 import Link from "next/link";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
+import { Spinner } from "../components/core/Spinner";
 
 gql`
   query ExhibitionsIndexQuery {
@@ -42,9 +43,13 @@ const ExhibitionsIndexPage = () => {
 
   if (loading || !data) {
     return (
-      <Head>
-        <title>Loading | Damon Zucconi</title>
-      </Head>
+      <>
+        <Head>
+          <title>Loading | Damon Zucconi</title>
+        </Head>
+
+        <Spinner />
+      </>
     );
   }
 

@@ -6,6 +6,7 @@ import { State, useArtworksIndexQuery } from "../generated/graphql";
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
+import { Spinner } from "../components/core/Spinner";
 
 gql`
   query ArtworksIndexQuery($state: [State]) {
@@ -56,6 +57,8 @@ const ArtworksIndexPage = () => {
         <Head>
           <title>Loading | Damon Zucconi</title>
         </Head>
+
+        <Spinner />
       </>
     );
   }

@@ -4,6 +4,7 @@ import { gql } from "@apollo/client";
 import { useWebsitesQuery } from "../generated/graphql";
 import { prettifyUrl } from "../lib/prettifyUrl";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
+import { Spinner } from "../components/core/Spinner";
 
 gql`
   query WebsitesQuery {
@@ -26,9 +27,13 @@ const WebsitesPage = () => {
 
   if (loading || !data) {
     return (
-      <Head>
-        <title>Loading | Damon Zucconi</title>
-      </Head>
+      <>
+        <Head>
+          <title>Loading | Damon Zucconi</title>
+        </Head>
+
+        <Spinner />
+      </>
     );
   }
 

@@ -1,8 +1,9 @@
 import { gql } from "@apollo/client";
-import { Box, color, Stack, Truncate } from "@auspices/eos";
+import { Box, color, Stack } from "@auspices/eos";
 import Head from "next/head";
 import styled from "styled-components";
 import { Cell } from "../components/core/DefinitionList";
+import { Spinner } from "../components/core/Spinner";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { useCvPageQuery } from "../generated/graphql";
 
@@ -38,9 +39,13 @@ export const CvPage = () => {
 
   if (loading || !data) {
     return (
-      <Head>
-        <title>Loading | Damon Zucconi</title>
-      </Head>
+      <>
+        <Head>
+          <title>Loading | Damon Zucconi</title>
+        </Head>
+
+        <Spinner />
+      </>
     );
   }
 
