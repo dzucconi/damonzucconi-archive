@@ -2,7 +2,6 @@ import Head from "next/head";
 import { Box, Button, Cell, Input, Stack } from "@auspices/eos";
 import { DefinitionList } from "../components/core/DefinitionList";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
-import { ReactElement } from "react";
 
 const InformationPage = () => {
   return (
@@ -82,7 +81,7 @@ const InformationPage = () => {
 
         <DefinitionList
           definitions={[
-            { term: "View", definition: "CV", href: "#TODO" },
+            { term: "View", definition: "CV", href: "/cv" },
             {
               term: "View",
               definition: "Studio",
@@ -177,8 +176,6 @@ const InformationPage = () => {
   );
 };
 
-InformationPage.getLayout = (page: ReactElement) => (
-  <NavigationLayout>{page}</NavigationLayout>
-);
+InformationPage.getLayout = NavigationLayout;
 
 export default InformationPage;

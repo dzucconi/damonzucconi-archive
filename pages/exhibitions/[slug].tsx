@@ -1,4 +1,3 @@
-import { ReactElement } from "react";
 import { gql } from "@apollo/client";
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { useRouter } from "next/router";
@@ -116,6 +115,4 @@ const ExhibitionsShowPage = () => {
 
 export default ExhibitionsShowPage;
 
-ExhibitionsShowPage.getLayout = (page: ReactElement) => (
-  <PageLayout>{page}</PageLayout>
-);
+ExhibitionsShowPage.getLayout = PageLayout;

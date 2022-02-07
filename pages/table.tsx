@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Cell, Stack } from "@auspices/eos";
 import { Table } from "../components/core/Table";
 import { useArtworksTableQuery } from "../generated/graphql";
-import { ReactElement } from "react";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 
 gql`
@@ -98,8 +97,6 @@ const ArtworksTablePage = () => {
   );
 };
 
-ArtworksTablePage.getLayout = (page: ReactElement) => (
-  <NavigationLayout>{page}</NavigationLayout>
-);
+ArtworksTablePage.getLayout = NavigationLayout;
 
 export default ArtworksTablePage;

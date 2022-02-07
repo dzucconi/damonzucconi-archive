@@ -120,8 +120,6 @@ const ArtworksIndexPage = () => {
   );
 };
 
-ArtworksIndexPage.getLayout = (page: ReactElement) => (
-  <NavigationLayout>{page}</NavigationLayout>
-);
+ArtworksIndexPage.getLayout = NavigationLayout;
 
 export default ArtworksIndexPage;

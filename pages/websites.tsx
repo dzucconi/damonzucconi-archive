@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { Box, Stack } from "@auspices/eos";
-import { ReactElement } from "react";
 import { gql } from "@apollo/client";
 import { useWebsitesQuery } from "../generated/graphql";
 import { prettifyUrl } from "../lib/prettifyUrl";
@@ -62,8 +61,6 @@ const WebsitesPage = () => {
   );
 };
 
-WebsitesPage.getLayout = (page: ReactElement) => (
-  <NavigationLayout>{page}</NavigationLayout>
-);
+WebsitesPage.getLayout = NavigationLayout;
 
 export default WebsitesPage;

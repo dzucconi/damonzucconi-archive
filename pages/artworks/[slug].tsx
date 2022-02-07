@@ -8,7 +8,6 @@ import { useArtworksShowQuery } from "../../generated/graphql";
 import { Embed } from "../../components/pages/Embed";
 import { Spinner } from "../../components/core/Spinner";
 import { PageLayout } from "../../components/layouts/PageLayout";
-import { ReactElement } from "react";
 import { Back } from "../../components/core/Back";
 import { Figure } from "../../components/pages/Figure";
 import { Thumbnail } from "../../components/pages/Thumbnail";
@@ -195,8 +194,6 @@ export const ArtworksShowPage = () => {
   );
 };
 
-ArtworksShowPage.getLayout = (page: ReactElement) => (
-  <PageLayout>{page}</PageLayout>
-);
+ArtworksShowPage.getLayout = PageLayout;
 
 export default ArtworksShowPage;

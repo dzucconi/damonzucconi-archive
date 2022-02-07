@@ -1,4 +1,3 @@
-import { ReactElement } from "react";
 import { gql } from "@apollo/client";
 import Head from "next/head";
 import { useExhibitionsIndexQuery } from "../generated/graphql";
@@ -111,8 +110,6 @@ const ExhibitionsIndexPage = () => {
   );
 };
 
-ExhibitionsIndexPage.getLayout = (page: ReactElement) => (
-  <NavigationLayout>{page}</NavigationLayout>
-);
+ExhibitionsIndexPage.getLayout = NavigationLayout;
 
 export default ExhibitionsIndexPage;
