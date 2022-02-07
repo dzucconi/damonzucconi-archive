@@ -27,21 +27,19 @@ export const DefinitionList: FC<DefinitionListProps> = ({
             <Stack direction="horizontal" key={index}>
               <Cell as="dt">{term}</Cell>
 
-              {typeof definition === "object" ? (
-                <Cell as="dd" flex="1" px={0} py={0} borderWidth={0}>
+              <Box as="dd" flex="1">
+                {typeof definition === "object" ? (
                   <DefinitionList
                     nested
                     width="100%"
                     definitions={definition}
                   />
-                </Cell>
-              ) : (
-                <Box as="dd" flex="1">
+                ) : (
                   <Cell {...(href ? { as: "a", href, ...link } : {})}>
                     {definition}
                   </Cell>
-                </Box>
-              )}
+                )}
+              </Box>
             </Stack>
           );
         })}
@@ -50,7 +48,7 @@ export const DefinitionList: FC<DefinitionListProps> = ({
   );
 };
 
-const Cell = styled(_Cell)``;
+export const Cell = styled(_Cell)``;
 
 Cell.defaultProps = {
   fontSize: 1,

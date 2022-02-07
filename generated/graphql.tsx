@@ -117,6 +117,39 @@ export type Attachment = {
   url: Scalars['String'];
 };
 
+/** Curriculum Vitae */
+export type Cv = {
+  __typename?: 'Cv';
+  categories: Array<CvCategory>;
+};
+
+/** A single category in the CV */
+export type CvCategory = {
+  __typename?: 'CvCategory';
+  name: Scalars['String'];
+  years: Array<CvYear>;
+};
+
+/** A single row in the CV */
+export type CvEntry = {
+  __typename?: 'CvEntry';
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  region?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  to_html: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  venue?: Maybe<Scalars['String']>;
+};
+
+/** A single year in the CV */
+export type CvYear = {
+  __typename?: 'CvYear';
+  entries: Array<CvEntry>;
+  year: Scalars['Int'];
+};
+
 /** Dimensions */
 export type Dimension = {
   __typename?: 'Dimension';
@@ -282,6 +315,7 @@ export type Query = {
   /** An artwork */
   artwork: Artwork;
   artworks: Array<Artwork>;
+  cv: Cv;
   /** An exhibition */
   exhibition: Exhibition;
   exhibitions: Array<Exhibition>;
@@ -500,6 +534,28 @@ export type ArtworksShowQuery = (
       & Thumbnail_ImageFragment
     )> }
     & TombstoneArtworkFragment
+  ) }
+);
+
+export type CvPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CvPageQuery = (
+  { __typename?: 'Query' }
+  & { cv: (
+    { __typename?: 'Cv' }
+    & { categories: Array<(
+      { __typename?: 'CvCategory' }
+      & Pick<CvCategory, 'name'>
+      & { years: Array<(
+        { __typename?: 'CvYear' }
+        & Pick<CvYear, 'year'>
+        & { entries: Array<(
+          { __typename?: 'CvEntry' }
+          & Pick<CvEntry, 'title' | 'city' | 'country' | 'notes' | 'region' | 'url' | 'venue' | 'to_html'>
+        )> }
+      )> }
+    )> }
   ) }
 );
 
@@ -769,6 +825,55 @@ export function useArtworksShowQueryLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type ArtworksShowQueryHookResult = ReturnType<typeof useArtworksShowQuery>;
 export type ArtworksShowQueryLazyQueryHookResult = ReturnType<typeof useArtworksShowQueryLazyQuery>;
 export type ArtworksShowQueryQueryResult = Apollo.QueryResult<ArtworksShowQuery, ArtworksShowQueryVariables>;
+export const CvPageQueryDocument = gql`
+    query CvPageQuery {
+  cv {
+    categories {
+      name
+      years {
+        year
+        entries {
+          title
+          city
+          country
+          notes
+          region
+          url
+          venue
+          to_html
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCvPageQuery__
+ *
+ * To run a query within a React component, call `useCvPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCvPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCvPageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCvPageQuery(baseOptions?: Apollo.QueryHookOptions<CvPageQuery, CvPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CvPageQuery, CvPageQueryVariables>(CvPageQueryDocument, options);
+      }
+export function useCvPageQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CvPageQuery, CvPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CvPageQuery, CvPageQueryVariables>(CvPageQueryDocument, options);
+        }
+export type CvPageQueryHookResult = ReturnType<typeof useCvPageQuery>;
+export type CvPageQueryLazyQueryHookResult = ReturnType<typeof useCvPageQueryLazyQuery>;
+export type CvPageQueryQueryResult = Apollo.QueryResult<CvPageQuery, CvPageQueryVariables>;
 export const ExhibitionsIndexQueryDocument = gql`
     query ExhibitionsIndexQuery {
   exhibitions(state: [SELECTED, PUBLISHED]) {
