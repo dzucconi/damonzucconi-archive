@@ -19,7 +19,14 @@ export const Back: FC<BackProps> = ({ href = "/", ...rest }) => {
   };
 
   return (
-    <Button fontSize={1} px={3} py={2} onClick={handleClick} {...rest}>
+    <Button
+      fontSize={1}
+      px={3}
+      py={2}
+      onClick={handleClick}
+      aria-label="Back"
+      {...rest}
+    >
       ←
     </Button>
   );
