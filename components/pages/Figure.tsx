@@ -11,6 +11,8 @@ import {
 import { FC } from "react";
 import styled from "styled-components";
 import { Figure_ImageFragment } from "../../generated/graphql";
+import { useHover } from "./useHover";
+import { ContextMenu } from "../core/ContextMenu";
 import { useZoom } from "../core/useZoom";
 
 gql`
@@ -43,45 +45,58 @@ type FigureProps = BoxProps & {
 };
 
 export const Figure: FC<FigureProps> = ({ image, ...rest }) => {
-  const { zoomComponent, openZoom } = useZoom({ src: image.url });
+  const { zoomComponent, openZoom: handleClick } = useZoom({ src: image.url });
+  const { mode, handleMouseEnter, handleMouseLeave, handleOpen, handleClose } =
+    useHover();
 
   return (
     <>
       {zoomComponent}
 
-      <Box {...rest}>
-        <Container onClick={openZoom}>
-          <ResponsiveImage
-            indicator
-            placeholder={image.placeholder.urls.src}
-            srcs={[
-              image.display.srcs._1x,
-              image.display.srcs._2x,
-              image.display.srcs._3x,
-            ]}
-            aspectWidth={image.display.width}
-            aspectHeight={image.display.height}
-            maxWidth={image.display.width}
-            maxHeight={image.display.height}
-            alt={image.title ?? image.description ?? ""}
-          >
-            <Dropdown
-              label={
-                <Clickable bg="background" p={3}>
-                  <Ellipsis />
-                </Clickable>
-              }
+      <Box
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        {...rest}
+      >
+        <ResponsiveImage
+          indicator
+          placeholder={image.placeholder.urls.src}
+          srcs={[
+            image.display.srcs._1x,
+            image.display.srcs._2x,
+            image.display.srcs._3x,
+          ]}
+          aspectWidth={image.display.width}
+          aspectHeight={image.display.height}
+          maxWidth={image.display.width}
+          maxHeight={image.display.height}
+          alt={image.title ?? image.description ?? ""}
+        >
+          <Clickable
+            onClick={handleClick}
+            position="absolute"
+            top={0}
+            left={0}
+            zIndex={1}
+            width="100%"
+            height="100%"
+            cursor="zoom-in"
+          />
+
+          {mode !== "Resting" && (
+            <ContextMenu
               position="absolute"
-              zIndex={1}
               top={5}
               right={5}
+              onOpen={handleOpen}
+              onClose={handleClose}
             >
               <PaneOption as="a" href={image.url} target="_blank">
                 Download image @{image.width}×{image.height}
               </PaneOption>
-            </Dropdown>
-          </ResponsiveImage>
-        </Container>
+            </ContextMenu>
+          )}
+        </ResponsiveImage>
       </Box>
     </>
   );

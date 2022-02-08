@@ -4,6 +4,7 @@ import { FC, useCallback, useRef, useState } from "react";
 import { Thumbnail_ImageFragment } from "../../generated/graphql";
 import { useZoom } from "../core/useZoom";
 import { ContextMenu } from "../core/ContextMenu";
+import { useHover } from "./useHover";
 
 gql`
   fragment Thumbnail_image on Image {
@@ -34,22 +35,9 @@ type ThumbnailProps = {
 };
 
 export const Thumbnail: FC<ThumbnailProps> = ({ image }) => {
-  const { zoomComponent, openZoom } = useZoom({ src: image.url });
-
-  const [mode, setMode] = useState<"Resting" | "Active" | "Open">("Resting");
-
-  const timer = useRef<ReturnType<typeof setTimeout>>();
-
-  const handleMouseEnter = useCallback(() => {
-    if (mode === "Open") return;
-    timer.current && clearTimeout(timer.current);
-    setMode("Active");
-  }, [mode]);
-
-  const handleMouseLeave = useCallback(() => {
-    if (mode === "Open") return;
-    timer.current = setTimeout(() => setMode("Resting"), 100);
-  }, [mode]);
+  const { zoomComponent, openZoom: handleClick } = useZoom({ src: image.url });
+  const { mode, handleMouseEnter, handleMouseLeave, handleOpen, handleClose } =
+    useHover();
 
   return (
     <>
@@ -62,7 +50,14 @@ export const Thumbnail: FC<ThumbnailProps> = ({ image }) => {
         onMouseLeave={handleMouseLeave}
       >
         {mode !== "Resting" && (
-          <ContextMenu position="absolute" top={3} right={3} zIndex={10}>
+          <ContextMenu
+            position="absolute"
+            top={3}
+            right={3}
+            zIndex={10}
+            onOpen={handleOpen}
+            onClose={handleClose}
+          >
             <PaneOption as="a" href={image.url} target="_blank">
               Download image @{image.width}×{image.height}
             </PaneOption>
@@ -73,7 +68,7 @@ export const Thumbnail: FC<ThumbnailProps> = ({ image }) => {
           position="static"
           name={image.title!}
           meta={image.description! || `${image.width}×${image.height}`}
-          onClick={openZoom}
+          onClick={handleClick}
           cursor="pointer"
         >
           <ResponsiveImage
