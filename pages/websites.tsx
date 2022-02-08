@@ -1,10 +1,10 @@
-import Head from "next/head";
 import { Box, Stack } from "@auspices/eos";
 import { gql } from "@apollo/client";
 import { useWebsitesQuery } from "../generated/graphql";
 import { prettifyUrl } from "../lib/prettifyUrl";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
-import { Spinner } from "../components/core/Spinner";
+import { Loading } from "../components/core/Loading";
+import { Meta } from "../components/core/Meta";
 
 gql`
   query WebsitesQuery {
@@ -26,15 +26,7 @@ const WebsitesPage = () => {
   }
 
   if (loading || !data) {
-    return (
-      <>
-        <Head>
-          <title>Loading | Damon Zucconi</title>
-        </Head>
-
-        <Spinner />
-      </>
-    );
+    return <Loading />;
   }
 
   const links = data.artworks
@@ -43,9 +35,7 @@ const WebsitesPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Only Websites | Damon Zucconi</title>
-      </Head>
+      <Meta title="Only Websites" />
 
       <Stack spacing={6}>
         {links.map((link) => (

@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
-import Head from "next/head";
 import { useExhibitionsIndexQuery } from "../generated/graphql";
 import { EmptyFrame, File, Grid, ResponsiveImage, Stack } from "@auspices/eos";
 import Link from "next/link";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
-import { Spinner } from "../components/core/Spinner";
+import { Loading } from "../components/core/Loading";
+import { Meta } from "../components/core/Meta";
 
 gql`
   query ExhibitionsIndexQuery {
@@ -42,24 +42,14 @@ const ExhibitionsIndexPage = () => {
   }
 
   if (loading || !data) {
-    return (
-      <>
-        <Head>
-          <title>Loading | Damon Zucconi</title>
-        </Head>
-
-        <Spinner />
-      </>
-    );
+    return <Loading />;
   }
 
   const { exhibitions } = data;
 
   return (
     <>
-      <Head>
-        <title>Exhibitions | Damon Zucconi</title>
-      </Head>
+      <Meta title="Exhibitions" />
 
       <Stack spacing={6}>
         <Grid cellSize="14rem">

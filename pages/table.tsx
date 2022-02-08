@@ -1,11 +1,11 @@
 import { gql } from "@apollo/client";
-import Head from "next/head";
 import Link from "next/link";
 import { Cell, Stack } from "@auspices/eos";
 import { Table } from "../components/core/Table";
 import { useArtworksTableQuery } from "../generated/graphql";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
-import { Spinner } from "../components/core/Spinner";
+import { Loading } from "../components/core/Loading";
+import { Meta } from "../components/core/Meta";
 
 gql`
   query ArtworksTableQuery {
@@ -27,24 +27,14 @@ const ArtworksTablePage = () => {
   }
 
   if (loading || !data) {
-    return (
-      <>
-        <Head>
-          <title>Loading | Damon Zucconi</title>
-        </Head>
-
-        <Spinner />
-      </>
-    );
+    return <Loading />;
   }
 
   const { artworks } = data;
 
   return (
     <>
-      <Head>
-        <title>Damon Zucconi</title>
-      </Head>
+      <Meta title="Damon Zucconi" />
 
       <>
         <Stack spacing={6}>

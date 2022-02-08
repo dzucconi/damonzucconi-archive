@@ -1,14 +1,12 @@
-import Head from "next/head";
 import { Box, Button, Cell, Input, Stack } from "@auspices/eos";
 import { DefinitionList } from "../components/core/DefinitionList";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
+import { Meta } from "../components/core/Meta";
 
 const InformationPage = () => {
   return (
     <>
-      <Head>
-        <title>Information | Damon Zucconi</title>
-      </Head>
+      <Meta title="Information" />
 
       <Stack spacing={6}>
         <DefinitionList

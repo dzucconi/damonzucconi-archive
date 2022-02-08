@@ -1,12 +1,11 @@
 import { gql } from "@apollo/client";
-import Head from "next/head";
 import Link from "next/link";
 import { EmptyFrame, File, Grid, ResponsiveImage, Stack } from "@auspices/eos";
 import { State, useArtworksIndexQuery } from "../generated/graphql";
 import { useRouter } from "next/router";
-import { ReactElement } from "react";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
-import { Spinner } from "../components/core/Spinner";
+import { Loading } from "../components/core/Loading";
+import { Meta } from "../components/core/Meta";
 
 gql`
   query ArtworksIndexQuery($state: [State]) {
@@ -52,24 +51,14 @@ const ArtworksIndexPage = () => {
   }
 
   if (loading || !data) {
-    return (
-      <>
-        <Head>
-          <title>Loading | Damon Zucconi</title>
-        </Head>
-
-        <Spinner />
-      </>
-    );
+    return <Loading />;
   }
 
   const { artworks } = data;
 
   return (
     <>
-      <Head>
-        <title>Damon Zucconi</title>
-      </Head>
+      <Meta title="Damon Zucconi" />
 
       <Stack spacing={6}>
         <Grid cellSize="14rem">

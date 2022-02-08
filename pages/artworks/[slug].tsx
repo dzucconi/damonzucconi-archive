@@ -1,16 +1,16 @@
 import { gql } from "@apollo/client";
 import { useRouter } from "next/router";
-import Head from "next/head";
 import { Box, Stack, HTML, Grid } from "@auspices/eos";
 import { Tombstone } from "../../components/pages/Tombstone";
 import { UrlBar } from "../../components/pages/UrlBar";
 import { useArtworksShowQuery } from "../../generated/graphql";
 import { Embed } from "../../components/pages/Embed";
-import { Spinner } from "../../components/core/Spinner";
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { Back } from "../../components/core/Back";
 import { Figure } from "../../components/pages/Figure";
 import { Thumbnail } from "../../components/pages/Thumbnail";
+import { Loading } from "../../components/core/Loading";
+import { Meta } from "../../components/core/Meta";
 
 gql`
   query ArtworksShowQuery($id: ID!) {
@@ -60,26 +60,14 @@ export const ArtworksShowPage = () => {
   }
 
   if (loading || !data) {
-    return (
-      <>
-        <Head>
-          <title>Loading | Damon Zucconi</title>
-        </Head>
-
-        <Spinner />
-      </>
-    );
+    return <Loading />;
   }
 
   const { artwork } = data;
 
   return (
     <>
-      <Head>
-        <title>
-          {artwork.title} ({artwork.year}); Damon Zucconi
-        </title>
-      </Head>
+      <Meta title={`${artwork.title} (${artwork.year})`} />
 
       <Stack direction="vertical" spacing={8}>
         <Stack width="fit-content">

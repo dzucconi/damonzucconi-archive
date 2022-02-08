@@ -2,12 +2,12 @@ import { gql } from "@apollo/client";
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { useRouter } from "next/router";
 import { useExhibitionsShowQuery } from "../../generated/graphql";
-import Head from "next/head";
-import { Spinner } from "../../components/core/Spinner";
 import { DefinitionList } from "../../components/core/DefinitionList";
 import { HTML, Stack, Box, Grid } from "@auspices/eos";
 import { Back } from "../../components/core/Back";
 import { Thumbnail } from "../../components/pages/Thumbnail";
+import { Loading } from "../../components/core/Loading";
+import { Meta } from "../../components/core/Meta";
 
 gql`
   query ExhibitionsShowQuery($id: ID!) {
@@ -44,15 +44,7 @@ const ExhibitionsShowPage = () => {
   }
 
   if (loading || !data) {
-    return (
-      <>
-        <Head>
-          <title>Loading | Damon Zucconi</title>
-        </Head>
-
-        <Spinner />
-      </>
-    );
+    return <Loading />;
   }
 
   const { exhibition } = data;
@@ -66,9 +58,7 @@ const ExhibitionsShowPage = () => {
 
   return (
     <>
-      <Head>
-        <title>{exhibition.title} | Damon Zucconi</title>
-      </Head>
+      <Meta title={`${exhibition.title} (${exhibition.year})`} />
 
       <Stack spacing={8}>
         <Stack width="fit-content">
