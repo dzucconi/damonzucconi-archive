@@ -1,4 +1,5 @@
-import { Box, BoxProps, Cell as _Cell, Stack, StackProps } from "@auspices/eos";
+import { Box, BoxProps, Cell as _Cell, Stack } from "@auspices/eos";
+import Link from "next/link";
 import { AnchorHTMLAttributes, FC } from "react";
 import styled from "styled-components";
 
@@ -23,22 +24,44 @@ export const DefinitionList: FC<DefinitionListProps> = ({
         {definitions.map(({ term, definition, href, ...link }, index) => {
           if (!definition) return null;
 
+          const isNested = typeof definition === "object";
+          const isExternal = href && href.startsWith("http");
+          const isInternal = href && href.startsWith("/");
+
           return (
             <Stack direction="horizontal" key={index}>
               <Cell as="dt">{term}</Cell>
 
               <Box as="dd" flex="1">
-                {typeof definition === "object" ? (
-                  <DefinitionList
-                    nested
-                    width="100%"
-                    definitions={definition}
-                  />
-                ) : (
-                  <Cell {...(href ? { as: "a", href, ...link } : {})}>
-                    {definition}
-                  </Cell>
-                )}
+                {(() => {
+                  if (isNested) {
+                    return (
+                      <DefinitionList
+                        nested
+                        width="100%"
+                        definitions={definition}
+                      />
+                    );
+                  }
+
+                  if (isExternal) {
+                    return (
+                      <Cell as="a" href={href} {...link}>
+                        {definition}
+                      </Cell>
+                    );
+                  }
+
+                  if (isInternal) {
+                    return (
+                      <Link href={href} passHref>
+                        <Cell as="a">{definition}</Cell>
+                      </Link>
+                    );
+                  }
+
+                  return <Cell>{definition}</Cell>;
+                })()}
               </Box>
             </Stack>
           );
