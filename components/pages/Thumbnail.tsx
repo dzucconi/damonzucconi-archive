@@ -6,7 +6,7 @@ import { useZoom } from "../core/useZoom";
 import { ContextMenu } from "../core/ContextMenu";
 import { useHover } from "./useHover";
 
-gql`
+export const THUMBNAIL_IMAGE_FRAGMENT = gql`
   fragment Thumbnail_image on Image {
     width
     height

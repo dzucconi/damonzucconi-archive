@@ -1,11 +1,11 @@
 import { gql } from "@apollo/client";
 import { StackProps } from "@auspices/eos";
 import React from "react";
-import { TombstoneArtworkFragment } from "../../generated/graphql";
+import { Tombstone_artwork } from "../../generated/graphql";
 import { DefinitionList } from "../core/DefinitionList";
 
-gql`
-  fragment TombstoneArtworkFragment on Artwork {
+export const TOMBSTONE_ARTWORK_FRAGMENT = gql`
+  fragment Tombstone_artwork on Artwork {
     title
     material
     duration
@@ -23,7 +23,7 @@ gql`
 `;
 
 export type TombstoneProps = StackProps & {
-  artwork: TombstoneArtworkFragment;
+  artwork: Tombstone_artwork;
 };
 
 export const Tombstone: React.FC<TombstoneProps> = ({ artwork, ...rest }) => {

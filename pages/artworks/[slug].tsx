@@ -1,21 +1,29 @@
 import { gql } from "@apollo/client";
 import { useRouter } from "next/router";
 import { Box, Stack, HTML, Grid } from "@auspices/eos";
-import { Tombstone } from "../../components/pages/Tombstone";
+import {
+  Tombstone,
+  TOMBSTONE_ARTWORK_FRAGMENT,
+} from "../../components/pages/Tombstone";
 import { UrlBar } from "../../components/pages/UrlBar";
 import { useArtworksShowQuery } from "../../generated/graphql";
 import { Embed } from "../../components/pages/Embed";
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { Back } from "../../components/core/Back";
-import { Figure } from "../../components/pages/Figure";
-import { Thumbnail } from "../../components/pages/Thumbnail";
+import { Figure, FIGURE_IMAGE_FRAGMENT } from "../../components/pages/Figure";
+import {
+  Thumbnail,
+  THUMBNAIL_IMAGE_FRAGMENT,
+} from "../../components/pages/Thumbnail";
 import { Loading } from "../../components/core/Loading";
 import { Meta } from "../../components/core/Meta";
+import { initApolloClient } from "../../lib/apolloClient";
+import { GetServerSidePropsContext } from "next";
 
-gql`
+const ARTWORKS_SHOW_QUERY = gql`
   query ArtworksShowQuery($id: ID!) {
     artwork(id: $id) {
-      ...TombstoneArtworkFragment
+      ...Tombstone_artwork
       id
       slug
       src
@@ -44,6 +52,9 @@ gql`
       }
     }
   }
+  ${TOMBSTONE_ARTWORK_FRAGMENT}
+  ${FIGURE_IMAGE_FRAGMENT}
+  ${THUMBNAIL_IMAGE_FRAGMENT}
 `;
 
 export const ArtworksShowPage = () => {
@@ -185,3 +196,16 @@ export const ArtworksShowPage = () => {
 ArtworksShowPage.getLayout = PageLayout;
 
 export default ArtworksShowPage;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const apolloClient = initApolloClient();
+
+  await apolloClient.query({
+    query: ARTWORKS_SHOW_QUERY,
+    variables: { id: context.params?.slug },
+  });
+
+  return {
+    props: { initialApolloState: apolloClient.cache.extract() },
+  };
+}

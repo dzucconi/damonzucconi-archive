@@ -15,7 +15,7 @@ import { useHover } from "./useHover";
 import { ContextMenu } from "../core/ContextMenu";
 import { useZoom } from "../core/useZoom";
 
-gql`
+export const FIGURE_IMAGE_FRAGMENT = gql`
   fragment Figure_image on Image {
     id
     width

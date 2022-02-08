@@ -492,7 +492,7 @@ export type Thumbnail_ImageFragment = (
   ) }
 );
 
-export type TombstoneArtworkFragment = (
+export type Tombstone_ArtworkFragment = (
   { __typename?: 'Artwork' }
   & Pick<Artwork, 'title' | 'material' | 'duration' | 'year' | 'collector_byline'>
   & { dimensions?: Maybe<(
@@ -533,7 +533,7 @@ export type ArtworksShowQuery = (
       & Figure_ImageFragment
       & Thumbnail_ImageFragment
     )> }
-    & TombstoneArtworkFragment
+    & Tombstone_ArtworkFragment
   ) }
 );
 
@@ -709,8 +709,8 @@ export const Thumbnail_ImageFragmentDoc = gql`
   }
 }
     `;
-export const TombstoneArtworkFragmentDoc = gql`
-    fragment TombstoneArtworkFragment on Artwork {
+export const Tombstone_ArtworkFragmentDoc = gql`
+    fragment Tombstone_artwork on Artwork {
   title
   material
   duration
@@ -765,7 +765,7 @@ export type SearchQueryQueryResult = Apollo.QueryResult<SearchQuery, SearchQuery
 export const ArtworksShowQueryDocument = gql`
     query ArtworksShowQuery($id: ID!) {
   artwork(id: $id) {
-    ...TombstoneArtworkFragment
+    ...Tombstone_artwork
     id
     slug
     src
@@ -794,7 +794,7 @@ export const ArtworksShowQueryDocument = gql`
     }
   }
 }
-    ${TombstoneArtworkFragmentDoc}
+    ${Tombstone_ArtworkFragmentDoc}
 ${Figure_ImageFragmentDoc}
 ${Thumbnail_ImageFragmentDoc}`;
 
