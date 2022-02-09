@@ -51,6 +51,10 @@ export const initApolloClient = (initialState = {}) => {
 };
 
 export const useApollo = (initialState = {}) => {
-  const store = useMemo(() => initApolloClient(initialState), [initialState]);
+  const store = useMemo(() => {
+    return initApolloClient(initialState);
+    // Only re-hydrate the store on intial render
+  }, []);
+
   return store;
 };

@@ -2,10 +2,14 @@ import { FC } from "react";
 import { Meta } from "./Meta";
 import { Spinner } from "./Spinner";
 
-export const Loading: FC = () => {
+type LoadingProps = {
+  title?: string;
+};
+
+export const Loading: FC<LoadingProps> = ({ title = "Loading" }) => {
   return (
     <>
-      <Meta title="Loading" />
+      <Meta title={title} />
 
       <Spinner />
     </>

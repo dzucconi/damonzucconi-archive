@@ -64,6 +64,7 @@ export const ArtworksShowPage = () => {
 
   const { loading, error, data } = useArtworksShowQuery({
     variables: { id: `${slug}` },
+    skip: !slug,
   });
 
   if (error) {
