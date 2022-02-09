@@ -120,7 +120,7 @@ const InformationPage = () => {
           target="_blank"
           noValidate
         >
-          <Stack width="fit-content">
+          <Stack width="fit-content" maxWidth="100%">
             <Cell>POPULAR SUBSCRIPTION TO THE MEMORY OF DOT COM</Cell>
 
             <Stack direction="horizontal">
@@ -130,6 +130,7 @@ const InformationPage = () => {
                 name="EMAIL"
                 type="email"
                 required
+                minWidth={0}
               />
 
               <Box position="absolute" left={-5000}>
@@ -158,6 +159,7 @@ const InformationPage = () => {
                   definition: "github.com/dzucconi/damonzucconi-archive",
                   href: "https://github.com/dzucconi/damonzucconi-archive",
                   target: "_blank",
+                  style: { wordBreak: "break-all" },
                 },
                 {
                   term: "API",

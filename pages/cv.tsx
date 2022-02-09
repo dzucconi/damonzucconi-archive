@@ -48,13 +48,16 @@ export const CvPage = () => {
       <Stack spacing={6}>
         {data.cv.categories.map((category) => (
           <Box key={category.name} width="fit-content">
-            <Stack direction="horizontal">
+            <Stack direction={["vertical", "vertical", "horizontal"]}>
               <Cell>{category.name}</Cell>
 
               <Stack>
                 {category.years.map((year, i) => {
                   return (
-                    <Stack key={i} direction="horizontal">
+                    <Stack
+                      key={i}
+                      direction={["vertical", "vertical", "horizontal"]}
+                    >
                       <Cell>{year.year}</Cell>
 
                       <Cell display="block" flex={1}>
