@@ -86,7 +86,7 @@ export const ArtworksShowPage = () => {
       <Meta
         title={`${artwork.title} (${artwork.year})`}
         description={artwork.descriptionPlain ?? ""}
-        image={artwork.metaImages?.[0].resized?.urls?.src}
+        image={artwork.metaImages?.[0]?.resized?.urls?.src}
       />
 
       <Stack direction="vertical" spacing={8}>

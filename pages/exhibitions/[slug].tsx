@@ -72,7 +72,7 @@ const ExhibitionsShowPage = () => {
       <Meta
         title={`${exhibition.title} (${exhibition.year})`}
         description={exhibition.descriptionPlain ?? ""}
-        image={exhibition.metaImages?.[0].resized?.urls?.src}
+        image={exhibition.metaImages?.[0]?.resized?.urls?.src}
       />
 
       <Stack spacing={8}>
