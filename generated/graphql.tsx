@@ -443,6 +443,17 @@ export type UpdateArtworkMutationPayload = {
   clientMutationId?: Maybe<Scalars['String']>;
 };
 
+export type Meta_ImageFragment = (
+  { __typename?: 'Image' }
+  & { resized: (
+    { __typename?: 'ResizedImage' }
+    & { urls: (
+      { __typename?: 'RetinaImage' }
+      & { src: RetinaImage['_1x'] }
+    ) }
+  ) }
+);
+
 export type Figure_ImageFragment = (
   { __typename?: 'Image' }
   & Pick<Image, 'id' | 'width' | 'height' | 'url' | 'title' | 'description'>
@@ -532,6 +543,9 @@ export type ArtworksShowQuery = (
       & Pick<Image, 'id'>
       & Figure_ImageFragment
       & Thumbnail_ImageFragment
+    )>, metaImages: Array<(
+      { __typename?: 'Image' }
+      & Meta_ImageFragment
     )> }
     & Tombstone_ArtworkFragment
   ) }
@@ -597,11 +611,14 @@ export type ExhibitionsShowQuery = (
   & { exhibition: (
     { __typename?: 'Exhibition' }
     & Pick<Exhibition, 'title' | 'venue' | 'city' | 'year' | 'start_date' | 'end_date' | 'external_url' | 'description'>
-    & { start_year: Exhibition['start_date'], end_year: Exhibition['end_date'] }
+    & { start_year: Exhibition['start_date'], end_year: Exhibition['end_date'], descriptionPlain: Exhibition['description'] }
     & { images: Array<(
       { __typename?: 'Image' }
       & Pick<Image, 'id'>
       & Thumbnail_ImageFragment
+    )>, metaImages: Array<(
+      { __typename?: 'Image' }
+      & Meta_ImageFragment
     )> }
   ) }
 );
@@ -662,6 +679,15 @@ export type WebsitesQuery = (
   )> }
 );
 
+export const Meta_ImageFragmentDoc = gql`
+    fragment Meta_image on Image {
+  resized(width: 1200, height: 630) {
+    urls {
+      src: _1x
+    }
+  }
+}
+    `;
 export const Figure_ImageFragmentDoc = gql`
     fragment Figure_image on Image {
   id
@@ -787,16 +813,20 @@ export const ArtworksShowQueryDocument = gql`
       id
       html
     }
-    images(state: PUBLISHED) {
+    images(state: [SELECTED, PUBLISHED]) {
       id
       ...Figure_image
       ...Thumbnail_image
+    }
+    metaImages: images(state: PUBLISHED, limit: 1) {
+      ...Meta_image
     }
   }
 }
     ${Tombstone_ArtworkFragmentDoc}
 ${Figure_ImageFragmentDoc}
-${Thumbnail_ImageFragmentDoc}`;
+${Thumbnail_ImageFragmentDoc}
+${Meta_ImageFragmentDoc}`;
 
 /**
  * __useArtworksShowQuery__
@@ -941,13 +971,18 @@ export const ExhibitionsShowQueryDocument = gql`
     end_year: end_date(format: "%Y")
     external_url
     description(format: HTML)
+    descriptionPlain: description(format: PLAIN)
     images(state: [SELECTED, PUBLISHED]) {
       id
       ...Thumbnail_image
     }
+    metaImages: images(state: [SELECTED, PUBLISHED], limit: 1) {
+      ...Meta_image
+    }
   }
 }
-    ${Thumbnail_ImageFragmentDoc}`;
+    ${Thumbnail_ImageFragmentDoc}
+${Meta_ImageFragmentDoc}`;
 
 /**
  * __useExhibitionsShowQuery__

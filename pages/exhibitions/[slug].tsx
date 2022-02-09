@@ -10,7 +10,7 @@ import {
   THUMBNAIL_IMAGE_FRAGMENT,
 } from "../../components/pages/Thumbnail";
 import { Loading } from "../../components/core/Loading";
-import { Meta } from "../../components/core/Meta";
+import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
 import { GetServerSidePropsContext } from "next";
 import { initApolloClient } from "../../lib/apolloClient";
 
@@ -27,13 +27,18 @@ const EXHIBITIONS_SHOW_QUERY = gql`
       end_year: end_date(format: "%Y")
       external_url
       description(format: HTML)
+      descriptionPlain: description(format: PLAIN)
       images(state: [SELECTED, PUBLISHED]) {
         id
         ...Thumbnail_image
       }
+      metaImages: images(state: [SELECTED, PUBLISHED], limit: 1) {
+        ...Meta_image
+      }
     }
   }
   ${THUMBNAIL_IMAGE_FRAGMENT}
+  ${META_IMAGE_FRAGMENT}
 `;
 
 const ExhibitionsShowPage = () => {
@@ -64,7 +69,11 @@ const ExhibitionsShowPage = () => {
 
   return (
     <>
-      <Meta title={`${exhibition.title} (${exhibition.year})`} />
+      <Meta
+        title={`${exhibition.title} (${exhibition.year})`}
+        description={exhibition.descriptionPlain ?? ""}
+        image={exhibition.metaImages?.[0].resized?.urls?.src}
+      />
 
       <Stack spacing={8}>
         <Stack width="fit-content">

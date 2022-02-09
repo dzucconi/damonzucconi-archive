@@ -16,7 +16,7 @@ import {
   THUMBNAIL_IMAGE_FRAGMENT,
 } from "../../components/pages/Thumbnail";
 import { Loading } from "../../components/core/Loading";
-import { Meta } from "../../components/core/Meta";
+import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
 import { initApolloClient } from "../../lib/apolloClient";
 import { GetServerSidePropsContext } from "next";
 
@@ -45,16 +45,20 @@ const ARTWORKS_SHOW_QUERY = gql`
         id
         html
       }
-      images(state: PUBLISHED) {
+      images(state: [SELECTED, PUBLISHED]) {
         id
         ...Figure_image
         ...Thumbnail_image
+      }
+      metaImages: images(state: PUBLISHED, limit: 1) {
+        ...Meta_image
       }
     }
   }
   ${TOMBSTONE_ARTWORK_FRAGMENT}
   ${FIGURE_IMAGE_FRAGMENT}
   ${THUMBNAIL_IMAGE_FRAGMENT}
+  ${META_IMAGE_FRAGMENT}
 `;
 
 export const ArtworksShowPage = () => {
@@ -79,7 +83,11 @@ export const ArtworksShowPage = () => {
 
   return (
     <>
-      <Meta title={`${artwork.title} (${artwork.year})`} />
+      <Meta
+        title={`${artwork.title} (${artwork.year})`}
+        description={artwork.descriptionPlain ?? ""}
+        image={artwork.metaImages?.[0].resized?.urls?.src}
+      />
 
       <Stack direction="vertical" spacing={8}>
         <Stack width="fit-content">
