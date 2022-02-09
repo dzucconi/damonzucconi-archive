@@ -5,8 +5,10 @@ import { prettifyUrl } from "../lib/prettifyUrl";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
+import { GetServerSidePropsContext } from "next";
+import { initApolloClient } from "../lib/apolloClient";
 
-gql`
+const WEBSITES_QUERY = gql`
   query WebsitesQuery {
     artworks(state: [SELECTED, PUBLISHED]) {
       id
@@ -59,3 +61,15 @@ const WebsitesPage = () => {
 WebsitesPage.getLayout = NavigationLayout;
 
 export default WebsitesPage;
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const apolloClient = initApolloClient();
+
+  await apolloClient.query({ query: WEBSITES_QUERY });
+
+  return {
+    props: { initialApolloState: apolloClient.cache.extract() },
+  };
+};

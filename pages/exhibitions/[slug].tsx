@@ -5,11 +5,16 @@ import { useExhibitionsShowQuery } from "../../generated/graphql";
 import { DefinitionList } from "../../components/core/DefinitionList";
 import { HTML, Stack, Box, Grid } from "@auspices/eos";
 import { Back } from "../../components/core/Back";
-import { Thumbnail } from "../../components/pages/Thumbnail";
+import {
+  Thumbnail,
+  THUMBNAIL_IMAGE_FRAGMENT,
+} from "../../components/pages/Thumbnail";
 import { Loading } from "../../components/core/Loading";
 import { Meta } from "../../components/core/Meta";
+import { GetServerSidePropsContext } from "next";
+import { initApolloClient } from "../../lib/apolloClient";
 
-gql`
+const EXHIBITIONS_SHOW_QUERY = gql`
   query ExhibitionsShowQuery($id: ID!) {
     exhibition(id: $id) {
       title
@@ -28,6 +33,7 @@ gql`
       }
     }
   }
+  ${THUMBNAIL_IMAGE_FRAGMENT}
 `;
 
 const ExhibitionsShowPage = () => {
@@ -106,3 +112,18 @@ const ExhibitionsShowPage = () => {
 export default ExhibitionsShowPage;
 
 ExhibitionsShowPage.getLayout = PageLayout;
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const apolloClient = initApolloClient();
+
+  await apolloClient.query({
+    query: EXHIBITIONS_SHOW_QUERY,
+    variables: { id: context.params?.slug },
+  });
+
+  return {
+    props: { initialApolloState: apolloClient.cache.extract() },
+  };
+};

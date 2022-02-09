@@ -197,7 +197,9 @@ ArtworksShowPage.getLayout = PageLayout;
 
 export default ArtworksShowPage;
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const apolloClient = initApolloClient();
 
   await apolloClient.query({
@@ -208,4 +210,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: { initialApolloState: apolloClient.cache.extract() },
   };
-}
+};

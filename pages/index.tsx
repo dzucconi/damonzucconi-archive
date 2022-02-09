@@ -6,8 +6,10 @@ import { useRouter } from "next/router";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
+import { NextPageContext } from "next";
+import { initApolloClient } from "../lib/apolloClient";
 
-gql`
+const ARTWORKS_INDEX_QUERY = gql`
   query ArtworksIndexQuery($state: [State]) {
     artworks(state: $state) {
       id
@@ -115,3 +117,21 @@ const ArtworksIndexPage = () => {
 ArtworksIndexPage.getLayout = NavigationLayout;
 
 export default ArtworksIndexPage;
+
+ArtworksIndexPage.getInitialProps = async (context: NextPageContext) => {
+  const apolloClient = initApolloClient();
+
+  const state =
+    context.asPath === "/"
+      ? [State.Selected]
+      : [State.Selected, State.Published];
+
+  await apolloClient.query({
+    query: ARTWORKS_INDEX_QUERY,
+    variables: { state },
+  });
+
+  return {
+    props: { initialApolloState: apolloClient.cache.extract() },
+  };
+};

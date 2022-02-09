@@ -5,8 +5,10 @@ import Link from "next/link";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
+import { GetServerSidePropsContext } from "next";
+import { initApolloClient } from "../lib/apolloClient";
 
-gql`
+const EXHIBITIONS_INDEX_QUERY = gql`
   query ExhibitionsIndexQuery {
     exhibitions(state: [SELECTED, PUBLISHED]) {
       id
@@ -108,3 +110,15 @@ const ExhibitionsIndexPage = () => {
 ExhibitionsIndexPage.getLayout = NavigationLayout;
 
 export default ExhibitionsIndexPage;
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const apolloClient = initApolloClient();
+
+  await apolloClient.query({ query: EXHIBITIONS_INDEX_QUERY });
+
+  return {
+    props: { initialApolloState: apolloClient.cache.extract() },
+  };
+};
