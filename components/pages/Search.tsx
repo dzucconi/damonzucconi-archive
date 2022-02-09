@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import {
   Box,
   Button,
@@ -54,10 +54,10 @@ export const Search: FC<SearchProps> = ({
 
   const [query, setQuery] = useState("");
 
-  const { loading, error, data } = useSearchQuery();
+  const [{ fetching, error, data }] = useSearchQuery();
 
   const filtered =
-    !loading && data && query !== ""
+    !fetching && data && query !== ""
       ? data.artworks.filter((artwork) => {
           return artwork.title.toLowerCase().includes(query.toLowerCase());
         })

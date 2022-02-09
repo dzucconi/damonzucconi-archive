@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import { useExhibitionsIndexQuery } from "../generated/graphql";
 import { EmptyFrame, File, Grid, ResponsiveImage, Stack } from "@auspices/eos";
 import Link from "next/link";
@@ -6,7 +6,6 @@ import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
 import { GetServerSidePropsContext } from "next";
-import { initApolloClient } from "../lib/apolloClient";
 
 const EXHIBITIONS_INDEX_QUERY = gql`
   query ExhibitionsIndexQuery {
@@ -37,13 +36,13 @@ const EXHIBITIONS_INDEX_QUERY = gql`
 `;
 
 const ExhibitionsIndexPage = () => {
-  const { loading, error, data } = useExhibitionsIndexQuery();
+  const [{ fetching, error, data }] = useExhibitionsIndexQuery();
 
   if (error) {
     throw error;
   }
 
-  if (loading || !data) {
+  if (fetching || !data) {
     return <Loading />;
   }
 
@@ -111,14 +110,14 @@ ExhibitionsIndexPage.getLayout = NavigationLayout;
 
 export default ExhibitionsIndexPage;
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const apolloClient = initApolloClient();
+// export const getServerSideProps = async (
+//   context: GetServerSidePropsContext
+// ) => {
+//   const apolloClient = initApolloClient();
 
-  await apolloClient.query({ query: EXHIBITIONS_INDEX_QUERY });
+//   await apolloClient.query({ query: EXHIBITIONS_INDEX_QUERY });
 
-  return {
-    props: { initialApolloState: apolloClient.cache.extract() },
-  };
-};
+//   return {
+//     props: { initialApolloState: apolloClient.cache.extract() },
+//   };
+// };

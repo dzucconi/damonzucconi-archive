@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import Link from "next/link";
 import { Cell, Stack } from "@auspices/eos";
 import { Table } from "../components/core/Table";
@@ -20,13 +20,13 @@ gql`
 `;
 
 const ArtworksTablePage = () => {
-  const { loading, error, data } = useArtworksTableQuery();
+  const [{ fetching, error, data }] = useArtworksTableQuery();
 
   if (error) {
     throw error;
   }
 
-  if (loading || !data) {
+  if (fetching || !data) {
     return <Loading />;
   }
 

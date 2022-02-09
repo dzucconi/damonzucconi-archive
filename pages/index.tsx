@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import Link from "next/link";
 import { EmptyFrame, File, Grid, ResponsiveImage, Stack } from "@auspices/eos";
 import { State, useArtworksIndexQuery } from "../generated/graphql";
@@ -42,7 +42,7 @@ const ArtworksIndexPage = () => {
       ? [State.Selected]
       : [State.Selected, State.Published];
 
-  const { loading, error, data } = useArtworksIndexQuery({
+  const [{ fetching, error, data }] = useArtworksIndexQuery({
     variables: { state },
   });
 
@@ -50,7 +50,7 @@ const ArtworksIndexPage = () => {
     throw error;
   }
 
-  if (loading || !data) {
+  if (fetching || !data) {
     return <Loading title="Damon Zucconi" />;
   }
 

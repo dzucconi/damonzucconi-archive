@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC } from "react";

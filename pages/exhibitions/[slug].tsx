@@ -1,4 +1,3 @@
-import { gql } from "@apollo/client";
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { useRouter } from "next/router";
 import { useExhibitionsShowQuery } from "../../generated/graphql";
@@ -11,8 +10,8 @@ import {
 } from "../../components/pages/Thumbnail";
 import { Loading } from "../../components/core/Loading";
 import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
-import { GetServerSidePropsContext } from "next";
-import { initApolloClient } from "../../lib/apolloClient";
+import { gql } from "urql";
+// import { GetServerSidePropsContext } from "next";
 
 const EXHIBITIONS_SHOW_QUERY = gql`
   query ExhibitionsShowQuery($id: ID!) {
@@ -46,15 +45,16 @@ const ExhibitionsShowPage = () => {
     query: { slug },
   } = useRouter();
 
-  const { loading, error, data } = useExhibitionsShowQuery({
+  const [{ fetching, error, data }] = useExhibitionsShowQuery({
     variables: { id: `${slug}` },
+    // skip: !slug, // TODO
   });
 
   if (error) {
     throw error;
   }
 
-  if (loading || !data) {
+  if (fetching || !data) {
     return <Loading />;
   }
 
@@ -122,17 +122,17 @@ export default ExhibitionsShowPage;
 
 ExhibitionsShowPage.getLayout = PageLayout;
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const apolloClient = initApolloClient();
+// export const getServerSideProps = async (
+//   context: GetServerSidePropsContext
+// ) => {
+//   const apolloClient = initApolloClient();
 
-  await apolloClient.query({
-    query: EXHIBITIONS_SHOW_QUERY,
-    variables: { id: context.params?.slug },
-  });
+//   await apolloClient.query({
+//     query: EXHIBITIONS_SHOW_QUERY,
+//     variables: { id: context.params?.slug },
+//   });
 
-  return {
-    props: { initialApolloState: apolloClient.cache.extract() },
-  };
-};
+//   return {
+//     props: { initialApolloState: apolloClient.cache.extract() },
+//   };
+// };

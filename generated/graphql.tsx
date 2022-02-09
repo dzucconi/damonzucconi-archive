@@ -1,10 +1,10 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
+import gql from 'graphql-tag';
+import * as Urql from 'urql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions =  {}
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -762,32 +762,9 @@ export const SearchQueryDocument = gql`
 }
     `;
 
-/**
- * __useSearchQuery__
- *
- * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSearchQuery({
- *   variables: {
- *   },
- * });
- */
-export function useSearchQuery(baseOptions?: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchQueryDocument, options);
-      }
-export function useSearchQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchQueryDocument, options);
-        }
-export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
-export type SearchQueryLazyQueryHookResult = ReturnType<typeof useSearchQueryLazyQuery>;
-export type SearchQueryQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
+export function useSearchQuery(options?: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'>) {
+  return Urql.useQuery<SearchQuery>({ query: SearchQueryDocument, ...options });
+};
 export const ArtworksShowQueryDocument = gql`
     query ArtworksShowQuery($id: ID!) {
   artwork(id: $id) {
@@ -828,33 +805,9 @@ ${Figure_ImageFragmentDoc}
 ${Thumbnail_ImageFragmentDoc}
 ${Meta_ImageFragmentDoc}`;
 
-/**
- * __useArtworksShowQuery__
- *
- * To run a query within a React component, call `useArtworksShowQuery` and pass it any options that fit your needs.
- * When your component renders, `useArtworksShowQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useArtworksShowQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useArtworksShowQuery(baseOptions: Apollo.QueryHookOptions<ArtworksShowQuery, ArtworksShowQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ArtworksShowQuery, ArtworksShowQueryVariables>(ArtworksShowQueryDocument, options);
-      }
-export function useArtworksShowQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArtworksShowQuery, ArtworksShowQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ArtworksShowQuery, ArtworksShowQueryVariables>(ArtworksShowQueryDocument, options);
-        }
-export type ArtworksShowQueryHookResult = ReturnType<typeof useArtworksShowQuery>;
-export type ArtworksShowQueryLazyQueryHookResult = ReturnType<typeof useArtworksShowQueryLazyQuery>;
-export type ArtworksShowQueryQueryResult = Apollo.QueryResult<ArtworksShowQuery, ArtworksShowQueryVariables>;
+export function useArtworksShowQuery(options: Omit<Urql.UseQueryArgs<ArtworksShowQueryVariables>, 'query'>) {
+  return Urql.useQuery<ArtworksShowQuery>({ query: ArtworksShowQueryDocument, ...options });
+};
 export const CvPageQueryDocument = gql`
     query CvPageQuery {
   cv {
@@ -878,32 +831,9 @@ export const CvPageQueryDocument = gql`
 }
     `;
 
-/**
- * __useCvPageQuery__
- *
- * To run a query within a React component, call `useCvPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useCvPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCvPageQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCvPageQuery(baseOptions?: Apollo.QueryHookOptions<CvPageQuery, CvPageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CvPageQuery, CvPageQueryVariables>(CvPageQueryDocument, options);
-      }
-export function useCvPageQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CvPageQuery, CvPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CvPageQuery, CvPageQueryVariables>(CvPageQueryDocument, options);
-        }
-export type CvPageQueryHookResult = ReturnType<typeof useCvPageQuery>;
-export type CvPageQueryLazyQueryHookResult = ReturnType<typeof useCvPageQueryLazyQuery>;
-export type CvPageQueryQueryResult = Apollo.QueryResult<CvPageQuery, CvPageQueryVariables>;
+export function useCvPageQuery(options?: Omit<Urql.UseQueryArgs<CvPageQueryVariables>, 'query'>) {
+  return Urql.useQuery<CvPageQuery>({ query: CvPageQueryDocument, ...options });
+};
 export const ExhibitionsIndexQueryDocument = gql`
     query ExhibitionsIndexQuery {
   exhibitions(state: [SELECTED, PUBLISHED]) {
@@ -932,32 +862,9 @@ export const ExhibitionsIndexQueryDocument = gql`
 }
     `;
 
-/**
- * __useExhibitionsIndexQuery__
- *
- * To run a query within a React component, call `useExhibitionsIndexQuery` and pass it any options that fit your needs.
- * When your component renders, `useExhibitionsIndexQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useExhibitionsIndexQuery({
- *   variables: {
- *   },
- * });
- */
-export function useExhibitionsIndexQuery(baseOptions?: Apollo.QueryHookOptions<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>(ExhibitionsIndexQueryDocument, options);
-      }
-export function useExhibitionsIndexQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>(ExhibitionsIndexQueryDocument, options);
-        }
-export type ExhibitionsIndexQueryHookResult = ReturnType<typeof useExhibitionsIndexQuery>;
-export type ExhibitionsIndexQueryLazyQueryHookResult = ReturnType<typeof useExhibitionsIndexQueryLazyQuery>;
-export type ExhibitionsIndexQueryQueryResult = Apollo.QueryResult<ExhibitionsIndexQuery, ExhibitionsIndexQueryVariables>;
+export function useExhibitionsIndexQuery(options?: Omit<Urql.UseQueryArgs<ExhibitionsIndexQueryVariables>, 'query'>) {
+  return Urql.useQuery<ExhibitionsIndexQuery>({ query: ExhibitionsIndexQueryDocument, ...options });
+};
 export const ExhibitionsShowQueryDocument = gql`
     query ExhibitionsShowQuery($id: ID!) {
   exhibition(id: $id) {
@@ -984,33 +891,9 @@ export const ExhibitionsShowQueryDocument = gql`
     ${Thumbnail_ImageFragmentDoc}
 ${Meta_ImageFragmentDoc}`;
 
-/**
- * __useExhibitionsShowQuery__
- *
- * To run a query within a React component, call `useExhibitionsShowQuery` and pass it any options that fit your needs.
- * When your component renders, `useExhibitionsShowQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useExhibitionsShowQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useExhibitionsShowQuery(baseOptions: Apollo.QueryHookOptions<ExhibitionsShowQuery, ExhibitionsShowQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ExhibitionsShowQuery, ExhibitionsShowQueryVariables>(ExhibitionsShowQueryDocument, options);
-      }
-export function useExhibitionsShowQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExhibitionsShowQuery, ExhibitionsShowQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ExhibitionsShowQuery, ExhibitionsShowQueryVariables>(ExhibitionsShowQueryDocument, options);
-        }
-export type ExhibitionsShowQueryHookResult = ReturnType<typeof useExhibitionsShowQuery>;
-export type ExhibitionsShowQueryLazyQueryHookResult = ReturnType<typeof useExhibitionsShowQueryLazyQuery>;
-export type ExhibitionsShowQueryQueryResult = Apollo.QueryResult<ExhibitionsShowQuery, ExhibitionsShowQueryVariables>;
+export function useExhibitionsShowQuery(options: Omit<Urql.UseQueryArgs<ExhibitionsShowQueryVariables>, 'query'>) {
+  return Urql.useQuery<ExhibitionsShowQuery>({ query: ExhibitionsShowQueryDocument, ...options });
+};
 export const ArtworksIndexQueryDocument = gql`
     query ArtworksIndexQuery($state: [State]) {
   artworks(state: $state) {
@@ -1039,33 +922,9 @@ export const ArtworksIndexQueryDocument = gql`
 }
     `;
 
-/**
- * __useArtworksIndexQuery__
- *
- * To run a query within a React component, call `useArtworksIndexQuery` and pass it any options that fit your needs.
- * When your component renders, `useArtworksIndexQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useArtworksIndexQuery({
- *   variables: {
- *      state: // value for 'state'
- *   },
- * });
- */
-export function useArtworksIndexQuery(baseOptions?: Apollo.QueryHookOptions<ArtworksIndexQuery, ArtworksIndexQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ArtworksIndexQuery, ArtworksIndexQueryVariables>(ArtworksIndexQueryDocument, options);
-      }
-export function useArtworksIndexQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArtworksIndexQuery, ArtworksIndexQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ArtworksIndexQuery, ArtworksIndexQueryVariables>(ArtworksIndexQueryDocument, options);
-        }
-export type ArtworksIndexQueryHookResult = ReturnType<typeof useArtworksIndexQuery>;
-export type ArtworksIndexQueryLazyQueryHookResult = ReturnType<typeof useArtworksIndexQueryLazyQuery>;
-export type ArtworksIndexQueryQueryResult = Apollo.QueryResult<ArtworksIndexQuery, ArtworksIndexQueryVariables>;
+export function useArtworksIndexQuery(options?: Omit<Urql.UseQueryArgs<ArtworksIndexQueryVariables>, 'query'>) {
+  return Urql.useQuery<ArtworksIndexQuery>({ query: ArtworksIndexQueryDocument, ...options });
+};
 export const ArtworksTableQueryDocument = gql`
     query ArtworksTableQuery {
   artworks(state: [SELECTED, PUBLISHED]) {
@@ -1078,32 +937,9 @@ export const ArtworksTableQueryDocument = gql`
 }
     `;
 
-/**
- * __useArtworksTableQuery__
- *
- * To run a query within a React component, call `useArtworksTableQuery` and pass it any options that fit your needs.
- * When your component renders, `useArtworksTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useArtworksTableQuery({
- *   variables: {
- *   },
- * });
- */
-export function useArtworksTableQuery(baseOptions?: Apollo.QueryHookOptions<ArtworksTableQuery, ArtworksTableQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ArtworksTableQuery, ArtworksTableQueryVariables>(ArtworksTableQueryDocument, options);
-      }
-export function useArtworksTableQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArtworksTableQuery, ArtworksTableQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ArtworksTableQuery, ArtworksTableQueryVariables>(ArtworksTableQueryDocument, options);
-        }
-export type ArtworksTableQueryHookResult = ReturnType<typeof useArtworksTableQuery>;
-export type ArtworksTableQueryLazyQueryHookResult = ReturnType<typeof useArtworksTableQueryLazyQuery>;
-export type ArtworksTableQueryQueryResult = Apollo.QueryResult<ArtworksTableQuery, ArtworksTableQueryVariables>;
+export function useArtworksTableQuery(options?: Omit<Urql.UseQueryArgs<ArtworksTableQueryVariables>, 'query'>) {
+  return Urql.useQuery<ArtworksTableQuery>({ query: ArtworksTableQueryDocument, ...options });
+};
 export const WebsitesQueryDocument = gql`
     query WebsitesQuery {
   artworks(state: [SELECTED, PUBLISHED]) {
@@ -1116,29 +952,6 @@ export const WebsitesQueryDocument = gql`
 }
     `;
 
-/**
- * __useWebsitesQuery__
- *
- * To run a query within a React component, call `useWebsitesQuery` and pass it any options that fit your needs.
- * When your component renders, `useWebsitesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useWebsitesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useWebsitesQuery(baseOptions?: Apollo.QueryHookOptions<WebsitesQuery, WebsitesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<WebsitesQuery, WebsitesQueryVariables>(WebsitesQueryDocument, options);
-      }
-export function useWebsitesQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WebsitesQuery, WebsitesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<WebsitesQuery, WebsitesQueryVariables>(WebsitesQueryDocument, options);
-        }
-export type WebsitesQueryHookResult = ReturnType<typeof useWebsitesQuery>;
-export type WebsitesQueryLazyQueryHookResult = ReturnType<typeof useWebsitesQueryLazyQuery>;
-export type WebsitesQueryQueryResult = Apollo.QueryResult<WebsitesQuery, WebsitesQueryVariables>;
+export function useWebsitesQuery(options?: Omit<Urql.UseQueryArgs<WebsitesQueryVariables>, 'query'>) {
+  return Urql.useQuery<WebsitesQuery>({ query: WebsitesQueryDocument, ...options });
+};

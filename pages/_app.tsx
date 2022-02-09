@@ -1,7 +1,5 @@
 import { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
-import { ApolloProvider } from "@apollo/client";
-import { useApollo } from "../lib/apolloClient";
 import {
   Box,
   Clickable,
@@ -14,6 +12,7 @@ import { FC, ReactElement, useEffect, ReactNode } from "react";
 import { Loader } from "../components/core/Loader";
 import { NextPage } from "next";
 import Head from "next/head";
+import { UrqlProvider } from "../lib/urql";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -81,16 +80,16 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-export default ({ Component, pageProps }: AppPropsWithLayout) => {
-  const apolloClient = useApollo(pageProps.initialApolloState);
-
+const Provided = ({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <ApolloProvider client={apolloClient}>
+    <UrqlProvider>
       <ThemerProvider>
         <App>{getLayout(<Component {...pageProps} />)}</App>
       </ThemerProvider>
-    </ApolloProvider>
+    </UrqlProvider>
   );
 };
+
+export default Provided;

@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import { Box, color, Stack } from "@auspices/eos";
 import styled from "styled-components";
 import { Cell } from "../components/core/DefinitionList";
@@ -31,13 +31,13 @@ gql`
 `;
 
 export const CvPage = () => {
-  const { data, loading, error } = useCvPageQuery();
+  const [{ fetching, data, error }] = useCvPageQuery();
 
   if (error) {
     throw error;
   }
 
-  if (loading || !data) {
+  if (fetching || !data) {
     return <Loading />;
   }
 
