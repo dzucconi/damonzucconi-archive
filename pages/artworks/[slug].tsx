@@ -1,4 +1,10 @@
-import { gql } from "urql";
+import {
+  cacheExchange,
+  dedupExchange,
+  fetchExchange,
+  gql,
+  ssrExchange,
+} from "urql";
 import { useRouter } from "next/router";
 import { Box, Stack, HTML, Grid } from "@auspices/eos";
 import {
@@ -17,7 +23,9 @@ import {
 } from "../../components/pages/Thumbnail";
 import { Loading } from "../../components/core/Loading";
 import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
-// import { GetServerSidePropsContext } from "next";
+import { GetStaticPropsContext } from "next";
+import { initUrqlClient } from "next-urql";
+import { client, GRAPHQL_ENDPOINT } from "../../lib/urql";
 
 const ARTWORKS_SHOW_QUERY = gql`
   query ArtworksShowQuery($id: ID!) {
@@ -205,17 +213,35 @@ ArtworksShowPage.getLayout = PageLayout;
 
 export default ArtworksShowPage;
 
-// export const getServerSideProps = async (
-//   context: GetServerSidePropsContext
-// ) => {
-//   const apolloClient = initApolloClient();
+export const getStaticProps = async (ctx: GetStaticPropsContext) => {
+  const ssrCache = ssrExchange({ isClient: false });
+  const client = initUrqlClient(
+    {
+      url: GRAPHQL_ENDPOINT,
+      exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
+    },
+    false
+  )!;
 
-//   await apolloClient.query({
-//     query: ARTWORKS_SHOW_QUERY,
-//     variables: { id: context.params?.slug },
-//   });
+  await client.query(ARTWORKS_SHOW_QUERY, { id: ctx.params?.slug }).toPromise();
 
-//   return {
-//     props: { initialApolloState: apolloClient.cache.extract() },
-//   };
-// };
+  return { props: { urqlState: ssrCache.extractData() } };
+};
+
+const ARTWORK_SLUGS_QUERY = gql`
+  query ArtworkSlugsQuery {
+    artworks {
+      slug
+    }
+  }
+`;
+
+export const getStaticPaths = async () => {
+  const res = await client.query(ARTWORK_SLUGS_QUERY).toPromise();
+
+  const paths = res.data.artworks.map(({ slug }: { slug: string }) => ({
+    params: { slug },
+  }));
+
+  return { paths, fallback: false };
+};
