@@ -518,6 +518,36 @@ export type Tombstone_ArtworkFragment = (
   )> }
 );
 
+export type ArtworksIndexQueryVariables = Exact<{
+  state?: Maybe<Array<Maybe<State>> | Maybe<State>>;
+}>;
+
+
+export type ArtworksIndexQuery = (
+  { __typename?: 'Query' }
+  & { artworks: Array<(
+    { __typename?: 'Artwork' }
+    & Pick<Artwork, 'id' | 'slug' | 'title' | 'material' | 'year'>
+    & { images: Array<(
+      { __typename?: 'Image' }
+      & { placeholder: (
+        { __typename?: 'ResizedImage' }
+        & { urls: (
+          { __typename?: 'RetinaImage' }
+          & { src: RetinaImage['_1x'] }
+        ) }
+      ), resized: (
+        { __typename?: 'ResizedImage' }
+        & Pick<ResizedImage, 'width' | 'height'>
+        & { urls: (
+          { __typename?: 'RetinaImage' }
+          & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
+        ) }
+      ) }
+    )> }
+  )> }
+);
+
 export type ArtworksShowQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -645,36 +675,6 @@ export type ExhibitionSlugsQuery = (
   )> }
 );
 
-export type ArtworksIndexQueryVariables = Exact<{
-  state?: Maybe<Array<Maybe<State>> | Maybe<State>>;
-}>;
-
-
-export type ArtworksIndexQuery = (
-  { __typename?: 'Query' }
-  & { artworks: Array<(
-    { __typename?: 'Artwork' }
-    & Pick<Artwork, 'id' | 'slug' | 'title' | 'material' | 'year'>
-    & { images: Array<(
-      { __typename?: 'Image' }
-      & { placeholder: (
-        { __typename?: 'ResizedImage' }
-        & { urls: (
-          { __typename?: 'RetinaImage' }
-          & { src: RetinaImage['_1x'] }
-        ) }
-      ), resized: (
-        { __typename?: 'ResizedImage' }
-        & Pick<ResizedImage, 'width' | 'height'>
-        & { urls: (
-          { __typename?: 'RetinaImage' }
-          & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
-        ) }
-      ) }
-    )> }
-  )> }
-);
-
 export type ArtworksTableQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -786,6 +786,37 @@ export const SearchQueryDocument = gql`
 
 export function useSearchQuery(options?: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'>) {
   return Urql.useQuery<SearchQuery>({ query: SearchQueryDocument, ...options });
+};
+export const ArtworksIndexQueryDocument = gql`
+    query ArtworksIndexQuery($state: [State]) {
+  artworks(state: $state) {
+    id
+    slug
+    title
+    material
+    year
+    images(limit: 1, state: PUBLISHED) {
+      placeholder: resized(width: 50, height: 50, blur: 10) {
+        urls {
+          src: _1x
+        }
+      }
+      resized(width: 200, height: 200) {
+        width
+        height
+        urls {
+          _1x
+          _2x
+          _3x
+        }
+      }
+    }
+  }
+}
+    `;
+
+export function useArtworksIndexQuery(options?: Omit<Urql.UseQueryArgs<ArtworksIndexQueryVariables>, 'query'>) {
+  return Urql.useQuery<ArtworksIndexQuery>({ query: ArtworksIndexQueryDocument, ...options });
 };
 export const ArtworksShowQueryDocument = gql`
     query ArtworksShowQuery($id: ID!) {
@@ -937,37 +968,6 @@ export const ExhibitionSlugsQueryDocument = gql`
 
 export function useExhibitionSlugsQuery(options?: Omit<Urql.UseQueryArgs<ExhibitionSlugsQueryVariables>, 'query'>) {
   return Urql.useQuery<ExhibitionSlugsQuery>({ query: ExhibitionSlugsQueryDocument, ...options });
-};
-export const ArtworksIndexQueryDocument = gql`
-    query ArtworksIndexQuery($state: [State]) {
-  artworks(state: $state) {
-    id
-    slug
-    title
-    material
-    year
-    images(limit: 1, state: PUBLISHED) {
-      placeholder: resized(width: 50, height: 50, blur: 10) {
-        urls {
-          src: _1x
-        }
-      }
-      resized(width: 200, height: 200) {
-        width
-        height
-        urls {
-          _1x
-          _2x
-          _3x
-        }
-      }
-    }
-  }
-}
-    `;
-
-export function useArtworksIndexQuery(options?: Omit<Urql.UseQueryArgs<ArtworksIndexQueryVariables>, 'query'>) {
-  return Urql.useQuery<ArtworksIndexQuery>({ query: ArtworksIndexQueryDocument, ...options });
 };
 export const ArtworksTableQueryDocument = gql`
     query ArtworksTableQuery {
