@@ -53,7 +53,7 @@ const ExhibitionsIndexPage = () => {
       <Meta title="Exhibitions" />
 
       <Stack spacing={6}>
-        <Grid cellSize="14rem">
+        <Grid cellSize={["10rem", "10rem", "14rem"]}>
           {exhibitions.map((exhibition) => {
             const [image] = exhibition.images;
 

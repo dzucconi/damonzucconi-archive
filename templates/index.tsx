@@ -61,7 +61,7 @@ export const ArtworksIndexPage = () => {
       <Meta title="Damon Zucconi" />
 
       <Stack spacing={6}>
-        <Grid cellSize="14rem">
+        <Grid cellSize={["10rem", "10rem", "14rem"]}>
           {artworks.map((artwork) => {
             const [image] = artwork.images;
 

@@ -9,12 +9,12 @@
     "gql": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@auspices/eos": "2.29.1",
+    "@auspices/eos": "2.30.1",
     "@seznam/compose-react-refs": "^1.0.4",
     "@styled-system/theme-get": "^5.1.2",
     "graphql": "^15.3.0",
     "isomorphic-unfetch": "^3.1.0",
-    "next": "12.0.9",
+    "next": "12.0.10",
     "next-urql": "^3.3.2",
     "openseadragon": "^3.0.0",
     "proportional-scale": "^4.0.0",
