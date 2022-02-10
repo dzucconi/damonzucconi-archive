@@ -468,7 +468,13 @@ export type Figure_ImageFragment = (
     & Pick<ResizedImage, 'width' | 'height'>
     & { srcs: (
       { __typename?: 'RetinaImage' }
-      & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
+      & Pick<RetinaImage, '_1x' | '_2x'>
+    ) }
+  ), zoom: (
+    { __typename?: 'ResizedImage' }
+    & { srcs: (
+      { __typename?: 'RetinaImage' }
+      & Pick<RetinaImage, '_1x'>
     ) }
   ) }
 );
@@ -729,7 +735,11 @@ export const Figure_ImageFragmentDoc = gql`
     srcs: urls {
       _1x
       _2x
-      _3x
+    }
+  }
+  zoom: resized(width: 4000, height: 4000, quality: 60) {
+    srcs: urls {
+      _1x
     }
   }
 }

@@ -103,7 +103,7 @@ const ExhibitionsShowPage = () => {
               mx="auto"
               lineHeight={2}
               fontSize={3}
-              maxWidth={["100%", "85%", "75%", "60%"]}
+              maxWidth={["100%", "100%", "75%", "60%"]}
               html={exhibition.description}
             />
           </Box>

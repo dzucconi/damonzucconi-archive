@@ -3,8 +3,6 @@ import {
   Box,
   BoxProps,
   Clickable,
-  Dropdown,
-  Ellipsis,
   PaneOption,
   ResponsiveImage,
 } from "@auspices/eos";
@@ -34,7 +32,11 @@ export const FIGURE_IMAGE_FRAGMENT = gql`
       srcs: urls {
         _1x
         _2x
-        _3x
+      }
+    }
+    zoom: resized(width: 4000, height: 4000, quality: 60) {
+      srcs: urls {
+        _1x
       }
     }
   }
@@ -45,7 +47,9 @@ type FigureProps = BoxProps & {
 };
 
 export const Figure: FC<FigureProps> = ({ image, ...rest }) => {
-  const { zoomComponent, openZoom: handleClick } = useZoom({ src: image.url });
+  const { zoomComponent, openZoom: handleClick } = useZoom({
+    src: image.zoom.srcs._1x,
+  });
   const { mode, handleMouseEnter, handleMouseLeave, handleOpen, handleClose } =
     useHover();
 
@@ -61,11 +65,7 @@ export const Figure: FC<FigureProps> = ({ image, ...rest }) => {
         <ResponsiveImage
           indicator
           placeholder={image.placeholder.urls.src}
-          srcs={[
-            image.display.srcs._1x,
-            image.display.srcs._2x,
-            image.display.srcs._3x,
-          ]}
+          srcs={[image.display.srcs._1x, image.display.srcs._2x]}
           aspectWidth={image.display.width}
           aspectHeight={image.display.height}
           maxWidth={image.display.width}

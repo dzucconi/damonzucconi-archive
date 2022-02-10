@@ -191,7 +191,7 @@ export const ArtworksShowPage = () => {
               mx="auto"
               lineHeight={2}
               fontSize={3}
-              maxWidth={["100%", "85%", "75%", "60%"]}
+              maxWidth={["100%", "100%", "75%", "60%"]}
               textAlign={
                 (artwork.descriptionPlain?.length ?? 0) > 99 ? "left" : "center"
               }
