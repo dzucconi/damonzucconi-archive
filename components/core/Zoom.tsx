@@ -164,4 +164,9 @@ const Close = styled(Clickable)`
   &:hover {
     background-color: ${color("primary")};
   }
+
+  &:focus {
+    outline: none;
+    background-color: ${color("primary")};
+  }
 `;
