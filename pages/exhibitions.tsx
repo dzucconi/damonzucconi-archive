@@ -5,7 +5,7 @@ import Link from "next/link";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
-import { GetServerSidePropsContext } from "next";
+import { buildGetStaticProps, withUrql } from "../lib/urql";
 
 const EXHIBITIONS_INDEX_QUERY = gql`
   query ExhibitionsIndexQuery {
@@ -108,16 +108,8 @@ const ExhibitionsIndexPage = () => {
 
 ExhibitionsIndexPage.getLayout = NavigationLayout;
 
-export default ExhibitionsIndexPage;
+export default withUrql(ExhibitionsIndexPage);
 
-// export const getServerSideProps = async (
-//   context: GetServerSidePropsContext
-// ) => {
-//   const apolloClient = initApolloClient();
-
-//   await apolloClient.query({ query: EXHIBITIONS_INDEX_QUERY });
-
-//   return {
-//     props: { initialApolloState: apolloClient.cache.extract() },
-//   };
-// };
+export const getStaticProps = buildGetStaticProps(() => [
+  EXHIBITIONS_INDEX_QUERY,
+]);

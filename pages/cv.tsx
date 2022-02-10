@@ -6,8 +6,9 @@ import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { useCvPageQuery } from "../generated/graphql";
+import { withUrql, buildGetStaticProps } from "../lib/urql";
 
-gql`
+const CV_PAGE_QUERY = gql`
   query CvPageQuery {
     cv {
       categories {
@@ -84,12 +85,14 @@ export const CvPage = () => {
   );
 };
 
-CvPage.getLayout = NavigationLayout;
-
-export default CvPage;
-
 const Entry = styled(Box)`
   a {
     color: ${color("primary")};
   }
 `;
+
+CvPage.getLayout = NavigationLayout;
+
+export default withUrql(CvPage);
+
+export const getStaticProps = buildGetStaticProps(() => [CV_PAGE_QUERY]);

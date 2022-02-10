@@ -1,6 +1,9 @@
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { useRouter } from "next/router";
-import { useExhibitionsShowQuery } from "../../generated/graphql";
+import {
+  useExhibitionsShowQuery,
+  ExhibitionSlugsQuery,
+} from "../../generated/graphql";
 import { DefinitionList } from "../../components/core/DefinitionList";
 import { HTML, Stack, Box, Grid } from "@auspices/eos";
 import { Back } from "../../components/core/Back";
@@ -11,7 +14,7 @@ import {
 import { Loading } from "../../components/core/Loading";
 import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
 import { gql } from "urql";
-// import { GetServerSidePropsContext } from "next";
+import { buildGetStaticProps, client, withUrql } from "../../lib/urql";
 
 const EXHIBITIONS_SHOW_QUERY = gql`
   query ExhibitionsShowQuery($id: ID!) {
@@ -118,21 +121,29 @@ const ExhibitionsShowPage = () => {
   );
 };
 
-export default ExhibitionsShowPage;
-
 ExhibitionsShowPage.getLayout = PageLayout;
 
-// export const getServerSideProps = async (
-//   context: GetServerSidePropsContext
-// ) => {
-//   const apolloClient = initApolloClient();
+export default withUrql(ExhibitionsShowPage);
 
-//   await apolloClient.query({
-//     query: EXHIBITIONS_SHOW_QUERY,
-//     variables: { id: context.params?.slug },
-//   });
+export const getStaticProps = buildGetStaticProps((ctx) => [
+  EXHIBITIONS_SHOW_QUERY,
+  { id: ctx.params?.slug },
+]);
 
-//   return {
-//     props: { initialApolloState: apolloClient.cache.extract() },
-//   };
-// };
+const EXHIBITION_SLUGS_QUERY = gql`
+  query ExhibitionSlugsQuery {
+    exhibitions {
+      slug
+    }
+  }
+`;
+
+export const getStaticPaths = async () => {
+  const { data } = await client
+    .query<ExhibitionSlugsQuery>(EXHIBITION_SLUGS_QUERY)
+    .toPromise();
+
+  const paths = data?.exhibitions.map(({ slug }) => ({ params: { slug } }));
+
+  return { paths, fallback: false };
+};

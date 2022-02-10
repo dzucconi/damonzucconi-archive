@@ -1,10 +1,4 @@
-import {
-  cacheExchange,
-  dedupExchange,
-  fetchExchange,
-  gql,
-  ssrExchange,
-} from "urql";
+import { gql } from "urql";
 import { useRouter } from "next/router";
 import { Box, Stack, HTML, Grid } from "@auspices/eos";
 import {
@@ -12,7 +6,10 @@ import {
   TOMBSTONE_ARTWORK_FRAGMENT,
 } from "../../components/pages/Tombstone";
 import { UrlBar } from "../../components/pages/UrlBar";
-import { useArtworksShowQuery } from "../../generated/graphql";
+import {
+  ArtworkSlugsQuery,
+  useArtworksShowQuery,
+} from "../../generated/graphql";
 import { Embed } from "../../components/pages/Embed";
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { Back } from "../../components/core/Back";
@@ -23,9 +20,7 @@ import {
 } from "../../components/pages/Thumbnail";
 import { Loading } from "../../components/core/Loading";
 import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
-import { GetStaticPropsContext } from "next";
-import { initUrqlClient, withUrqlClient } from "next-urql";
-import { client, GRAPHQL_ENDPOINT } from "../../lib/urql";
+import { buildGetStaticProps, client, withUrql } from "../../lib/urql";
 
 const ARTWORKS_SHOW_QUERY = gql`
   query ArtworksShowQuery($id: ID!) {
@@ -75,7 +70,6 @@ export const ArtworksShowPage = () => {
 
   const [{ fetching, error, data }] = useArtworksShowQuery({
     variables: { id: `${slug}` },
-    // skip: !slug, // TODO
   });
 
   if (error) {
@@ -211,24 +205,12 @@ export const ArtworksShowPage = () => {
 
 ArtworksShowPage.getLayout = PageLayout;
 
-export default withUrqlClient(() => ({ url: GRAPHQL_ENDPOINT }), {
-  ssr: false,
-})(ArtworksShowPage);
+export default withUrql(ArtworksShowPage);
 
-export const getStaticProps = async (ctx: GetStaticPropsContext) => {
-  const ssrCache = ssrExchange({ isClient: false });
-  const client = initUrqlClient(
-    {
-      url: GRAPHQL_ENDPOINT,
-      exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
-    },
-    false
-  )!;
-
-  await client.query(ARTWORKS_SHOW_QUERY, { id: ctx.params?.slug }).toPromise();
-
-  return { props: { urqlState: ssrCache.extractData() } };
-};
+export const getStaticProps = buildGetStaticProps((ctx) => [
+  ARTWORKS_SHOW_QUERY,
+  { id: ctx.params?.slug },
+]);
 
 const ARTWORK_SLUGS_QUERY = gql`
   query ArtworkSlugsQuery {
@@ -239,11 +221,11 @@ const ARTWORK_SLUGS_QUERY = gql`
 `;
 
 export const getStaticPaths = async () => {
-  const res = await client.query(ARTWORK_SLUGS_QUERY).toPromise();
+  const { data } = await client
+    .query<ArtworkSlugsQuery>(ARTWORK_SLUGS_QUERY)
+    .toPromise();
 
-  const paths = res.data.artworks.map(({ slug }: { slug: string }) => ({
-    params: { slug },
-  }));
+  const paths = data?.artworks.map(({ slug }) => ({ params: { slug } }));
 
   return { paths, fallback: false };
 };

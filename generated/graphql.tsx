@@ -551,6 +551,17 @@ export type ArtworksShowQuery = (
   ) }
 );
 
+export type ArtworkSlugsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ArtworkSlugsQuery = (
+  { __typename?: 'Query' }
+  & { artworks: Array<(
+    { __typename?: 'Artwork' }
+    & Pick<Artwork, 'slug'>
+  )> }
+);
+
 export type CvPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -621,6 +632,17 @@ export type ExhibitionsShowQuery = (
       & Meta_ImageFragment
     )> }
   ) }
+);
+
+export type ExhibitionSlugsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ExhibitionSlugsQuery = (
+  { __typename?: 'Query' }
+  & { exhibitions: Array<(
+    { __typename?: 'Exhibition' }
+    & Pick<Exhibition, 'slug'>
+  )> }
 );
 
 export type ArtworksIndexQueryVariables = Exact<{
@@ -808,6 +830,17 @@ ${Meta_ImageFragmentDoc}`;
 export function useArtworksShowQuery(options: Omit<Urql.UseQueryArgs<ArtworksShowQueryVariables>, 'query'>) {
   return Urql.useQuery<ArtworksShowQuery>({ query: ArtworksShowQueryDocument, ...options });
 };
+export const ArtworkSlugsQueryDocument = gql`
+    query ArtworkSlugsQuery {
+  artworks {
+    slug
+  }
+}
+    `;
+
+export function useArtworkSlugsQuery(options?: Omit<Urql.UseQueryArgs<ArtworkSlugsQueryVariables>, 'query'>) {
+  return Urql.useQuery<ArtworkSlugsQuery>({ query: ArtworkSlugsQueryDocument, ...options });
+};
 export const CvPageQueryDocument = gql`
     query CvPageQuery {
   cv {
@@ -893,6 +926,17 @@ ${Meta_ImageFragmentDoc}`;
 
 export function useExhibitionsShowQuery(options: Omit<Urql.UseQueryArgs<ExhibitionsShowQueryVariables>, 'query'>) {
   return Urql.useQuery<ExhibitionsShowQuery>({ query: ExhibitionsShowQueryDocument, ...options });
+};
+export const ExhibitionSlugsQueryDocument = gql`
+    query ExhibitionSlugsQuery {
+  exhibitions {
+    slug
+  }
+}
+    `;
+
+export function useExhibitionSlugsQuery(options?: Omit<Urql.UseQueryArgs<ExhibitionSlugsQueryVariables>, 'query'>) {
+  return Urql.useQuery<ExhibitionSlugsQuery>({ query: ExhibitionSlugsQueryDocument, ...options });
 };
 export const ArtworksIndexQueryDocument = gql`
     query ArtworksIndexQuery($state: [State]) {

@@ -6,6 +6,7 @@ import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
 import { GetServerSidePropsContext } from "next";
+import { buildGetStaticProps, withUrql } from "../lib/urql";
 
 const WEBSITES_QUERY = gql`
   query WebsitesQuery {
@@ -59,16 +60,6 @@ const WebsitesPage = () => {
 
 WebsitesPage.getLayout = NavigationLayout;
 
-export default WebsitesPage;
+export default withUrql(WebsitesPage);
 
-// export const getServerSideProps = async (
-//   context: GetServerSidePropsContext
-// ) => {
-//   const apolloClient = initApolloClient();
-
-//   await apolloClient.query({ query: WEBSITES_QUERY });
-
-//   return {
-//     props: { initialApolloState: apolloClient.cache.extract() },
-//   };
-// };
+export const getStaticProps = buildGetStaticProps(() => [WEBSITES_QUERY]);

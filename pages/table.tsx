@@ -6,8 +6,9 @@ import { useArtworksTableQuery } from "../generated/graphql";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
+import { buildGetStaticProps, withUrql } from "../lib/urql";
 
-gql`
+const ARTWORKS_TABLE_QUERY = gql`
   query ArtworksTableQuery {
     artworks(state: [SELECTED, PUBLISHED]) {
       id
@@ -94,4 +95,6 @@ const ArtworksTablePage = () => {
 
 ArtworksTablePage.getLayout = NavigationLayout;
 
-export default ArtworksTablePage;
+export default withUrql(ArtworksTablePage);
+
+export const getStaticProps = buildGetStaticProps(() => [ARTWORKS_TABLE_QUERY]);
