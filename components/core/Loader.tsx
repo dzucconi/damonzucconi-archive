@@ -37,13 +37,13 @@ export const Loader: FC = () => {
   );
 };
 
-const TRANSITION_DURATION = 500;
-
 const trickling = keyframes`
   100% {
     transform: translateX(99%);
   }
-`;
+  `;
+
+const TRANSITION_DURATION = 250;
 
 export const ProgressBar = styled.div`
   position: fixed;

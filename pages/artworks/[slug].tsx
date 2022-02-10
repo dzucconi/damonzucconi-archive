@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import { useRouter } from "next/router";
 import { Box, Stack, HTML, Grid } from "@auspices/eos";
 import {
@@ -6,7 +6,10 @@ import {
   TOMBSTONE_ARTWORK_FRAGMENT,
 } from "../../components/pages/Tombstone";
 import { UrlBar } from "../../components/pages/UrlBar";
-import { useArtworksShowQuery } from "../../generated/graphql";
+import {
+  ArtworkSlugsQuery,
+  useArtworksShowQuery,
+} from "../../generated/graphql";
 import { Embed } from "../../components/pages/Embed";
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { Back } from "../../components/core/Back";
@@ -17,8 +20,7 @@ import {
 } from "../../components/pages/Thumbnail";
 import { Loading } from "../../components/core/Loading";
 import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
-import { initApolloClient } from "../../lib/apolloClient";
-import { GetServerSidePropsContext } from "next";
+import { buildGetStaticProps, client, withUrql } from "../../lib/urql";
 
 const ARTWORKS_SHOW_QUERY = gql`
   query ArtworksShowQuery($id: ID!) {
@@ -66,16 +68,15 @@ export const ArtworksShowPage = () => {
     query: { slug },
   } = useRouter();
 
-  const { loading, error, data } = useArtworksShowQuery({
+  const [{ fetching, error, data }] = useArtworksShowQuery({
     variables: { id: `${slug}` },
-    skip: !slug,
   });
 
   if (error) {
     throw error;
   }
 
-  if (loading || !data) {
+  if (fetching || !data) {
     return <Loading />;
   }
 
@@ -204,19 +205,27 @@ export const ArtworksShowPage = () => {
 
 ArtworksShowPage.getLayout = PageLayout;
 
-export default ArtworksShowPage;
+export default withUrql(ArtworksShowPage);
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const apolloClient = initApolloClient();
+export const getStaticProps = buildGetStaticProps((ctx) => [
+  ARTWORKS_SHOW_QUERY,
+  { id: ctx.params?.slug },
+]);
 
-  await apolloClient.query({
-    query: ARTWORKS_SHOW_QUERY,
-    variables: { id: context.params?.slug },
-  });
+const ARTWORK_SLUGS_QUERY = gql`
+  query ArtworkSlugsQuery {
+    artworks {
+      slug
+    }
+  }
+`;
 
-  return {
-    props: { initialApolloState: apolloClient.cache.extract() },
-  };
+export const getStaticPaths = async () => {
+  const { data } = await client
+    .query<ArtworkSlugsQuery>(ARTWORK_SLUGS_QUERY)
+    .toPromise();
+
+  const paths = data?.artworks.map(({ slug }) => ({ params: { slug } }));
+
+  return { paths, fallback: false };
 };

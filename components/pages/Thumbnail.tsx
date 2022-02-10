@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import { Box, File, PaneOption, ResponsiveImage } from "@auspices/eos";
 import { FC, useCallback, useRef, useState } from "react";
 import { Thumbnail_ImageFragment } from "../../generated/graphql";

@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import { StackProps } from "@auspices/eos";
 import React from "react";
 import { Tombstone_ArtworkFragment } from "../../generated/graphql";

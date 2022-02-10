@@ -35,6 +35,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       <Dropdown
         onOpen={onOpen}
         onClose={onClose}
+        placement="bottom-end"
         label={
           <Toggle>
             <Ellipsis />

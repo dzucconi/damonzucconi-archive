@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import Link from "next/link";
 import { Cell, Stack } from "@auspices/eos";
 import { Table } from "../components/core/Table";
@@ -6,8 +6,9 @@ import { useArtworksTableQuery } from "../generated/graphql";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
+import { buildGetStaticProps, withUrql } from "../lib/urql";
 
-gql`
+const ARTWORKS_TABLE_QUERY = gql`
   query ArtworksTableQuery {
     artworks(state: [SELECTED, PUBLISHED]) {
       id
@@ -20,13 +21,13 @@ gql`
 `;
 
 const ArtworksTablePage = () => {
-  const { loading, error, data } = useArtworksTableQuery();
+  const [{ fetching, error, data }] = useArtworksTableQuery();
 
   if (error) {
     throw error;
   }
 
-  if (loading || !data) {
+  if (fetching || !data) {
     return <Loading />;
   }
 
@@ -94,4 +95,6 @@ const ArtworksTablePage = () => {
 
 ArtworksTablePage.getLayout = NavigationLayout;
 
-export default ArtworksTablePage;
+export default withUrql(ArtworksTablePage);
+
+export const getStaticProps = buildGetStaticProps(() => [ARTWORKS_TABLE_QUERY]);

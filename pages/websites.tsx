@@ -1,12 +1,12 @@
 import { Box, Stack } from "@auspices/eos";
-import { gql } from "@apollo/client";
+import { gql } from "urql";
 import { useWebsitesQuery } from "../generated/graphql";
 import { prettifyUrl } from "../lib/prettifyUrl";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
 import { GetServerSidePropsContext } from "next";
-import { initApolloClient } from "../lib/apolloClient";
+import { buildGetStaticProps, withUrql } from "../lib/urql";
 
 const WEBSITES_QUERY = gql`
   query WebsitesQuery {
@@ -21,13 +21,13 @@ const WEBSITES_QUERY = gql`
 `;
 
 const WebsitesPage = () => {
-  const { data, loading, error } = useWebsitesQuery();
+  const [{ fetching, data, error }] = useWebsitesQuery();
 
   if (error) {
     throw error;
   }
 
-  if (loading || !data) {
+  if (fetching || !data) {
     return <Loading />;
   }
 
@@ -60,16 +60,6 @@ const WebsitesPage = () => {
 
 WebsitesPage.getLayout = NavigationLayout;
 
-export default WebsitesPage;
+export default withUrql(WebsitesPage);
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const apolloClient = initApolloClient();
-
-  await apolloClient.query({ query: WEBSITES_QUERY });
-
-  return {
-    props: { initialApolloState: apolloClient.cache.extract() },
-  };
-};
+export const getStaticProps = buildGetStaticProps(() => [WEBSITES_QUERY]);

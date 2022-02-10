@@ -3,7 +3,6 @@ import { Stack, StackProps, Button, Box } from "@auspices/eos";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Search } from "./Search";
-import { useApolloNetworkStatus } from "../../lib/apolloClient";
 
 const ITEMS = [
   { label: "Not Everything", href: "/" },
@@ -17,8 +16,6 @@ type NavigationProps = StackProps;
 
 export const Navigation: FC<NavigationProps> = ({ ...rest }) => {
   const router = useRouter();
-
-  const status = useApolloNetworkStatus();
 
   return (
     <Stack width={["100%", "100%", "fit-content"]} {...rest}>
@@ -43,7 +40,7 @@ export const Navigation: FC<NavigationProps> = ({ ...rest }) => {
         })}
       </Stack>
 
-      <Search width="100%" loading={status.numPendingQueries > 0} />
+      <Search width="100%" />
     </Stack>
   );
 };
