@@ -24,7 +24,7 @@ import {
 import { Loading } from "../../components/core/Loading";
 import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
 import { GetStaticPropsContext } from "next";
-import { initUrqlClient } from "next-urql";
+import { initUrqlClient, withUrqlClient } from "next-urql";
 import { client, GRAPHQL_ENDPOINT } from "../../lib/urql";
 
 const ARTWORKS_SHOW_QUERY = gql`
@@ -211,7 +211,9 @@ export const ArtworksShowPage = () => {
 
 ArtworksShowPage.getLayout = PageLayout;
 
-export default ArtworksShowPage;
+export default withUrqlClient(() => ({ url: GRAPHQL_ENDPOINT }), {
+  ssr: false,
+})(ArtworksShowPage);
 
 export const getStaticProps = async (ctx: GetStaticPropsContext) => {
   const ssrCache = ssrExchange({ isClient: false });
