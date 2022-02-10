@@ -4,6 +4,7 @@ schema: "https://api.damonzucconi.com/graph"
 documents:
   - pages/**/*.tsx
   - components/**/*.tsx
+  - templates/**/*.tsx
 generates:
   generated/graphql.tsx:
     plugins:

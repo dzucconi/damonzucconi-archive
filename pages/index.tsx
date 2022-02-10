@@ -1,6 +1,6 @@
 import { State } from "../generated/graphql";
 import { buildGetStaticProps, withUrql } from "../lib/urql";
-import { ArtworksIndexPage, ARTWORKS_INDEX_QUERY } from "./_index";
+import { ArtworksIndexPage, ARTWORKS_INDEX_QUERY } from "../templates/index";
 
 export default withUrql(ArtworksIndexPage);
 
