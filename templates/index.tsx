@@ -2,10 +2,11 @@ import { gql } from "urql";
 import Link from "next/link";
 import { EmptyFrame, File, Grid, ResponsiveImage, Stack } from "@auspices/eos";
 import { State, useArtworksIndexQuery } from "../generated/graphql";
-import { useRouter } from "next/router";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
+import { FC } from "react";
+import { useRouter } from "next/router";
 
 export const ARTWORKS_INDEX_QUERY = gql`
   query ArtworksIndexQuery($state: [State]) {
@@ -37,13 +38,11 @@ export const ARTWORKS_INDEX_QUERY = gql`
 
 export const ArtworksIndexPage = () => {
   const router = useRouter();
-  const state =
-    router.asPath === "/"
-      ? [State.Selected]
-      : [State.Selected, State.Published];
+
+  console.log({ pathname: router.pathname, asPath: router.asPath });
 
   const [{ fetching, error, data }] = useArtworksIndexQuery({
-    variables: { state },
+    variables: { state: [State.Selected] },
   });
 
   if (error) {
