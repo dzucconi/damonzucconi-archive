@@ -89,6 +89,7 @@ const Fade = styled(Box)`
     top: 0;
     bottom: 0;
     width: ${themeGet("space.6")};
+    border-radius: 8px;
   }
 
   &:before {
