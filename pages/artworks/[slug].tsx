@@ -139,7 +139,7 @@ export const ArtworksShowPage = () => {
         )}
 
         {artwork.intent === "canonical" && artwork.images.length > 0 && (
-          <Grid cellSize={["10rem", "10rem", "14rem"]}>
+          <Grid cellSize={["9rem", "10rem", "14rem"]}>
             {artwork.images.map((image) => {
               return <Thumbnail key={image.id} image={image} />;
             })}

@@ -110,7 +110,7 @@ const ExhibitionsShowPage = () => {
         )}
 
         {exhibition.images.length > 0 && (
-          <Grid cellSize={["10rem", "10rem", "14rem"]}>
+          <Grid cellSize={["9rem", "10rem", "14rem"]}>
             {exhibition.images.map((image) => {
               return <Thumbnail key={image.id} image={image} />;
             })}
