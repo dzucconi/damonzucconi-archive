@@ -227,5 +227,5 @@ export const getStaticPaths = async () => {
 
   const paths = data?.artworks.map(({ slug }) => ({ params: { slug } }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: "blocking" };
 };
