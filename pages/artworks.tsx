@@ -1,12 +1,43 @@
-import { State } from "../generated/graphql";
+import { Grid, Stack } from "@auspices/eos";
+import { State, useArtworksIndexQuery } from "../generated/graphql";
+import { NavigationLayout } from "../components/layouts/NavigationLayout";
+import { Loading } from "../components/core/Loading";
+import { Meta } from "../components/core/Meta";
+import { ThumbnailArtwork } from "../components/pages/ThumbnailArtwork";
 import { buildGetStaticProps, withUrql } from "../lib/urql";
-import { ArtworksIndexPage, ARTWORKS_INDEX_QUERY } from "../templates/index";
+import { ARTWORKS_INDEX_QUERY } from "./index";
 
 const ArtworksArtworksPage = () => {
-  return <ArtworksIndexPage />;
+  const [{ fetching, error, data }] = useArtworksIndexQuery({
+    variables: { state: [State.Selected, State.Published] },
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  if (fetching || !data) {
+    return <Loading />;
+  }
+
+  const { artworks } = data;
+
+  return (
+    <>
+      <Meta title="Damon Zucconi" />
+
+      <Stack spacing={6}>
+        <Grid cellSize={["10rem", "10rem", "14rem"]}>
+          {artworks.map((artwork) => {
+            return <ThumbnailArtwork key={artwork.id} artwork={artwork} />;
+          })}
+        </Grid>
+      </Stack>
+    </>
+  );
 };
 
-ArtworksArtworksPage.getLayout = ArtworksIndexPage.getLayout;
+ArtworksArtworksPage.getLayout = NavigationLayout;
 
 export default withUrql(ArtworksArtworksPage);
 

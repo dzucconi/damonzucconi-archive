@@ -509,6 +509,28 @@ export type Thumbnail_ImageFragment = (
   ) }
 );
 
+export type ThumbnailArtwork_ArtworkFragment = (
+  { __typename?: 'Artwork' }
+  & Pick<Artwork, 'id' | 'slug' | 'title' | 'material' | 'year'>
+  & { images: Array<(
+    { __typename?: 'Image' }
+    & { placeholder: (
+      { __typename?: 'ResizedImage' }
+      & { urls: (
+        { __typename?: 'RetinaImage' }
+        & { src: RetinaImage['_1x'] }
+      ) }
+    ), resized: (
+      { __typename?: 'ResizedImage' }
+      & Pick<ResizedImage, 'width' | 'height'>
+      & { urls: (
+        { __typename?: 'RetinaImage' }
+        & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
+      ) }
+    ) }
+  )> }
+);
+
 export type Tombstone_ArtworkFragment = (
   { __typename?: 'Artwork' }
   & Pick<Artwork, 'title' | 'material' | 'duration' | 'year' | 'collector_byline'>
@@ -686,24 +708,8 @@ export type ArtworksIndexQuery = (
   { __typename?: 'Query' }
   & { artworks: Array<(
     { __typename?: 'Artwork' }
-    & Pick<Artwork, 'id' | 'slug' | 'title' | 'material' | 'year'>
-    & { images: Array<(
-      { __typename?: 'Image' }
-      & { placeholder: (
-        { __typename?: 'ResizedImage' }
-        & { urls: (
-          { __typename?: 'RetinaImage' }
-          & { src: RetinaImage['_1x'] }
-        ) }
-      ), resized: (
-        { __typename?: 'ResizedImage' }
-        & Pick<ResizedImage, 'width' | 'height'>
-        & { urls: (
-          { __typename?: 'RetinaImage' }
-          & Pick<RetinaImage, '_1x' | '_2x' | '_3x'>
-        ) }
-      ) }
-    )> }
+    & Pick<Artwork, 'id'>
+    & ThumbnailArtwork_ArtworkFragment
   )> }
 );
 
@@ -763,6 +769,31 @@ export const Thumbnail_ImageFragmentDoc = gql`
       _1x
       _2x
       _3x
+    }
+  }
+}
+    `;
+export const ThumbnailArtwork_ArtworkFragmentDoc = gql`
+    fragment ThumbnailArtwork_artwork on Artwork {
+  id
+  slug
+  title
+  material
+  year
+  images(limit: 1, state: PUBLISHED) {
+    placeholder: resized(width: 50, height: 50, blur: 10) {
+      urls {
+        src: _1x
+      }
+    }
+    resized(width: 200, height: 200) {
+      width
+      height
+      urls {
+        _1x
+        _2x
+        _3x
+      }
     }
   }
 }
@@ -982,29 +1013,10 @@ export const ArtworksIndexQueryDocument = gql`
     query ArtworksIndexQuery($state: [State]) {
   artworks(state: $state) {
     id
-    slug
-    title
-    material
-    year
-    images(limit: 1, state: PUBLISHED) {
-      placeholder: resized(width: 50, height: 50, blur: 10) {
-        urls {
-          src: _1x
-        }
-      }
-      resized(width: 200, height: 200) {
-        width
-        height
-        urls {
-          _1x
-          _2x
-          _3x
-        }
-      }
-    }
+    ...ThumbnailArtwork_artwork
   }
 }
-    `;
+    ${ThumbnailArtwork_ArtworkFragmentDoc}`;
 
 export function useArtworksIndexQuery(options?: Omit<Urql.UseQueryArgs<ArtworksIndexQueryVariables>, 'query'>) {
   return Urql.useQuery<ArtworksIndexQuery>({ query: ArtworksIndexQueryDocument, ...options });
