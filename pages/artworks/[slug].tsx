@@ -139,18 +139,22 @@ export const ArtworksShowPage = () => {
         )}
 
         {artwork.intent === "canonical" && artwork.images.length > 0 && (
-          <Grid cellSize={["9rem", "10rem", "14rem"]}>
-            {artwork.images.map((image) => {
-              return <Thumbnail key={image.id} image={image} />;
-            })}
-          </Grid>
+          // Wrapped in <Box> to prevent overflow on Mobile Safari
+          <Box>
+            <Grid cellSize={["9rem", "10rem", "14rem"]}>
+              {artwork.images.map((image) => {
+                return <Thumbnail key={image.id} image={image} />;
+              })}
+            </Grid>
+          </Box>
         )}
 
         {artwork.attachments.length > 0 && (
           <Stack direction="vertical" spacing={2} textAlign="center">
-            {artwork.attachments.map((attachment) => {
+            {artwork.attachments.map((attachment, i) => {
               return (
                 <Box
+                  key={attachment.url}
                   as="a"
                   href={attachment.url}
                   target="_blank"
@@ -170,6 +174,7 @@ export const ArtworksShowPage = () => {
             {artwork.links.map((link) => {
               return (
                 <Box
+                  key={link.url}
                   as="a"
                   href={link.url}
                   target="_blank"
