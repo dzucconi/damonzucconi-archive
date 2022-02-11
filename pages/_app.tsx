@@ -8,7 +8,7 @@ import {
   Tooltip,
   useThemer,
 } from "@auspices/eos";
-import { FC, ReactElement, useEffect, ReactNode } from "react";
+import { FC, ReactElement, ReactNode } from "react";
 import { Loader } from "../components/core/Loader";
 import { NextPage } from "next";
 import Head from "next/head";
@@ -20,17 +20,6 @@ type NextPageWithLayout = NextPage & {
 
 const App: FC = ({ children }) => {
   const { theme, toggleScheme } = useThemer();
-
-  useEffect(() => {
-    // HACK: Toggle the scheme back and forth on initial load
-    // to prevent rendering mismatch
-    const timeout = setTimeout(() => {
-      toggleScheme();
-      toggleScheme();
-    }, 0);
-
-    return () => clearTimeout(timeout);
-  }, []);
 
   return (
     <>

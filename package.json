@@ -9,7 +9,7 @@
     "gql": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@auspices/eos": "2.30.1",
+    "@auspices/eos": "2.30.3",
     "@seznam/compose-react-refs": "^1.0.4",
     "@styled-system/theme-get": "^5.1.2",
     "graphql": "^15.3.0",
@@ -34,10 +34,10 @@
     "@types/node": "^14.14.3",
     "@types/openseadragon": "^3.0.0",
     "@types/react": "^16.9.53",
-    "@types/styled-components": "^5.1.4",
+    "@types/styled-components": "^5.1.22",
     "@types/styled-system": "^5.1.10",
     "@types/styled-system__theme-get": "^5.0.1",
-    "babel-plugin-styled-components": "^1.11.1",
+    "babel-plugin-styled-components": "^2.0.2",
     "typescript": "^4.0.3"
   },
   "resolutions": {

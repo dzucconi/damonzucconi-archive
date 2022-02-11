@@ -1,10 +1,15 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { isTouch } from "../../lib/isTouch";
 
-export const useHover = () => {
-  const defaultMode = isTouch() ? "Active" : "Resting";
+type Mode = "Resting" | "Active" | "Open";
 
-  const [mode, setMode] = useState<"Resting" | "Active" | "Open">(defaultMode);
+export const useHover = () => {
+  const [defaultMode, setDefaultMode] = useState<Mode>("Resting");
+  const [mode, setMode] = useState<Mode>(defaultMode);
+
+  useEffect(() => {
+    setDefaultMode(isTouch() ? "Active" : "Resting");
+  }, []);
 
   const timer = useRef<ReturnType<typeof setTimeout>>();
 
