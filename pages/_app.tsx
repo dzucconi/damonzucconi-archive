@@ -13,6 +13,7 @@ import { Loader } from "../components/core/Loader";
 import { NextPage } from "next";
 import Head from "next/head";
 import { UrqlProvider } from "../lib/urql";
+import { Analytics } from "../components/pages/Analytics";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -61,6 +62,8 @@ const App: FC = ({ children }) => {
           </Clickable>
         </Tooltip>
       </ThemeProvider>
+
+      <Analytics />
     </>
   );
 };
