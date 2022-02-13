@@ -10,7 +10,7 @@ export const Page = styled(Box)`
 `;
 
 Page.defaultProps = {
-  p: 6,
+  p: [4, 6],
 };
 
 export const Bleed = styled(Box)`
