@@ -5,7 +5,6 @@ import { prettifyUrl } from "../lib/prettifyUrl";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
-import { GetServerSidePropsContext } from "next";
 import { buildGetStaticProps, withUrql } from "../lib/urql";
 
 const WEBSITES_QUERY = gql`
@@ -33,7 +32,7 @@ const WebsitesPage = () => {
 
   const links = data.artworks
     .flatMap((artwork) => artwork.links)
-    .filter((link) => link.kind === "canonical");
+    .filter((link) => link.kind === "CANONICAL");
 
   return (
     <>
