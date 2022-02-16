@@ -2,7 +2,7 @@
 
 ## Meta
 
-- **State**: development
+- **State**: production
 - **Production**:
   - **URL**: https://www.damonzucconi.com/
   - **URL**: https://damonzucconi-archive-dzucconi.vercel.app/
