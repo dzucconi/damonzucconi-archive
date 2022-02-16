@@ -130,7 +130,7 @@ export const ArtworksShowPage = () => {
           </Stack>
         )}
 
-        {artwork.intent === "default" && artwork.images.length > 0 && (
+        {artwork.intent === "DEFAULT" && artwork.images.length > 0 && (
           <Stack direction="vertical" spacing={6}>
             {artwork.images.map((image) => {
               return <Figure key={image.id} image={image} />;
@@ -138,7 +138,7 @@ export const ArtworksShowPage = () => {
           </Stack>
         )}
 
-        {artwork.intent === "canonical" && artwork.images.length > 0 && (
+        {artwork.intent === "CANONICAL" && artwork.images.length > 0 && (
           // Wrapped in <Box> to prevent overflow on Mobile Safari
           <Box>
             <Grid cellSize={["9rem", "10rem", "14rem"]}>
