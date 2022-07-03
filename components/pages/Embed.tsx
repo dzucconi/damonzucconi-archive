@@ -9,11 +9,12 @@ export const Embed: FC<EmbedProps> = (props) => {
 };
 
 const Container = styled(HTML)`
-  background-color: ${color("hint")};
   width: 100%;
 
   iframe,
-  img {
+  img,
+  audio,
+  video {
     display: block;
     max-width: 100%;
     vertical-align: bottom;
