@@ -9,7 +9,7 @@
     "gql": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@auspices/eos": "2.33.1",
+    "@auspices/eos": "2.33.2",
     "@seznam/compose-react-refs": "^1.0.4",
     "@styled-system/theme-get": "^5.1.2",
     "graphql": "^15.3.0",
