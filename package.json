@@ -9,12 +9,12 @@
     "gql": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@auspices/eos": "2.33.2",
+    "@auspices/eos": "2.33.3",
     "@seznam/compose-react-refs": "^1.0.4",
     "@styled-system/theme-get": "^5.1.2",
     "graphql": "^15.3.0",
     "isomorphic-unfetch": "^3.1.0",
-    "next": "12.1.0",
+    "next": "12.2.5",
     "next-urql": "^3.3.2",
     "openseadragon": "^3.0.0",
     "proportional-scale": "^4.0.0",
@@ -36,7 +36,6 @@
     "@types/styled-components": "^5.1.23",
     "@types/styled-system": "^5.1.10",
     "@types/styled-system__theme-get": "^5.0.1",
-    "babel-plugin-styled-components": "^2.0.3",
     "typescript": "^4.0.3"
   },
   "resolutions": {
