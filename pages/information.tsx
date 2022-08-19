@@ -1,9 +1,10 @@
-import { Box, Button, Cell, Input, Stack } from "@auspices/eos";
+import { Box, Button, Cell, Input, Stack, useThemer } from "@auspices/eos";
 import { DefinitionList } from "../components/core/DefinitionList";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Meta } from "../components/core/Meta";
 
 const InformationPage = () => {
+  const { scheme, toggleScheme } = useThemer();
   return (
     <>
       <Meta title="Information" />
@@ -166,6 +167,21 @@ const InformationPage = () => {
                   definition: "api.damonzucconi.com/graph",
                   href: "https://api.damonzucconi.com/graph",
                   target: "_blank",
+                },
+              ],
+            },
+          ]}
+        />
+
+        <DefinitionList
+          definitions={[
+            {
+              term: "Preferences",
+              definition: [
+                {
+                  term: "Theme",
+                  definition: scheme,
+                  onClick: toggleScheme,
                 },
               ],
             },

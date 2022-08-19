@@ -1,13 +1,6 @@
 import { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
-import {
-  Box,
-  Clickable,
-  GlobalStyles,
-  ThemerProvider,
-  Tooltip,
-  useThemer,
-} from "@auspices/eos";
+import { GlobalStyles, ThemerProvider, useThemer } from "@auspices/eos";
 import { FC, ReactElement, ReactNode } from "react";
 import { Loader } from "../components/core/Loader";
 import { NextPage } from "next";
@@ -20,7 +13,7 @@ type NextPageWithLayout = NextPage & {
 };
 
 const App: FC = ({ children }) => {
-  const { theme, toggleScheme } = useThemer();
+  const { theme } = useThemer();
 
   return (
     <>
@@ -47,20 +40,6 @@ const App: FC = ({ children }) => {
         <Loader />
 
         {children}
-
-        <Tooltip label="Invert color scheme" placement="left">
-          <Clickable
-            position="fixed"
-            bottom={0}
-            right={0}
-            p={6}
-            zIndex={1}
-            onClick={toggleScheme}
-            cursor="pointer"
-          >
-            <Box width={10} height={10} bg="primary" borderRadius="50%" />
-          </Clickable>
-        </Tooltip>
       </ThemeProvider>
 
       <Analytics />
