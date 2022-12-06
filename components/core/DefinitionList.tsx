@@ -90,7 +90,5 @@ export const DefinitionList: FC<DefinitionListProps> = ({
 export const Cell = styled(_Cell)``;
 
 Cell.defaultProps = {
-  fontSize: 1,
-  px: 3,
-  py: 2,
+  variant: "small",
 };

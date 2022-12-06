@@ -25,10 +25,8 @@ export const Navigation: FC<NavigationProps> = ({ ...rest }) => {
             <Box key={href}>
               <Link key={href} href={href} passHref>
                 <Button
-                  fontSize={1}
-                  px={3}
-                  py={2}
                   as="a"
+                  variant="small"
                   width="100%"
                   textDecoration={router.asPath === href ? "underline" : "none"}
                 >

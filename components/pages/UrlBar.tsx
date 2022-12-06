@@ -1,4 +1,4 @@
-import { Box, CELL, color, themeGet } from "@auspices/eos";
+import { Box, Cell, color, themeGet } from "@auspices/eos";
 import { FC, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { wait } from "../../lib/wait";
@@ -107,8 +107,7 @@ const Fade = styled(Box)`
   }
 `;
 
-const Container = styled(Box).attrs({
-  ...CELL,
+const Container = styled(Cell).attrs({
   borderWidth: 0,
   justifyContent: "center",
   borderRadius: 8,

@@ -1,5 +1,5 @@
 import { gql } from "urql";
-import { Banner, Grid, Stack } from "@auspices/eos";
+import { Grid, Stack } from "@auspices/eos";
 import { State, useArtworksIndexQuery } from "../generated/graphql";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";

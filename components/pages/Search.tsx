@@ -103,12 +103,10 @@ export const Search: FC<SearchProps> = ({
                 <Link href={`/artworks/${artwork.slug}`} passHref>
                   <Button
                     as="a"
+                    variant="small"
                     width="100%"
                     highlighted={index === i}
                     justifyContent="flex-start"
-                    fontSize={1}
-                    px={4}
-                    py={2}
                   >
                     {artwork.title}
                   </Button>

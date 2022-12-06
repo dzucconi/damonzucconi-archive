@@ -9,10 +9,10 @@
   dependencies:
     tslib "~2.0.1"
 
-"@auspices/eos@2.33.3":
-  version "2.33.3"
-  resolved "https://registry.yarnpkg.com/@auspices/eos/-/eos-2.33.3.tgz#5e640c1662f165beac37b736de82884d35f2027a"
-  integrity sha512-467pg7LSKFggI20nbj4yd96RpGLEU+z/BUxMi+QrPNHhxzucpmvteTkftbKCSdq7fKN9nJgua+5Bxn6Brcls7A==
+"@auspices/eos@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@auspices/eos/-/eos-4.0.0.tgz#cdf2e5311348bfecdee1b42a52d9a64438ee5669"
+  integrity sha512-HARCpcLlJ7h8GanIv66X2kgnLfwkTvQqFuEzvOp+87TVIVIXVIzIP38QSYmSWhNBrSVZArVFLnZh70wkcGwhBQ==
   dependencies:
     "@popperjs/core" "^2.11.5"
     "@seznam/compose-react-refs" "^1.0.5"
