@@ -24,17 +24,7 @@ const App: FC = ({ children }) => {
         />
       </Head>
 
-      <ThemeProvider
-        theme={{
-          ...theme,
-          fonts: {
-            ...theme.fonts,
-            body: "'Helvetica Neue', Helvetica, sans-serif",
-            system:
-              '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
-          },
-        }}
-      >
+      <ThemeProvider theme={theme}>
         <GlobalStyles />
 
         <Loader />
