@@ -227,7 +227,7 @@ const ARTWORK_SLUGS_QUERY = gql`
 
 export const getStaticPaths = async () => {
   const { data } = await client
-    .query<ArtworkSlugsQuery>(ARTWORK_SLUGS_QUERY)
+    .query<ArtworkSlugsQuery>(ARTWORK_SLUGS_QUERY, {})
     .toPromise();
 
   const paths = data?.artworks.map(({ slug }) => ({ params: { slug } }));
