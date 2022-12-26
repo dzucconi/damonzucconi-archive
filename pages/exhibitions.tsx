@@ -63,6 +63,7 @@ const ExhibitionsIndexPage = () => {
                 href={`/exhibitions/${exhibition.slug}`}
                 aria-label={`${exhibition.title}, ${exhibition.city}; (${exhibition.year})`}
                 passHref
+                legacyBehavior
               >
                 <File
                   name={[exhibition.title, exhibition.city].join(", ")}

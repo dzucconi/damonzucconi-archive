@@ -66,6 +66,7 @@ const ArtworksTablePage = () => {
                         href={`/artworks/${artwork.slug}`}
                         aria-label={`${artwork.title}; ${artwork.material} (${artwork.year})`}
                         passHref
+                        legacyBehavior
                       >
                         <Cell as="a" borderWidth={0} display="block">
                           {artwork.title}

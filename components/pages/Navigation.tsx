@@ -23,7 +23,7 @@ export const Navigation: FC<NavigationProps> = ({ ...rest }) => {
         {ITEMS.map(({ label, href }) => {
           return (
             <Box key={href}>
-              <Link key={href} href={href} passHref>
+              <Link key={href} href={href} passHref legacyBehavior>
                 <Button
                   as="a"
                   variant="small"

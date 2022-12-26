@@ -56,7 +56,7 @@ export const DefinitionList: FC<DefinitionListProps> = ({
 
                     if (isInternal) {
                       return (
-                        <Link href={href} passHref>
+                        <Link href={href} passHref legacyBehavior>
                           <Cell as="a">{definition}</Cell>
                         </Link>
                       );

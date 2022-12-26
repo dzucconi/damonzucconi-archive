@@ -100,7 +100,11 @@ export const Search: FC<SearchProps> = ({
           {filtered.slice(0, 5).map((artwork, i) => {
             return (
               <Box key={artwork.id}>
-                <Link href={`/artworks/${artwork.slug}`} passHref>
+                <Link
+                  href={`/artworks/${artwork.slug}`}
+                  passHref
+                  legacyBehavior
+                >
                   <Button
                     as="a"
                     variant="small"

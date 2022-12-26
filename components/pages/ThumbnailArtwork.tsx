@@ -43,6 +43,7 @@ export const ThumbnailArtwork: FC<ThumbnailArtworkProps> = ({ artwork }) => {
       href={`/artworks/${artwork.slug}`}
       aria-label={`${artwork.title}; ${artwork.material} (${artwork.year})`}
       passHref
+      legacyBehavior
     >
       <File
         name={artwork.title}
