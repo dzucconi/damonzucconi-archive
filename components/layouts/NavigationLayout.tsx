@@ -7,7 +7,7 @@ export const NavigationLayout = (page: ReactElement) => (
   <>
     <Banner bg="external">
       <Box
-        color="primary"
+        color="currentColor"
         as="a"
         href="https://jttnyc.com/exhibitions/marlon-mullen/when-you-re-here-you-re-familiar"
         target="_blank"
