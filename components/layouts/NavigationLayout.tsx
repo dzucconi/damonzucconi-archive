@@ -9,7 +9,7 @@ export const NavigationLayout = (page: ReactElement) => (
       <Box
         color="currentColor"
         as="a"
-        href="https://jttnyc.com/exhibitions/marlon-mullen/when-you-re-here-you-re-familiar"
+        href="https://jttnyc.com"
         target="_blank"
       >
         When You’re Here, You’re Familiar — through April 1 @ JTT
