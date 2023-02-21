@@ -51,6 +51,12 @@ const InformationPage = () => {
                   href: "https://artsy.net/artist/damon-zucconi",
                   target: "_blank",
                 },
+                {
+                  term: "Spotify",
+                  definition: "spotify:4QC1cXBGcYNXkMchdzPzrx",
+                  href: "https://open.spotify.com/artist/4QC1cXBGcYNXkMchdzPzrx?si=d2vbeZo7ScmaUXF072YttQ",
+                  target: "_blank",
+                },
               ],
             },
           ]}
