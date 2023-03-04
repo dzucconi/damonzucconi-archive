@@ -36,8 +36,14 @@ type ThumbnailProps = {
 
 export const Thumbnail: FC<ThumbnailProps> = ({ image }) => {
   const { zoomComponent, openZoom: handleClick } = useZoom({ src: image.url });
-  const { mode, handleMouseEnter, handleMouseLeave, handleOpen, handleClose } =
-    useHover();
+  const {
+    mode,
+    handleMouseEnter,
+    handleMouseLeave,
+    handleOpen,
+    handleClose,
+    touch,
+  } = useHover();
 
   return (
     <>
@@ -49,7 +55,7 @@ export const Thumbnail: FC<ThumbnailProps> = ({ image }) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {mode !== "Resting" && (
+        {!touch && mode !== "Resting" && (
           <ContextMenu
             position="absolute"
             top={3}

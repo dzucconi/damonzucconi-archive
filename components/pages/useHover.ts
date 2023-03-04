@@ -6,9 +6,12 @@ type Mode = "Resting" | "Active" | "Open";
 export const useHover = () => {
   const [defaultMode, setDefaultMode] = useState<Mode>("Resting");
   const [mode, setMode] = useState<Mode>(defaultMode);
+  const [touch, setTouch] = useState(false);
 
   useEffect(() => {
-    setDefaultMode(isTouch() ? "Active" : "Resting");
+    const isTouchDevice = isTouch();
+    setDefaultMode(isTouchDevice ? "Active" : "Resting");
+    setTouch(isTouchDevice);
   }, []);
 
   const timer = useRef<ReturnType<typeof setTimeout>>();
@@ -38,5 +41,6 @@ export const useHover = () => {
     handleClose,
     handleMouseEnter,
     handleMouseLeave,
+    touch,
   };
 };

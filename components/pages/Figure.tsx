@@ -50,8 +50,14 @@ export const Figure: FC<FigureProps> = ({ image, ...rest }) => {
   const { zoomComponent, openZoom: handleClick } = useZoom({
     src: image.zoom.srcs._1x,
   });
-  const { mode, handleMouseEnter, handleMouseLeave, handleOpen, handleClose } =
-    useHover();
+  const {
+    mode,
+    handleMouseEnter,
+    handleMouseLeave,
+    handleOpen,
+    handleClose,
+    touch,
+  } = useHover();
 
   return (
     <>
@@ -83,7 +89,7 @@ export const Figure: FC<FigureProps> = ({ image, ...rest }) => {
             cursor="zoom-in"
           />
 
-          {mode !== "Resting" && (
+          {!touch && mode !== "Resting" && (
             <ContextMenu
               position="absolute"
               top={5}
