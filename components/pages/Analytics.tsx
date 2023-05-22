@@ -5,8 +5,8 @@ export const Analytics: FC = () => {
   return (
     <>
       <Script
-        src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
-        strategy="afterInteractive"
+        src="https://www.googletagmanager.com/gtag/js?id=G-3NETR5XRJL"
+        async
       />
 
       <Script id="google-analytics" strategy="afterInteractive">
@@ -15,7 +15,7 @@ export const Analytics: FC = () => {
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
-          gtag('config', 'UA-5681004-1');
+          gtag('config', 'G-3NETR5XRJL');
         `}
       </Script>
     </>
