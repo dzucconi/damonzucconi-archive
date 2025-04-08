@@ -1221,6 +1221,25 @@ export type ArtworksTableQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ArtworksTableQuery = { __typename?: 'Query', artworks: Array<{ __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number }> };
 
+export type TagShowQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type TagShowQuery = { __typename?: 'Query', tag: { __typename?: 'Tag', id: string, slug: string, description?: string | null, title: string, artworks: Array<{ __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number, images: Array<{ __typename?: 'Image', placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, resized: { __typename?: 'ResizedImage', width: number, height: number, urls: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }> }> } };
+
+export type TagSlugsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TagSlugsQuery = { __typename?: 'Query', tags: Array<{ __typename?: 'Tag', slug: string }> };
+
+export type TagsIndexQueryVariables = Exact<{
+  state?: InputMaybe<Array<InputMaybe<State>> | InputMaybe<State>>;
+}>;
+
+
+export type TagsIndexQuery = { __typename?: 'Query', tags: Array<{ __typename?: 'Tag', id: string, title: string, slug: string }> };
+
 export type WebsitesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1531,6 +1550,48 @@ export const ArtworksTableQueryDocument = gql`
 
 export function useArtworksTableQuery(options?: Omit<Urql.UseQueryArgs<ArtworksTableQueryVariables>, 'query'>) {
   return Urql.useQuery<ArtworksTableQuery, ArtworksTableQueryVariables>({ query: ArtworksTableQueryDocument, ...options });
+};
+export const TagShowQueryDocument = gql`
+    query TagShowQuery($id: ID!) {
+  tag(id: $id) {
+    id
+    slug
+    description(format: HTML)
+    title
+    artworks {
+      id
+      ...ThumbnailArtwork_artwork
+    }
+  }
+}
+    ${ThumbnailArtwork_ArtworkFragmentDoc}`;
+
+export function useTagShowQuery(options: Omit<Urql.UseQueryArgs<TagShowQueryVariables>, 'query'>) {
+  return Urql.useQuery<TagShowQuery, TagShowQueryVariables>({ query: TagShowQueryDocument, ...options });
+};
+export const TagSlugsQueryDocument = gql`
+    query TagSlugsQuery {
+  tags {
+    slug
+  }
+}
+    `;
+
+export function useTagSlugsQuery(options?: Omit<Urql.UseQueryArgs<TagSlugsQueryVariables>, 'query'>) {
+  return Urql.useQuery<TagSlugsQuery, TagSlugsQueryVariables>({ query: TagSlugsQueryDocument, ...options });
+};
+export const TagsIndexQueryDocument = gql`
+    query TagsIndexQuery($state: [State]) {
+  tags(state: $state, visibility: PUBLIC) {
+    id
+    title
+    slug
+  }
+}
+    `;
+
+export function useTagsIndexQuery(options?: Omit<Urql.UseQueryArgs<TagsIndexQueryVariables>, 'query'>) {
+  return Urql.useQuery<TagsIndexQuery, TagsIndexQueryVariables>({ query: TagsIndexQueryDocument, ...options });
 };
 export const WebsitesQueryDocument = gql`
     query WebsitesQuery {
