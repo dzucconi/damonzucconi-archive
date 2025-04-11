@@ -6,6 +6,7 @@ import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
 import { buildGetStaticProps, withUrql } from "../lib/urql";
+import { BackToTop } from "../components/core/BackToTop";
 
 const WEBSITES_QUERY = gql`
   query WebsitesQuery {
@@ -53,6 +54,8 @@ const WebsitesPage = () => {
           </Box>
         ))}
       </Stack>
+
+      <BackToTop />
     </>
   );
 };

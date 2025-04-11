@@ -9,6 +9,7 @@ import {
   THUMBNAIL_ARTWORK_FRAGMENT,
 } from "../components/pages/ThumbnailArtwork";
 import { buildGetStaticProps, withUrql } from "../lib/urql";
+import { BackToTop } from "../components/core/BackToTop";
 
 export const ARTWORKS_INDEX_QUERY = gql`
   query ArtworksIndexQuery($state: [State]) {
@@ -46,6 +47,8 @@ const ArtworksIndexPage = () => {
           })}
         </Grid>
       </Stack>
+
+      <BackToTop />
     </>
   );
 };

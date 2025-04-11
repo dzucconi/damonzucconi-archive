@@ -6,6 +6,7 @@ import { Meta } from "../components/core/Meta";
 import { ThumbnailArtwork } from "../components/pages/ThumbnailArtwork";
 import { buildGetStaticProps, withUrql } from "../lib/urql";
 import { ARTWORKS_INDEX_QUERY } from "./index";
+import { BackToTop } from "../components/core/BackToTop";
 
 const ArtworksArtworksPage = () => {
   const [{ fetching, error, data }] = useArtworksIndexQuery({
@@ -33,6 +34,8 @@ const ArtworksArtworksPage = () => {
           })}
         </Grid>
       </Stack>
+
+      <BackToTop />
     </>
   );
 };
