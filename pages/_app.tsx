@@ -7,6 +7,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { UrqlProvider } from "../lib/urql";
 import { Analytics } from "../components/pages/Analytics";
+import { HistoryProvider } from "../lib/useHistory";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -24,13 +25,15 @@ const App: FC = ({ children }) => {
         />
       </Head>
 
-      <ThemeProvider theme={theme}>
-        <GlobalStyles />
+      <HistoryProvider>
+        <ThemeProvider theme={theme}>
+          <GlobalStyles />
 
-        <Loader />
+          <Loader />
 
-        {children}
-      </ThemeProvider>
+          {children}
+        </ThemeProvider>
+      </HistoryProvider>
 
       <Analytics />
     </>

@@ -1,6 +1,7 @@
 import { Button, ButtonProps } from "@auspices/eos";
 import { useRouter } from "next/router";
 import { FC } from "react";
+import { useHistory } from "../../lib/useHistory";
 
 type BackProps = ButtonProps & {
   href?: string;
@@ -9,8 +10,10 @@ type BackProps = ButtonProps & {
 export const Back: FC<BackProps> = ({ href = "/", ...rest }) => {
   const router = useRouter();
 
+  const { history } = useHistory();
+
   const handleClick = () => {
-    if (!window.history.state.idx || window.history.state.idx === 0) {
+    if (history.length === 1) {
       router.push(href);
       return;
     }
