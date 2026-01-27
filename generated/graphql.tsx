@@ -350,6 +350,8 @@ export type Dimensions = {
 export type Edition = {
   __typename?: 'Edition';
   collector?: Maybe<Scalars['String']>;
+  display_price?: Maybe<Scalars['Float']>;
+  display_price_currency?: Maybe<Currency>;
   id: Scalars['String'];
   inventory_number?: Maybe<Scalars['String']>;
   is_attributable: Scalars['Boolean'];
@@ -375,6 +377,8 @@ export type EditionSold_DateArgs = {
 export type EditionAttributes = {
   attributable?: InputMaybe<Scalars['Boolean']>;
   collector?: InputMaybe<Scalars['String']>;
+  display_price?: InputMaybe<Scalars['Int']>;
+  display_price_currency?: InputMaybe<Currency>;
   inventory_number?: InputMaybe<Scalars['String']>;
   location?: InputMaybe<Scalars['String']>;
   notes?: InputMaybe<Scalars['String']>;
@@ -940,6 +944,7 @@ export type Tag = {
   artworks: Array<Artwork>;
   created_at: Scalars['String'];
   description?: Maybe<Scalars['String']>;
+  display_prices: Scalars['Boolean'];
   id: Scalars['String'];
   slug: Scalars['String'];
   state: State;
@@ -977,6 +982,7 @@ export type TagUpdated_AtArgs = {
 /** Attributes for creating a tag */
 export type TagAttributes = {
   description?: InputMaybe<Scalars['String']>;
+  display_prices?: InputMaybe<Scalars['Boolean']>;
   state?: InputMaybe<State>;
   title: Scalars['String'];
   visibility?: InputMaybe<VisibilityEnum>;
@@ -1047,6 +1053,8 @@ export type UpdateAttachmentAttributes = {
 export type UpdateEditionAttributes = {
   attributable?: InputMaybe<Scalars['Boolean']>;
   collector?: InputMaybe<Scalars['String']>;
+  display_price?: InputMaybe<Scalars['Int']>;
+  display_price_currency?: InputMaybe<Currency>;
   inventory_number?: InputMaybe<Scalars['String']>;
   location?: InputMaybe<Scalars['String']>;
   notes?: InputMaybe<Scalars['String']>;
