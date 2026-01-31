@@ -1,4 +1,4 @@
-import { File, EmptyFrame, ResponsiveImage } from "@auspices/eos";
+import { File, EmptyFrame, ResponsiveImage, Box } from "@auspices/eos";
 import Link from "next/link";
 import { FC } from "react";
 import { gql } from "urql";
@@ -11,6 +11,7 @@ export const THUMBNAIL_ARTWORK_FRAGMENT = gql`
     title
     material
     year
+    formatted_price
     images(limit: 1, state: PUBLISHED) {
       placeholder: resized(width: 50, height: 50, blur: 10) {
         urls {
@@ -32,9 +33,13 @@ export const THUMBNAIL_ARTWORK_FRAGMENT = gql`
 
 type ThumbnailArtworkProps = {
   artwork: ThumbnailArtwork_ArtworkFragment;
+  displayPrice?: boolean;
 };
 
-export const ThumbnailArtwork: FC<ThumbnailArtworkProps> = ({ artwork }) => {
+export const ThumbnailArtwork: FC<ThumbnailArtworkProps> = ({
+  artwork,
+  displayPrice = false,
+}) => {
   const [image] = artwork.images;
 
   return (
@@ -50,7 +55,25 @@ export const ThumbnailArtwork: FC<ThumbnailArtworkProps> = ({ artwork }) => {
         meta={`${artwork.year}`}
         // @ts-ignore
         as="a"
+        position="relative"
       >
+        {displayPrice && artwork.formatted_price && (
+          <Box
+            position="absolute"
+            top={20}
+            left={20}
+            zIndex={2}
+            fontSize={0}
+            color="primary"
+            bg="accent"
+            px={2}
+            py={1}
+            borderRadius={2}
+          >
+            {artwork.formatted_price}
+          </Box>
+        )}
+
         {image ? (
           <ResponsiveImage
             placeholder={image.placeholder.urls.src}

@@ -19,6 +19,7 @@ const TAG_SHOW_QUERY = gql`
       slug
       description(format: HTML)
       title
+      display_prices
       artworks {
         id
         ...ThumbnailArtwork_artwork
@@ -74,7 +75,13 @@ export const TagShowPage = () => {
         <Stack spacing={6}>
           <Grid cellSize={["9rem", "10rem", "14rem"]}>
             {artworks.map((artwork) => {
-              return <ThumbnailArtwork key={artwork.id} artwork={artwork} />;
+              return (
+                <ThumbnailArtwork
+                  key={artwork.id}
+                  artwork={artwork}
+                  displayPrice={tag.display_prices}
+                />
+              );
             })}
           </Grid>
         </Stack>
