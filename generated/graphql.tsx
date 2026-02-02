@@ -122,7 +122,6 @@ export type Artwork = {
   duration?: Maybe<Scalars['String']>;
   editions: Array<Edition>;
   embeds: Array<Embed>;
-  formatted_price?: Maybe<Scalars['String']>;
   gloss?: Maybe<Scalars['String']>;
   height?: Maybe<Scalars['Float']>;
   id: Scalars['String'];
@@ -137,6 +136,7 @@ export type Artwork = {
   pitch?: Maybe<Scalars['String']>;
   position: Scalars['Int'];
   previous?: Maybe<Artwork>;
+  price?: Maybe<Price>;
   slug: Scalars['String'];
   src?: Maybe<Scalars['String']>;
   state: State;
@@ -158,13 +158,6 @@ export type ArtworkCreated_AtArgs = {
 /** An artwork */
 export type ArtworkDescriptionArgs = {
   format?: InputMaybe<Format>;
-};
-
-
-/** An artwork */
-export type ArtworkFormatted_PriceArgs = {
-  fallback?: InputMaybe<Scalars['Boolean']>;
-  include_sold?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -191,6 +184,12 @@ export type ArtworkNextArgs = {
 /** An artwork */
 export type ArtworkPreviousArgs = {
   state?: InputMaybe<Array<InputMaybe<State>>>;
+};
+
+
+/** An artwork */
+export type ArtworkPriceArgs = {
+  include_sold?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -742,6 +741,15 @@ export type PresignedUrlAttributes = {
   file_type: Scalars['String'];
 };
 
+/** Price information with optional original price for discounts */
+export type Price = {
+  __typename?: 'Price';
+  /** The formatted current price */
+  amount: Scalars['String'];
+  /** The original price if discounted (for strikethrough display) */
+  was?: Maybe<Scalars['String']>;
+};
+
 /** The query root for this schema */
 export type Query = {
   __typename?: 'Query';
@@ -1182,7 +1190,7 @@ export type SearchQuery = { __typename?: 'Query', artworks: Array<{ __typename?:
 
 export type Thumbnail_ImageFragment = { __typename?: 'Image', width?: number | null, height?: number | null, title?: string | null, description?: string | null, url: string, placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, thumb: { __typename?: 'ResizedImage', width: number, height: number, srcs: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } };
 
-export type ThumbnailArtwork_ArtworkFragment = { __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number, formatted_price?: string | null, images: Array<{ __typename?: 'Image', placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, resized: { __typename?: 'ResizedImage', width: number, height: number, urls: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }> };
+export type ThumbnailArtwork_ArtworkFragment = { __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number, price?: { __typename?: 'Price', amount: string, was?: string | null } | null, images: Array<{ __typename?: 'Image', placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, resized: { __typename?: 'ResizedImage', width: number, height: number, urls: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }> };
 
 export type Tombstone_ArtworkFragment = { __typename?: 'Artwork', title: string, material?: string | null, duration?: string | null, year: number, collector_byline?: string | null, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null };
 
@@ -1230,7 +1238,7 @@ export type ArtworksIndexQueryVariables = Exact<{
 }>;
 
 
-export type ArtworksIndexQuery = { __typename?: 'Query', artworks: Array<{ __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number, formatted_price?: string | null, images: Array<{ __typename?: 'Image', placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, resized: { __typename?: 'ResizedImage', width: number, height: number, urls: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }> }> };
+export type ArtworksIndexQuery = { __typename?: 'Query', artworks: Array<{ __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number, price?: { __typename?: 'Price', amount: string, was?: string | null } | null, images: Array<{ __typename?: 'Image', placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, resized: { __typename?: 'ResizedImage', width: number, height: number, urls: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }> }> };
 
 export type ArtworksTableQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1242,7 +1250,7 @@ export type TagShowQueryVariables = Exact<{
 }>;
 
 
-export type TagShowQuery = { __typename?: 'Query', tag: { __typename?: 'Tag', id: string, slug: string, description?: string | null, title: string, display_prices: boolean, artworks: Array<{ __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number, formatted_price?: string | null, images: Array<{ __typename?: 'Image', placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, resized: { __typename?: 'ResizedImage', width: number, height: number, urls: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }> }> } };
+export type TagShowQuery = { __typename?: 'Query', tag: { __typename?: 'Tag', id: string, slug: string, description?: string | null, title: string, display_prices: boolean, artworks: Array<{ __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number, price?: { __typename?: 'Price', amount: string, was?: string | null } | null, images: Array<{ __typename?: 'Image', placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, resized: { __typename?: 'ResizedImage', width: number, height: number, urls: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }> }> } };
 
 export type TagSlugsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1328,7 +1336,10 @@ export const ThumbnailArtwork_ArtworkFragmentDoc = gql`
   title
   material
   year
-  formatted_price
+  price {
+    amount
+    was
+  }
   images(limit: 1, state: PUBLISHED) {
     placeholder: resized(width: 50, height: 50, blur: 10) {
       urls {

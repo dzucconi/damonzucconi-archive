@@ -1,6 +1,7 @@
 import { File, EmptyFrame, ResponsiveImage, Box } from "@auspices/eos";
 import Link from "next/link";
 import { FC } from "react";
+import styled from "styled-components";
 import { gql } from "urql";
 import { ThumbnailArtwork_ArtworkFragment } from "../../generated/graphql";
 
@@ -11,7 +12,10 @@ export const THUMBNAIL_ARTWORK_FRAGMENT = gql`
     title
     material
     year
-    formatted_price
+    price {
+      amount
+      was
+    }
     images(limit: 1, state: PUBLISHED) {
       placeholder: resized(width: 50, height: 50, blur: 10) {
         urls {
@@ -57,7 +61,7 @@ export const ThumbnailArtwork: FC<ThumbnailArtworkProps> = ({
         as="a"
         position="relative"
       >
-        {displayPrice && artwork.formatted_price && (
+        {displayPrice && artwork.price && (
           <Box
             position="absolute"
             top={20}
@@ -70,7 +74,10 @@ export const ThumbnailArtwork: FC<ThumbnailArtworkProps> = ({
             py={1}
             borderRadius={2}
           >
-            {artwork.formatted_price}
+            {artwork.price.was && (
+              <Strikethrough>{artwork.price.was}</Strikethrough>
+            )}{" "}
+            {artwork.price.amount}
           </Box>
         )}
 
@@ -102,3 +109,7 @@ export const ThumbnailArtwork: FC<ThumbnailArtworkProps> = ({
     </Link>
   );
 };
+
+const Strikethrough = styled.span`
+  text-decoration: line-through;
+`;
