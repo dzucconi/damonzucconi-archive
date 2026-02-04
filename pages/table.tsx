@@ -59,7 +59,7 @@ const ArtworksTablePage = () => {
             <tbody>
               {artworks.map((artwork) => {
                 return (
-                  <tr>
+                  <tr key={artwork.id}>
                     <td>
                       <Link
                         key={artwork.id}
