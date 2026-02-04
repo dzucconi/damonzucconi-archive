@@ -32,7 +32,7 @@ const GlossesPage = () => {
 
   return (
     <>
-      <Meta title="Only Websites" />
+      <Meta title="Glosses" />
 
       <Stack spacing={6}>
         {artworks.map((artwork) => (
