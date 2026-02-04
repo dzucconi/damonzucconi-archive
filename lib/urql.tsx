@@ -44,7 +44,11 @@ export const buildGetStaticProps = (
 
     if (!client) return null;
 
-    await client.query(...getOptions(ctx)).toPromise();
+    const result = await client.query(...getOptions(ctx)).toPromise();
+
+    if (result.error || !result.data) {
+      return { notFound: true };
+    }
 
     return { props: { urqlState: ssrCache.extractData() }, revalidate: 60 };
   };
