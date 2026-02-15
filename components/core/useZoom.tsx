@@ -5,7 +5,19 @@ const Zoom = dynamic(() => import("./Zoom"), {
   ssr: false,
 });
 
-export const useZoom = ({ src }: { src: string }) => {
+type UseZoomArgs = {
+  src?: string;
+  srcs?: string[];
+  initialIndex?: number;
+};
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
+export const useZoom = ({ src, srcs, initialIndex = 0 }: UseZoomArgs) => {
+  const sources = srcs && srcs.length > 0 ? srcs : src ? [src] : [];
+  const maxIndex = Math.max(sources.length - 1, 0);
+  const clampedInitialIndex = clamp(initialIndex, 0, maxIndex);
   const [open, setOpen] = useState(false);
 
   const closeZoom = () => {
@@ -16,7 +28,17 @@ export const useZoom = ({ src }: { src: string }) => {
     setOpen(true);
   };
 
-  const zoomComponent = <>{open && <Zoom onClose={closeZoom} src={src} />}</>;
+  const zoomComponent = (
+    <>
+      {open && sources.length > 0 && (
+        <Zoom
+          onClose={closeZoom}
+          srcs={sources}
+          initialIndex={clampedInitialIndex}
+        />
+      )}
+    </>
+  );
 
   return {
     open,
