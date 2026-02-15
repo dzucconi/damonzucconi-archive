@@ -418,6 +418,7 @@ export const Zoom: FC<ZoomProps> = ({
         height="100vh"
         position="relative"
         bg="primary"
+        style={{ cursor: showControls ? "auto" : "none" }}
         onMouseMove={activateControls}
         onMouseEnter={activateControls}
         onMouseLeave={deactivateControls}
@@ -566,7 +567,7 @@ const Close = styled(Clickable)<{ $visible: boolean }>`
 `;
 
 const Navigate = styled(Clickable)<{ $visible: boolean }>`
-  cursor: pointer;
+  cursor: ${(props) => (props.$visible ? "pointer" : "none")};
   z-index: 1;
   transform: translateY(-50%);
   ${sharedControlVisibilityStyles}
