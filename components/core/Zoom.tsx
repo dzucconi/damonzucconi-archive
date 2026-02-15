@@ -12,7 +12,7 @@ type ZoomProps = {
 };
 
 export const Zoom: FC<ZoomProps> = ({ onClose, src }) => {
-  const elRef = useRef<HTMLDivElement | null>(null);
+  const viewerElRef = useRef<HTMLDivElement | null>(null);
   const viewerRef = useRef<any | null>(null);
 
   const [state, setState] = useState({
@@ -44,7 +44,16 @@ export const Zoom: FC<ZoomProps> = ({ onClose, src }) => {
   };
 
   useEffect(() => {
-    if (!elRef.current) return;
+    if (!viewerElRef.current) return;
+
+    setState({
+      loaded: false,
+      min: 0,
+      max: 1,
+      value: 0,
+    });
+
+    let destroyed = false;
 
     const viewer = OpenSeadragon({
       animationTime: 1.5,
@@ -53,7 +62,7 @@ export const Zoom: FC<ZoomProps> = ({ onClose, src }) => {
       clickTimeThreshold: 300,
       constrainDuringPan: false,
       debugMode: false,
-      element: elRef.current,
+      element: viewerElRef.current,
       gestureSettingsTouch: {
         clickToZoom: true,
         flickEnabled: true,
@@ -74,26 +83,49 @@ export const Zoom: FC<ZoomProps> = ({ onClose, src }) => {
       zoomPerScroll: 1.4,
     });
 
-    viewer.addHandler("tile-loaded", () => {
-      setState((prevState) => ({ ...prevState, loaded: true }));
-    });
+    const handleOpen = () => {
+      if (destroyed || !viewer.viewport) return;
+      setState({
+        loaded: true,
+        min: viewer.viewport.getMinZoom(),
+        max: viewer.viewport.getMaxZoom(),
+        value: viewer.viewport.getZoom(),
+      });
+    };
 
-    viewer.addHandler("zoom", () => {
+    const handleZoom = () => {
+      if (destroyed || !viewer.viewport) return;
       setState((prevState) => ({
         ...prevState,
         min: viewer.viewport.getMinZoom(),
         max: viewer.viewport.getMaxZoom(),
         value: viewer.viewport.getZoom(),
       }));
-    });
+    };
+
+    const handleOpenFailed = () => {
+      if (destroyed) return;
+      setState((prevState) => ({ ...prevState, loaded: true }));
+    };
+
+    viewer.addHandler("open", handleOpen);
+    viewer.addHandler("zoom", handleZoom);
+    viewer.addHandler("open-failed", handleOpenFailed);
 
     viewerRef.current = viewer;
 
     return () => {
-      viewerRef.current.destroy();
-      viewerRef.current = null;
+      destroyed = true;
+      viewer.removeHandler("open", handleOpen);
+      viewer.removeHandler("zoom", handleZoom);
+      viewer.removeHandler("open-failed", handleOpenFailed);
+      viewer.destroy();
+
+      if (viewerRef.current === viewer) {
+        viewerRef.current = null;
+      }
     };
-  }, []);
+  }, [src]);
 
   return (
     <Modal onClose={onClose} zIndex={100}>
@@ -113,12 +145,21 @@ export const Zoom: FC<ZoomProps> = ({ onClose, src }) => {
       </Close>
 
       <Box
-        ref={elRef}
         width="100vw"
         height="100vh"
         position="relative"
         bg="primary"
       >
+        <div
+          ref={viewerElRef}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+          }}
+        />
+
         {!state.loaded && (
           <Spinner
             position="absolute"
