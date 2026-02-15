@@ -7,7 +7,6 @@ import {
   ResponsiveImage,
 } from "@auspices/eos";
 import { FC } from "react";
-import styled from "styled-components";
 import { Figure_ImageFragment } from "../../generated/graphql";
 import { useHover } from "./useHover";
 import { ContextMenu } from "../core/ContextMenu";
@@ -44,11 +43,20 @@ export const FIGURE_IMAGE_FRAGMENT = gql`
 
 type FigureProps = BoxProps & {
   image: Figure_ImageFragment;
+  zoomImages?: string[];
+  zoomIndex?: number;
 };
 
-export const Figure: FC<FigureProps> = ({ image, ...rest }) => {
+export const Figure: FC<FigureProps> = ({
+  image,
+  zoomImages,
+  zoomIndex = 0,
+  ...rest
+}) => {
   const { zoomComponent, openZoom: handleClick } = useZoom({
+    srcs: zoomImages,
     src: image.zoom.srcs._1x,
+    initialIndex: zoomIndex,
   });
   const {
     mode,
@@ -107,19 +115,3 @@ export const Figure: FC<FigureProps> = ({ image, ...rest }) => {
     </>
   );
 };
-
-const Container = styled(Clickable)`
-  width: 100%;
-  cursor: zoom-in;
-
-  button {
-    opacity: 0;
-    transition: 100ms opacity;
-  }
-
-  &:hover {
-    button {
-      opacity: 1;
-    }
-  }
-`;

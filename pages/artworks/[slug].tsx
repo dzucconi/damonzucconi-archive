@@ -81,6 +81,8 @@ export const ArtworksShowPage = () => {
   }
 
   const { artwork } = data;
+  const figureZoomImages = artwork.images.map((image) => image.zoom.srcs._1x);
+  const thumbnailZoomImages = artwork.images.map((image) => image.url);
 
   return (
     <>
@@ -132,8 +134,15 @@ export const ArtworksShowPage = () => {
 
         {artwork.intent === "DEFAULT" && artwork.images.length > 0 && (
           <Stack direction="vertical" spacing={6}>
-            {artwork.images.map((image) => {
-              return <Figure key={image.id} image={image} />;
+            {artwork.images.map((image, i) => {
+              return (
+                <Figure
+                  key={image.id}
+                  image={image}
+                  zoomImages={figureZoomImages}
+                  zoomIndex={i}
+                />
+              );
             })}
           </Stack>
         )}
@@ -142,8 +151,15 @@ export const ArtworksShowPage = () => {
           // Wrapped in <Box> to prevent overflow on Mobile Safari
           <Box>
             <Grid cellSize={["9rem", "10rem", "14rem"]}>
-              {artwork.images.map((image) => {
-                return <Thumbnail key={image.id} image={image} />;
+              {artwork.images.map((image, i) => {
+                return (
+                  <Thumbnail
+                    key={image.id}
+                    image={image}
+                    zoomImages={thumbnailZoomImages}
+                    zoomIndex={i}
+                  />
+                );
               })}
             </Grid>
           </Box>

@@ -62,6 +62,7 @@ const ExhibitionsShowPage = () => {
   }
 
   const { exhibition } = data;
+  const zoomImages = exhibition.images.map((image) => image.url);
 
   const start =
     exhibition.start_year !== exhibition.end_year
@@ -111,8 +112,15 @@ const ExhibitionsShowPage = () => {
 
         {exhibition.images.length > 0 && (
           <Grid cellSize={["9rem", "10rem", "14rem"]}>
-            {exhibition.images.map((image) => {
-              return <Thumbnail key={image.id} image={image} />;
+            {exhibition.images.map((image, i) => {
+              return (
+                <Thumbnail
+                  key={image.id}
+                  image={image}
+                  zoomImages={zoomImages}
+                  zoomIndex={i}
+                />
+              );
             })}
           </Grid>
         )}

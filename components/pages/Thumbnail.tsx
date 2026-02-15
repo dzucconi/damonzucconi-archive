@@ -1,6 +1,6 @@
 import { gql } from "urql";
 import { Box, File, PaneOption, ResponsiveImage } from "@auspices/eos";
-import { FC, useCallback, useRef, useState } from "react";
+import { FC } from "react";
 import { Thumbnail_ImageFragment } from "../../generated/graphql";
 import { useZoom } from "../core/useZoom";
 import { ContextMenu } from "../core/ContextMenu";
@@ -32,10 +32,20 @@ export const THUMBNAIL_IMAGE_FRAGMENT = gql`
 
 type ThumbnailProps = {
   image: Thumbnail_ImageFragment;
+  zoomImages?: string[];
+  zoomIndex?: number;
 };
 
-export const Thumbnail: FC<ThumbnailProps> = ({ image }) => {
-  const { zoomComponent, openZoom: handleClick } = useZoom({ src: image.url });
+export const Thumbnail: FC<ThumbnailProps> = ({
+  image,
+  zoomImages,
+  zoomIndex = 0,
+}) => {
+  const { zoomComponent, openZoom: handleClick } = useZoom({
+    srcs: zoomImages,
+    src: image.url,
+    initialIndex: zoomIndex,
+  });
   const {
     mode,
     handleMouseEnter,
