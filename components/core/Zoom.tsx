@@ -7,7 +7,15 @@ import {
   Plus,
   Spinner,
 } from "@auspices/eos";
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import OpenSeadragon from "openseadragon";
 import styled, { css } from "styled-components";
 import { ZoomSlider } from "./ZoomSlider";
@@ -29,39 +37,88 @@ const wrap = (value: number, max: number) => {
   return ((value % max) + max) % max;
 };
 
-export const Zoom: FC<ZoomProps> = ({
-  onClose,
-  src,
-  srcs,
-  initialIndex = 0,
-}) => {
-  const sources = useMemo(
-    () => (srcs && srcs.length > 0 ? srcs : src ? [src] : []),
-    [src, srcs],
-  );
-  const maxIndex = Math.max(sources.length - 1, 0);
-  const hasMultipleImages = sources.length > 1;
+type ZoomControlsState = {
+  controlsVisible: boolean;
+  controlHovered: boolean;
+  hoverCapable: boolean;
+  index: number;
+};
 
-  const [index, setIndex] = useState(clamp(initialIndex, 0, maxIndex));
-  const viewerElRef = useRef<HTMLDivElement | null>(null);
-  const viewerRef = useRef<any | null>(null);
-  const controlHoverRef = useRef(false);
+type ZoomControlsAction =
+  | { type: "ACTIVATE_CONTROLS" }
+  | { type: "CLAMP_INDEX"; maxIndex: number }
+  | { type: "CONTROL_HOVER_ENTER" }
+  | { type: "CONTROL_HOVER_LEAVE" }
+  | { type: "DEACTIVATE_CONTROLS" }
+  | { type: "HIDE_CONTROLS_IF_IDLE" }
+  | { type: "NEXT"; totalSources: number }
+  | { type: "PREVIOUS"; totalSources: number }
+  | { type: "SET_HOVER_CAPABLE"; hoverCapable: boolean }
+  | { type: "SET_INDEX"; index: number; maxIndex: number };
+
+const zoomControlsReducer = (
+  state: ZoomControlsState,
+  action: ZoomControlsAction,
+): ZoomControlsState => {
+  switch (action.type) {
+    case "ACTIVATE_CONTROLS":
+      return state.controlsVisible ? state : { ...state, controlsVisible: true };
+    case "CLAMP_INDEX": {
+      const index = clamp(state.index, 0, action.maxIndex);
+      return index === state.index ? state : { ...state, index };
+    }
+    case "CONTROL_HOVER_ENTER":
+      if (state.controlHovered && state.controlsVisible) return state;
+      return { ...state, controlHovered: true, controlsVisible: true };
+    case "CONTROL_HOVER_LEAVE":
+      return state.controlHovered ? { ...state, controlHovered: false } : state;
+    case "DEACTIVATE_CONTROLS":
+      if (!state.hoverCapable || state.controlHovered || !state.controlsVisible)
+        return state;
+      return { ...state, controlsVisible: false };
+    case "HIDE_CONTROLS_IF_IDLE":
+      if (!state.hoverCapable || state.controlHovered || !state.controlsVisible)
+        return state;
+      return { ...state, controlsVisible: false };
+    case "NEXT":
+      return { ...state, index: wrap(state.index + 1, action.totalSources) };
+    case "PREVIOUS":
+      return { ...state, index: wrap(state.index - 1, action.totalSources) };
+    case "SET_HOVER_CAPABLE":
+      return state.hoverCapable === action.hoverCapable
+        ? state
+        : { ...state, hoverCapable: action.hoverCapable };
+    case "SET_INDEX": {
+      const index = clamp(action.index, 0, action.maxIndex);
+      return index === state.index ? state : { ...state, index };
+    }
+    default:
+      return state;
+  }
+};
+
+type UseZoomControlsArgs = {
+  hasMultipleImages: boolean;
+  initialIndex: number;
+  maxIndex: number;
+  totalSources: number;
+};
+
+const useZoomControls = ({
+  hasMultipleImages,
+  initialIndex,
+  maxIndex,
+  totalSources,
+}: UseZoomControlsArgs) => {
+  const [state, dispatch] = useReducer(zoomControlsReducer, {
+    controlsVisible: true,
+    controlHovered: false,
+    hoverCapable: true,
+    index: clamp(initialIndex, 0, maxIndex),
+  });
   const hideControlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
-  const [hoverCapable, setHoverCapable] = useState(true);
-  const [controlsVisible, setControlsVisible] = useState(true);
-
-  const [state, setState] = useState({
-    loaded: false,
-    min: 0,
-    max: 1,
-    value: 0,
-  });
-
-  const currentSrc = sources[index];
-  const showControls = !hoverCapable || controlsVisible;
-  const showNavigation = hasMultipleImages && showControls;
 
   const clearHideControlsTimeout = useCallback(() => {
     if (!hideControlsTimeoutRef.current) return;
@@ -70,81 +127,61 @@ export const Zoom: FC<ZoomProps> = ({
   }, []);
 
   const activateControls = useCallback(() => {
-    if (!hoverCapable) {
-      setControlsVisible(true);
-      clearHideControlsTimeout();
-      return;
-    }
-
+    dispatch({ type: "ACTIVATE_CONTROLS" });
     clearHideControlsTimeout();
-    setControlsVisible(true);
+
+    if (!state.hoverCapable) return;
+
     hideControlsTimeoutRef.current = setTimeout(() => {
-      if (controlHoverRef.current) return;
-      setControlsVisible(false);
+      dispatch({ type: "HIDE_CONTROLS_IF_IDLE" });
     }, CONTROL_FADE_TIMEOUT);
-  }, [clearHideControlsTimeout, hoverCapable]);
+  }, [clearHideControlsTimeout, state.hoverCapable]);
 
   const deactivateControls = useCallback(() => {
-    if (!hoverCapable) return;
-    if (controlHoverRef.current) return;
     clearHideControlsTimeout();
-    setControlsVisible(false);
-  }, [clearHideControlsTimeout, hoverCapable]);
+    dispatch({ type: "DEACTIVATE_CONTROLS" });
+  }, [clearHideControlsTimeout]);
 
   const handleControlMouseEnter = useCallback(() => {
-    controlHoverRef.current = true;
     clearHideControlsTimeout();
-    setControlsVisible(true);
+    dispatch({ type: "CONTROL_HOVER_ENTER" });
   }, [clearHideControlsTimeout]);
 
   const handleControlMouseLeave = useCallback(() => {
-    controlHoverRef.current = false;
+    dispatch({ type: "CONTROL_HOVER_LEAVE" });
     activateControls();
   }, [activateControls]);
 
   const showPrevious = useCallback(() => {
-    setIndex((prevIndex) => wrap(prevIndex - 1, sources.length));
-  }, [sources.length]);
+    dispatch({ type: "PREVIOUS", totalSources });
+  }, [totalSources]);
 
   const showNext = useCallback(() => {
-    setIndex((prevIndex) => wrap(prevIndex + 1, sources.length));
-  }, [sources.length]);
-
-  const zoomBy = (amount: number) => {
-    if (!viewerRef.current) return;
-    const { current: viewer } = viewerRef;
-    if (!viewer.viewport) return;
-    viewer.viewport.zoomBy(amount);
-    viewer.viewport.applyConstraints();
-  };
-
-  const handleSliderChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!viewerRef.current) return;
-    viewerRef.current.viewport.zoomTo(parseFloat(event.target.value));
-  };
-
-  const handleZoomInClicked = () => {
-    zoomBy(ZOOM_PER_CLICK);
-  };
-
-  const handleZoomOutClicked = () => {
-    zoomBy(1 / ZOOM_PER_CLICK);
-  };
+    dispatch({ type: "NEXT", totalSources });
+  }, [totalSources]);
 
   useEffect(() => {
-    setIndex(clamp(initialIndex, 0, maxIndex));
+    dispatch({ type: "SET_INDEX", index: initialIndex, maxIndex });
   }, [initialIndex, maxIndex]);
+
+  useEffect(() => {
+    dispatch({ type: "CLAMP_INDEX", maxIndex });
+  }, [maxIndex]);
 
   useEffect(() => {
     if (
       typeof window === "undefined" ||
       typeof window.matchMedia !== "function"
-    )
+    ) {
       return;
+    }
 
     const mediaQueryList = window.matchMedia("(hover: hover)");
     const handleHoverCapabilityChanged = () => {
-      setHoverCapable(mediaQueryList.matches);
+      dispatch({
+        type: "SET_HOVER_CAPABLE",
+        hoverCapable: mediaQueryList.matches,
+      });
     };
 
     handleHoverCapabilityChanged();
@@ -166,15 +203,107 @@ export const Zoom: FC<ZoomProps> = ({
   }, []);
 
   useEffect(() => {
-    if (!hoverCapable) {
-      setControlsVisible(true);
+    if (!state.hoverCapable) {
       clearHideControlsTimeout();
+      dispatch({ type: "ACTIVATE_CONTROLS" });
       return;
     }
 
     activateControls();
     return clearHideControlsTimeout;
-  }, [activateControls, clearHideControlsTimeout, hoverCapable, index]);
+  }, [
+    activateControls,
+    clearHideControlsTimeout,
+    state.hoverCapable,
+    state.index,
+  ]);
+
+  useEffect(() => clearHideControlsTimeout, [clearHideControlsTimeout]);
+
+  const showControls = !state.hoverCapable || state.controlsVisible;
+  const showNavigation = hasMultipleImages && showControls;
+
+  return {
+    index: state.index,
+    showControls,
+    showNavigation,
+    activateControls,
+    deactivateControls,
+    handleControlMouseEnter,
+    handleControlMouseLeave,
+    showPrevious,
+    showNext,
+  };
+};
+
+type ZoomViewerState = {
+  loaded: boolean;
+  max: number;
+  min: number;
+  value: number;
+};
+
+const INITIAL_VIEWER_STATE: ZoomViewerState = {
+  loaded: false,
+  max: 1,
+  min: 0,
+  value: 0,
+};
+
+export const Zoom: FC<ZoomProps> = ({
+  onClose,
+  src,
+  srcs,
+  initialIndex = 0,
+}) => {
+  const sources = useMemo(
+    () => (srcs && srcs.length > 0 ? srcs : src ? [src] : []),
+    [src, srcs],
+  );
+  const maxIndex = Math.max(sources.length - 1, 0);
+  const hasMultipleImages = sources.length > 1;
+  const viewerElRef = useRef<HTMLDivElement | null>(null);
+  const viewerRef = useRef<OpenSeadragon.Viewer | null>(null);
+  const [viewerState, setViewerState] =
+    useState<ZoomViewerState>(INITIAL_VIEWER_STATE);
+  const {
+    index,
+    showControls,
+    showNavigation,
+    activateControls,
+    deactivateControls,
+    handleControlMouseEnter,
+    handleControlMouseLeave,
+    showPrevious,
+    showNext,
+  } = useZoomControls({
+    hasMultipleImages,
+    initialIndex,
+    maxIndex,
+    totalSources: sources.length,
+  });
+  const currentSrc = sources[index];
+
+  const zoomBy = (amount: number) => {
+    if (!viewerRef.current) return;
+    const { current: viewer } = viewerRef;
+    if (!viewer.viewport) return;
+    viewer.viewport.zoomBy(amount);
+    viewer.viewport.applyConstraints();
+  };
+
+  const handleSliderChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!viewerRef.current) return;
+    viewerRef.current.viewport.zoomTo(parseFloat(event.target.value));
+  };
+
+  const handleZoomInClicked = () => {
+    zoomBy(ZOOM_PER_CLICK);
+  };
+
+  const handleZoomOutClicked = () => {
+    zoomBy(1 / ZOOM_PER_CLICK);
+  };
 
   useEffect(() => {
     if (!hasMultipleImages) return;
@@ -202,12 +331,7 @@ export const Zoom: FC<ZoomProps> = ({
   useEffect(() => {
     if (!viewerElRef.current || !currentSrc) return;
 
-    setState({
-      loaded: false,
-      min: 0,
-      max: 1,
-      value: 0,
-    });
+    setViewerState(INITIAL_VIEWER_STATE);
 
     let destroyed = false;
 
@@ -241,7 +365,7 @@ export const Zoom: FC<ZoomProps> = ({
 
     const handleOpen = () => {
       if (destroyed || !viewer.viewport) return;
-      setState({
+      setViewerState({
         loaded: true,
         min: viewer.viewport.getMinZoom(),
         max: viewer.viewport.getMaxZoom(),
@@ -251,7 +375,7 @@ export const Zoom: FC<ZoomProps> = ({
 
     const handleZoom = () => {
       if (destroyed || !viewer.viewport) return;
-      setState((prevState) => ({
+      setViewerState((prevState) => ({
         ...prevState,
         min: viewer.viewport.getMinZoom(),
         max: viewer.viewport.getMaxZoom(),
@@ -261,7 +385,7 @@ export const Zoom: FC<ZoomProps> = ({
 
     const handleOpenFailed = () => {
       if (destroyed) return;
-      setState((prevState) => ({ ...prevState, loaded: true }));
+      setViewerState((prevState) => ({ ...prevState, loaded: true }));
     };
 
     viewer.addHandler("open", handleOpen);
@@ -357,8 +481,6 @@ export const Zoom: FC<ZoomProps> = ({
                 showPrevious();
               }}
               $visible={showNavigation}
-              onMouseEnter={handleControlMouseEnter}
-              onMouseLeave={handleControlMouseLeave}
             >
               <Caret direction="left" size={6} />
             </Navigate>
@@ -374,15 +496,13 @@ export const Zoom: FC<ZoomProps> = ({
                 showNext();
               }}
               $visible={showNavigation}
-              onMouseEnter={handleControlMouseEnter}
-              onMouseLeave={handleControlMouseLeave}
             >
               <Caret direction="right" size={6} />
             </Navigate>
           </>
         )}
 
-        {!state.loaded && (
+        {!viewerState.loaded && (
           <Spinner
             position="absolute"
             top="50%"
@@ -409,9 +529,9 @@ export const Zoom: FC<ZoomProps> = ({
             onChange={handleSliderChanged}
             onZoomInClicked={handleZoomInClicked}
             onZoomOutClicked={handleZoomOutClicked}
-            min={state.min}
-            max={state.max}
-            value={state.value}
+            min={viewerState.min}
+            max={viewerState.max}
+            value={viewerState.value}
             step={0.001}
           />
         </SliderControls>
@@ -450,6 +570,7 @@ const Navigate = styled(Clickable)<{ $visible: boolean }>`
   z-index: 1;
   transform: translateY(-50%);
   ${sharedControlVisibilityStyles}
+  pointer-events: auto;
   background-color: transparent;
   color: #fff;
   mix-blend-mode: difference;
