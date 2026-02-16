@@ -1,10 +1,29 @@
-import { Box, Button, Cell, Input, Stack, useThemer } from "@auspices/eos/client";
+import {
+  Box,
+  Button,
+  Caret,
+  Cell,
+  Dropdown,
+  Input,
+  PaneOption,
+  Stack,
+} from "@auspices/eos/client";
 import { DefinitionList } from "../components/core/DefinitionList";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Meta } from "../components/core/Meta";
+import { useTheme } from "next-themes";
+
+const THEME_OPTIONS = [
+  { label: "System", value: "system" },
+  { label: "Light", value: "light" },
+  { label: "Dark", value: "dark" },
+];
 
 const InformationPage = () => {
-  const { scheme, toggleScheme } = useThemer();
+  const { theme, setTheme } = useTheme();
+
+  const selectedLabel =
+    THEME_OPTIONS.find((o) => o.value === theme)?.label ?? "System";
   return (
     <>
       <Meta title="Information" />
@@ -22,7 +41,7 @@ const InformationPage = () => {
                   href: "mailto:mail@damonzucconi.com",
                 },
                 {
-                  term: "Twitter",
+                  term: "X",
                   definition: "@dzucconi",
                   href: "https://twitter.com/dzucconi",
                   target: "_blank",
@@ -167,20 +186,67 @@ const InformationPage = () => {
           ]}
         />
 
-        <DefinitionList
-          definitions={[
-            {
-              term: "Preferences",
-              definition: [
-                {
-                  term: "Theme",
-                  definition: scheme,
-                  onClick: toggleScheme,
-                },
-              ],
-            },
-          ]}
-        />
+        <Box as="dl">
+          <Stack width="fit-content">
+            <Stack direction="horizontal">
+              <Cell variant="small" as="dt">
+                Preferences
+              </Cell>
+
+              <Box as="dd" flex="1">
+                <Box as="dl" width="100%">
+                  <Stack direction="horizontal">
+                    <Cell variant="small" as="dt">
+                      Theme
+                    </Cell>
+
+                    <Box as="dd" flex="1">
+                      <Dropdown
+                        label={({
+                          open,
+                          ref,
+                          disabled,
+                          onMouseDown,
+                          onClick,
+                        }) => (
+                          <Button
+                            ref={ref}
+                            variant="small"
+                            disabled={disabled}
+                            onMouseDown={onMouseDown}
+                            onClick={onClick}
+                            type="button"
+                            width="100%"
+                          >
+                            {selectedLabel}
+                            <Caret ml={3} direction={open ? "up" : "down"} />
+                          </Button>
+                        )}
+                      >
+                        {({ handleClose }) =>
+                          THEME_OPTIONS.map((option) => (
+                            <PaneOption
+                              key={option.value}
+                              fontSize={[0, 0, 1]}
+                              px={3}
+                              py={2}
+                              onClick={() => {
+                                setTheme(option.value);
+                                handleClose();
+                              }}
+                            >
+                              {option.label}
+                            </PaneOption>
+                          ))
+                        }
+                      </Dropdown>
+                    </Box>
+                  </Stack>
+                </Box>
+              </Box>
+            </Stack>
+          </Stack>
+        </Box>
       </Stack>
     </>
   );
