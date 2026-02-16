@@ -5,7 +5,7 @@ import { Meta } from "../components/core/Meta";
 const Error500Page = () => {
   return (
     <>
-      <Meta title="Internal Server Error" />
+      <Meta title="Internal Server Error" noIndex />
 
       <DefinitionList
         definitions={[

@@ -5,7 +5,7 @@ import { Meta } from "../components/core/Meta";
 const Error404Page = () => {
   return (
     <>
-      <Meta title="Not Found" />
+      <Meta title="Not Found" noIndex />
 
       <DefinitionList
         definitions={[

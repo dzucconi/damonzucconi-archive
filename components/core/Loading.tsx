@@ -9,7 +9,7 @@ type LoadingProps = {
 export const Loading: FC<LoadingProps> = ({ title = "Loading" }) => {
   return (
     <>
-      <Meta title={title} />
+      <Meta title={title} noIndex />
 
       <Spinner />
     </>
