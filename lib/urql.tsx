@@ -1,5 +1,5 @@
 import { GetStaticPropsContext, NextPage } from "next";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useMemo } from "react";
 import {
   cacheExchange,
   createClient,
@@ -41,14 +41,10 @@ export const UrqlProvider = ({
   children: ReactNode;
   urqlState?: UrqlState;
 }) => {
-  const [{ hydratedClient, ssr }] = useState(() =>
-    createHydratedClient(urqlState)
+  const { hydratedClient } = useMemo(
+    () => createHydratedClient(urqlState),
+    [urqlState]
   );
-
-  useEffect(() => {
-    if (!urqlState) return;
-    ssr.restoreData(urqlState);
-  }, [ssr, urqlState]);
 
   return <Provider value={hydratedClient}>{children}</Provider>;
 };
