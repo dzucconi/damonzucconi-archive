@@ -1,7 +1,6 @@
-import { Box, BoxProps, Cell as _Cell, Stack, Clickable } from "@auspices/eos";
+import { Box, BoxProps, Cell as _Cell, Stack, Clickable } from "@auspices/eos/client";
 import Link from "next/link";
 import { AnchorHTMLAttributes, FC } from "react";
-import styled from "styled-components";
 
 type Definition = {
   term: string;
@@ -87,8 +86,6 @@ export const DefinitionList: FC<DefinitionListProps> = ({
   );
 };
 
-export const Cell = styled(_Cell)``;
-
-Cell.defaultProps = {
-  variant: "small",
+export const Cell = ({ variant = "small", ...props }: any) => {
+  return <_Cell variant={variant as any} {...props} />;
 };

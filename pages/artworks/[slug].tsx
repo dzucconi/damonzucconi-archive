@@ -1,6 +1,6 @@
 import { gql } from "urql";
 import { useRouter } from "next/router";
-import { Box, Stack, HTML, Grid } from "@auspices/eos";
+import { Box, Stack, HTML, Grid } from "@auspices/eos/client";
 import {
   Tombstone,
   TOMBSTONE_ARTWORK_FRAGMENT,
@@ -246,7 +246,13 @@ export const getStaticPaths = async () => {
     .query<ArtworkSlugsQuery>(ARTWORK_SLUGS_QUERY, {})
     .toPromise();
 
-  const paths = data?.artworks.map(({ slug }) => ({ params: { slug } }));
+  const paths = (data?.artworks ?? []).flatMap(({ slug }) => {
+    if (typeof slug !== "string" || slug.length === 0) {
+      return [];
+    }
+
+    return [{ params: { slug } }];
+  });
 
   return { paths, fallback: "blocking" };
 };

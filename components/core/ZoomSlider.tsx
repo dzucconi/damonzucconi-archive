@@ -5,7 +5,7 @@ import {
   BoxProps,
   Plus,
   color,
-} from "@auspices/eos";
+} from "@auspices/eos/client";
 import { themeGet } from "@styled-system/theme-get";
 import * as React from "react";
 import styled, { css } from "styled-components";
@@ -42,6 +42,7 @@ export const ZoomSlider: React.FC<ZoomSliderProps> = ({
 
     <Track mx={3}>
       <SliderInput
+        type="range"
         min={min.toString()}
         max={max.toString()}
         step={step.toString()}
@@ -117,10 +118,6 @@ const SliderInput = styled.input`
     ${knobStyles}
   }
 `;
-
-SliderInput.defaultProps = {
-  type: "range",
-};
 
 const ZoomOutButton: React.FC<ClickableProps> = (props) => (
   <Clickable cursor="pointer" {...props}>

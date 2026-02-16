@@ -1,4 +1,4 @@
-import { Banner, Clickable } from "@auspices/eos";
+import { Banner, Clickable } from "@auspices/eos/client";
 import { FC, useEffect, useState } from "react";
 import { randomTriplet } from "../../lib/exercises";
 

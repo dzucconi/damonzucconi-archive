@@ -1,6 +1,6 @@
 import { gql } from "urql";
 import Link from "next/link";
-import { Cell, Stack } from "@auspices/eos";
+import { Cell, Stack } from "@auspices/eos/client";
 import { Table } from "../components/core/Table";
 import { useArtworksTableQuery } from "../generated/graphql";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";

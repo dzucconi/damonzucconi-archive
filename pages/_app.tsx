@@ -1,7 +1,7 @@
 import { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
-import { GlobalStyles, ThemerProvider, useThemer } from "@auspices/eos";
-import { FC, ReactElement, ReactNode } from "react";
+import { GlobalStyles, ThemerProvider, useThemer } from "@auspices/eos/client";
+import { ReactElement, ReactNode } from "react";
 import { Loader } from "../components/core/Loader";
 import { NextPage } from "next";
 import Head from "next/head";
@@ -13,7 +13,7 @@ type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
-const App: FC = ({ children }) => {
+const App = ({ children }: { children: ReactNode }) => {
   const { theme } = useThemer();
 
   return (

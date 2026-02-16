@@ -6,7 +6,7 @@ import {
   ClearableInputProps,
   Loading,
   Stack,
-} from "@auspices/eos";
+} from "@auspices/eos/client";
 import { FC, useEffect, useRef, useState } from "react";
 import { useSearchQuery } from "../../generated/graphql";
 import Link from "next/link";
@@ -29,6 +29,7 @@ type SearchProps = ClearableInputProps & {
 
 export const Search: FC<SearchProps> = ({
   loading: _loading = false,
+  variant = "default",
   ...rest
 }) => {
   const ref = useRef<HTMLInputElement | null>(null);
@@ -82,6 +83,7 @@ export const Search: FC<SearchProps> = ({
       <Loading px={0} py={0} borderWidth={0} loading={_loading}>
         <ClearableInput
           ref={ref}
+          variant={variant}
           placeholder={_loading ? "Loading" : "Search"}
           onChange={setQuery}
           {...rest}

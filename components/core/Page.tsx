@@ -1,17 +1,15 @@
 import styled from "styled-components";
-import { Box } from "@auspices/eos";
+import { Box } from "@auspices/eos/client";
 
-export const Page = styled(Box)`
+export const Page = styled(Box).attrs({
+  p: [4, 6],
+})`
   box-sizing: content-box;
 
   > * {
     box-sizing: border-box;
   }
 `;
-
-Page.defaultProps = {
-  p: [4, 6],
-};
 
 export const Bleed = styled(Box)`
   position: relative;

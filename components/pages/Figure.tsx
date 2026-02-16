@@ -5,7 +5,7 @@ import {
   Clickable,
   PaneOption,
   ResponsiveImage,
-} from "@auspices/eos";
+} from "@auspices/eos/client";
 import { FC } from "react";
 import { Figure_ImageFragment } from "../../generated/graphql";
 import { useHover } from "./useHover";

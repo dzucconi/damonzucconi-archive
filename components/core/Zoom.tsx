@@ -6,7 +6,7 @@ import {
   Modal,
   Plus,
   Spinner,
-} from "@auspices/eos";
+} from "@auspices/eos/client";
 import {
   FC,
   useCallback,

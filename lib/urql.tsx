@@ -1,10 +1,8 @@
 import { GetStaticPropsContext, NextPage } from "next";
-import { initUrqlClient, withUrqlClient } from "next-urql";
-import { FC } from "react";
+import { ReactNode } from "react";
 import {
   cacheExchange,
   createClient,
-  dedupExchange,
   fetchExchange,
   gql,
   Provider,
@@ -16,16 +14,15 @@ export const GRAPHQL_ENDPOINT = "https://api.damonzucconi.com/graph";
 
 export const client = createClient({
   url: GRAPHQL_ENDPOINT,
+  exchanges: [cacheExchange, fetchExchange],
 });
 
-export const UrqlProvider: FC = ({ children }) => {
+export const UrqlProvider = ({ children }: { children: ReactNode }) => {
   return <Provider value={client}>{children}</Provider>;
 };
 
 export const withUrql = <C extends NextPage<any, any>>(AppOrPage: C) => {
-  return withUrqlClient(() => ({ url: GRAPHQL_ENDPOINT }), {
-    ssr: false,
-  })(AppOrPage);
+  return AppOrPage;
 };
 
 export const buildGetStaticProps = (
@@ -34,15 +31,10 @@ export const buildGetStaticProps = (
   return async (ctx: GetStaticPropsContext) => {
     const ssrCache = ssrExchange({ isClient: false });
 
-    const client = initUrqlClient(
-      {
-        url: GRAPHQL_ENDPOINT,
-        exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
-      },
-      false
-    );
-
-    if (!client) return null;
+    const client = createClient({
+      url: GRAPHQL_ENDPOINT,
+      exchanges: [cacheExchange, ssrCache, fetchExchange],
+    });
 
     const result = await client.query(...getOptions(ctx)).toPromise();
 

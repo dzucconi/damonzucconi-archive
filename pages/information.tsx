@@ -1,4 +1,4 @@
-import { Box, Button, Cell, Input, Stack, useThemer } from "@auspices/eos";
+import { Box, Button, Cell, Input, Stack, useThemer } from "@auspices/eos/client";
 import { DefinitionList } from "../components/core/DefinitionList";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Meta } from "../components/core/Meta";

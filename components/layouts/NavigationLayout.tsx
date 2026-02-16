@@ -1,4 +1,4 @@
-import { Stack } from "@auspices/eos";
+import { Stack } from "@auspices/eos/client";
 import { ReactElement } from "react";
 import { Page } from "../core/Page";
 import { Navigation } from "../pages/Navigation";

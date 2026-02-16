@@ -1,4 +1,4 @@
-import { color, HTML, HTMLProps } from "@auspices/eos";
+import { color, HTML, HTMLProps } from "@auspices/eos/client";
 import { FC } from "react";
 import styled from "styled-components";
 

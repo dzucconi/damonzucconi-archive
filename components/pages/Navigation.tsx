@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Stack, StackProps, Button, Box } from "@auspices/eos";
+import { Stack, StackProps, Button, Box } from "@auspices/eos/client";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Search } from "./Search";

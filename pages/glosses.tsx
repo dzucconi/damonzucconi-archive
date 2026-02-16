@@ -1,4 +1,4 @@
-import { Box, Stack } from "@auspices/eos";
+import { Box, Stack } from "@auspices/eos/client";
 import { gql } from "urql";
 import { prettifyUrl } from "../lib/prettifyUrl";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";

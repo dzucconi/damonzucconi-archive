@@ -1,4 +1,4 @@
-import { Box, Stack } from "@auspices/eos";
+import { Box, Stack } from "@auspices/eos/client";
 import { gql } from "urql";
 import { useWebsitesQuery } from "../generated/graphql";
 import { prettifyUrl } from "../lib/prettifyUrl";

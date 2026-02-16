@@ -1,4 +1,4 @@
-import { Box, Cell, color, themeGet } from "@auspices/eos";
+import { Box, Cell, color, themeGet } from "@auspices/eos/client";
 import { FC, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { wait } from "../../lib/wait";
@@ -14,6 +14,7 @@ export const UrlBar: FC<UrlBarProps> = ({ children, href, target }) => {
 
   const [offset, setOffset] = useState(0);
   const [activeOffset, setActiveOffset] = useState(0);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -34,9 +35,25 @@ export const UrlBar: FC<UrlBarProps> = ({ children, href, target }) => {
   }, [offset]);
 
   return (
-    <Container as="a" href={href} target={target}>
-      <Hover />
-      <Fade />
+    <Cell
+      as="a"
+      href={href}
+      target={target}
+      variant="default"
+      borderWidth={0}
+      justifyContent="center"
+      borderRadius={8}
+      textAlign="center"
+      color="primary"
+      bg="hint"
+      display="block"
+      position="relative"
+      overflow="hidden"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <Hover $visible={hovered} />
+      <Fade $visible={!hovered} />
 
       <Url
         ref={ref as any}
@@ -51,11 +68,11 @@ export const UrlBar: FC<UrlBarProps> = ({ children, href, target }) => {
       >
         {children}
       </Url>
-    </Container>
+    </Cell>
   );
 };
 
-const Hover = styled(Box)`
+const Hover = styled(Box)<{ $visible: boolean }>`
   position: absolute;
   top: 0;
   right: 0;
@@ -64,7 +81,7 @@ const Hover = styled(Box)`
   z-index: 2;
   background-color: ${color("tertiary", 0.5)};
   transition: opacity 250ms;
-  opacity: 0;
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
 `;
 
 const Url = styled(Box)`
@@ -73,7 +90,7 @@ const Url = styled(Box)`
   z-index: 2;
 `;
 
-const Fade = styled(Box)`
+const Fade = styled(Box)<{ $visible: boolean }>`
   position: absolute;
   top: 0;
   right: 0;
@@ -81,6 +98,7 @@ const Fade = styled(Box)`
   left: 0;
   z-index: 3;
   transition: opacity 250ms;
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
 
   &:before,
   &:after {
@@ -104,28 +122,5 @@ const Fade = styled(Box)`
       ${color("hint", 0)},
       ${color("hint")}
     );
-  }
-`;
-
-const Container = styled(Cell).attrs({
-  borderWidth: 0,
-  justifyContent: "center",
-  borderRadius: 8,
-  textAlign: "center",
-  color: "primary",
-  bg: "hint",
-})`
-  display: block;
-  position: relative;
-  overflow: hidden;
-
-  &:hover {
-    ${Hover} {
-      opacity: 1;
-    }
-
-    ${Fade} {
-      opacity: 0;
-    }
   }
 `;

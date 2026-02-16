@@ -1,4 +1,4 @@
-import { color } from "@auspices/eos";
+import { color } from "@auspices/eos/client";
 import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";

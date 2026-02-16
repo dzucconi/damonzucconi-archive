@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Box, Button } from "@auspices/eos";
+import { Box, Button } from "@auspices/eos/client";
 
 export const BackToTop = () => {
   const [mode, setMode] = useState<"Visible" | "Hidden">("Hidden");

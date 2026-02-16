@@ -1,5 +1,5 @@
 import { themeGet } from "@styled-system/theme-get";
-import { boxMixin, BoxProps } from "@auspices/eos";
+import { boxMixin, BoxProps } from "@auspices/eos/client";
 import styled from "styled-components";
 
 export const Table = styled.table<BoxProps>`

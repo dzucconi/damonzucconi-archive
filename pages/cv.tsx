@@ -1,5 +1,5 @@
 import { gql } from "urql";
-import { Box, color, Stack } from "@auspices/eos";
+import { Box, color, Stack } from "@auspices/eos/client";
 import styled from "styled-components";
 import { Cell } from "../components/core/DefinitionList";
 import { Loading } from "../components/core/Loading";
