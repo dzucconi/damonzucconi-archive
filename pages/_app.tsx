@@ -1,7 +1,8 @@
 import { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles, ThemerProvider, useThemer } from "@auspices/eos/client";
-import { ReactElement, ReactNode } from "react";
+import { Scheme } from "@auspices/eos/theme";
+import { ReactElement, ReactNode, useEffect, useMemo, useState } from "react";
 import { Loader } from "../components/core/Loader";
 import { NextPage } from "next";
 import Head from "next/head";
@@ -9,6 +10,10 @@ import { UrqlProvider } from "../lib/urql";
 import { Analytics } from "../components/pages/Analytics";
 import { HistoryProvider } from "../lib/useHistory";
 import { SSRData } from "urql";
+import {
+  ThemeProvider as NextThemesProvider,
+  useTheme as useNextTheme,
+} from "next-themes";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -18,8 +23,50 @@ type AppPageProps = AppProps["pageProps"] & {
   urqlState?: SSRData;
 };
 
-const App = ({ children }: { children: ReactNode }) => {
+const getSchemeFromDom = (): Scheme => {
+  if (typeof document === "undefined") return "light";
+  return document.documentElement.getAttribute("data-theme") === "dark"
+    ? "dark"
+    : "light";
+};
+
+const EosStyledThemeProvider = ({ children }: { children: ReactNode }) => {
   const { theme } = useThemer();
+
+  return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      {children}
+    </ThemeProvider>
+  );
+};
+
+const EosThemeBridge = ({ children }: { children: ReactNode }) => {
+  const { resolvedTheme, setTheme } = useNextTheme();
+  const [mounted, setMounted] = useState(false);
+  const [fallbackScheme] = useState<Scheme>(getSchemeFromDom);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const scheme = useMemo<Scheme>(() => {
+    if (resolvedTheme === "dark" || resolvedTheme === "light") {
+      return resolvedTheme;
+    }
+    return fallbackScheme;
+  }, [fallbackScheme, resolvedTheme]);
+
+  if (!mounted) return null;
+
+  return (
+    <ThemerProvider scheme={scheme} setScheme={(nextScheme) => setTheme(nextScheme)}>
+      <EosStyledThemeProvider>{children}</EosStyledThemeProvider>
+    </ThemerProvider>
+  );
+};
+
+const AppShell = ({ children }: { children: ReactNode }) => {
 
   return (
     <>
@@ -31,13 +78,11 @@ const App = ({ children }: { children: ReactNode }) => {
       </Head>
 
       <HistoryProvider>
-        <ThemeProvider theme={theme}>
-          <GlobalStyles />
-
+        <EosThemeBridge>
           <Loader />
 
           {children}
-        </ThemeProvider>
+        </EosThemeBridge>
       </HistoryProvider>
 
       <Analytics />
@@ -55,11 +100,11 @@ const Provided = ({ Component, pageProps }: AppPropsWithLayout) => {
   const { urqlState, ...componentPageProps } = pageProps;
 
   return (
-    <UrqlProvider urqlState={urqlState}>
-      <ThemerProvider>
-        <App>{getLayout(<Component {...componentPageProps} />)}</App>
-      </ThemerProvider>
-    </UrqlProvider>
+    <NextThemesProvider attribute="data-theme" defaultTheme="system" enableSystem>
+      <UrqlProvider urqlState={urqlState}>
+        <AppShell>{getLayout(<Component {...componentPageProps} />)}</AppShell>
+      </UrqlProvider>
+    </NextThemesProvider>
   );
 };
 
