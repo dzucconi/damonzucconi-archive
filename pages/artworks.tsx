@@ -1,4 +1,4 @@
-import { Grid, Stack } from "@auspices/eos";
+import { Grid, Stack } from "@auspices/eos/client";
 import { State, useArtworksIndexQuery } from "../generated/graphql";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";

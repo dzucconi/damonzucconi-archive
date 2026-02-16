@@ -1,31 +1,60 @@
 import { GetStaticPropsContext, NextPage } from "next";
-import { initUrqlClient, withUrqlClient } from "next-urql";
-import { FC } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   cacheExchange,
   createClient,
-  dedupExchange,
   fetchExchange,
   gql,
   Provider,
+  SSRData,
   ssrExchange,
 } from "urql";
 
 export const GRAPHQL_ENDPOINT = "https://api.damonzucconi.com/graph";
 // export const GRAPHQL_ENDPOINT = "http://localhost:5001/graph";
 
+type UrqlState = SSRData;
+
 export const client = createClient({
   url: GRAPHQL_ENDPOINT,
+  exchanges: [cacheExchange, fetchExchange],
 });
 
-export const UrqlProvider: FC = ({ children }) => {
-  return <Provider value={client}>{children}</Provider>;
+const createHydratedClient = (urqlState?: UrqlState) => {
+  const ssr = ssrExchange({
+    isClient: typeof window !== "undefined",
+    initialState: urqlState,
+  });
+
+  const hydratedClient = createClient({
+    url: GRAPHQL_ENDPOINT,
+    exchanges: [cacheExchange, ssr, fetchExchange],
+  });
+
+  return { hydratedClient, ssr };
+};
+
+export const UrqlProvider = ({
+  children,
+  urqlState,
+}: {
+  children: ReactNode;
+  urqlState?: UrqlState;
+}) => {
+  const [{ hydratedClient, ssr }] = useState(() =>
+    createHydratedClient(urqlState)
+  );
+
+  useEffect(() => {
+    if (!urqlState) return;
+    ssr.restoreData(urqlState);
+  }, [ssr, urqlState]);
+
+  return <Provider value={hydratedClient}>{children}</Provider>;
 };
 
 export const withUrql = <C extends NextPage<any, any>>(AppOrPage: C) => {
-  return withUrqlClient(() => ({ url: GRAPHQL_ENDPOINT }), {
-    ssr: false,
-  })(AppOrPage);
+  return AppOrPage;
 };
 
 export const buildGetStaticProps = (
@@ -34,15 +63,10 @@ export const buildGetStaticProps = (
   return async (ctx: GetStaticPropsContext) => {
     const ssrCache = ssrExchange({ isClient: false });
 
-    const client = initUrqlClient(
-      {
-        url: GRAPHQL_ENDPOINT,
-        exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
-      },
-      false
-    );
-
-    if (!client) return null;
+    const client = createClient({
+      url: GRAPHQL_ENDPOINT,
+      exchanges: [cacheExchange, ssrCache, fetchExchange],
+    });
 
     const result = await client.query(...getOptions(ctx)).toPromise();
 

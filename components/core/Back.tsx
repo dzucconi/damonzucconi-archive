@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from "@auspices/eos";
+import { Button, ButtonProps } from "@auspices/eos/client";
 import { useRouter } from "next/router";
 import { FC } from "react";
 import { useHistory } from "../../lib/useHistory";

@@ -1,5 +1,5 @@
 import { gql } from "urql";
-import { StackProps } from "@auspices/eos";
+import { StackProps } from "@auspices/eos/client";
 import React from "react";
 import { Tombstone_ArtworkFragment } from "../../generated/graphql";
 import { DefinitionList } from "../core/DefinitionList";

@@ -7,7 +7,7 @@ import {
   Ellipsis,
   PaneOption,
   paneShadowMixin,
-} from "@auspices/eos";
+} from "@auspices/eos/client";
 
 export const Toggle = styled(PaneOption).attrs({
   p: 3,

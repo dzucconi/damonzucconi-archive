@@ -1,4 +1,4 @@
-import { File, EmptyFrame, ResponsiveImage, Box } from "@auspices/eos";
+import { File, EmptyFrame, ResponsiveImage, Box } from "@auspices/eos/client";
 import Link from "next/link";
 import { FC } from "react";
 import styled from "styled-components";

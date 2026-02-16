@@ -1,5 +1,5 @@
 import { gql } from "urql";
-import { Box, File, PaneOption, ResponsiveImage } from "@auspices/eos";
+import { Box, File, PaneOption, ResponsiveImage } from "@auspices/eos/client";
 import { FC } from "react";
 import { Thumbnail_ImageFragment } from "../../generated/graphql";
 import { useZoom } from "../core/useZoom";

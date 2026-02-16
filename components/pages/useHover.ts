@@ -14,7 +14,7 @@ export const useHover = () => {
     setTouch(isTouchDevice);
   }, []);
 
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = useCallback(() => {
     if (mode === "Open") return;

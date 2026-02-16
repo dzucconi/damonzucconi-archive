@@ -5,7 +5,7 @@ import {
   ExhibitionSlugsQuery,
 } from "../../generated/graphql";
 import { DefinitionList } from "../../components/core/DefinitionList";
-import { HTML, Stack, Box, Grid } from "@auspices/eos";
+import { HTML, Stack, Box, Grid } from "@auspices/eos/client";
 import { Back } from "../../components/core/Back";
 import {
   Thumbnail,
@@ -151,7 +151,13 @@ export const getStaticPaths = async () => {
     .query<ExhibitionSlugsQuery>(EXHIBITION_SLUGS_QUERY, {})
     .toPromise();
 
-  const paths = data?.exhibitions.map(({ slug }) => ({ params: { slug } }));
+  const paths = (data?.exhibitions ?? []).flatMap(({ slug }) => {
+    if (typeof slug !== "string" || slug.length === 0) {
+      return [];
+    }
+
+    return [{ params: { slug } }];
+  });
 
   return { paths, fallback: "blocking" };
 };

@@ -1,19 +1,24 @@
 import { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
-import { GlobalStyles, ThemerProvider, useThemer } from "@auspices/eos";
-import { FC, ReactElement, ReactNode } from "react";
+import { GlobalStyles, ThemerProvider, useThemer } from "@auspices/eos/client";
+import { ReactElement, ReactNode } from "react";
 import { Loader } from "../components/core/Loader";
 import { NextPage } from "next";
 import Head from "next/head";
 import { UrqlProvider } from "../lib/urql";
 import { Analytics } from "../components/pages/Analytics";
 import { HistoryProvider } from "../lib/useHistory";
+import { SSRData } from "urql";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
-const App: FC = ({ children }) => {
+type AppPageProps = AppProps["pageProps"] & {
+  urqlState?: SSRData;
+};
+
+const App = ({ children }: { children: ReactNode }) => {
   const { theme } = useThemer();
 
   return (
@@ -40,17 +45,19 @@ const App: FC = ({ children }) => {
   );
 };
 
-type AppPropsWithLayout = AppProps & {
+type AppPropsWithLayout = Omit<AppProps, "Component" | "pageProps"> & {
   Component: NextPageWithLayout;
+  pageProps: AppPageProps;
 };
 
 const Provided = ({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page);
+  const { urqlState, ...componentPageProps } = pageProps;
 
   return (
-    <UrqlProvider>
+    <UrqlProvider urqlState={urqlState}>
       <ThemerProvider>
-        <App>{getLayout(<Component {...pageProps} />)}</App>
+        <App>{getLayout(<Component {...componentPageProps} />)}</App>
       </ThemerProvider>
     </UrqlProvider>
   );

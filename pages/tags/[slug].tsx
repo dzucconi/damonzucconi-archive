@@ -1,6 +1,6 @@
 import { gql } from "urql";
 import { useRouter } from "next/router";
-import { Box, Stack, HTML, Grid } from "@auspices/eos";
+import { Box, Stack, HTML, Grid } from "@auspices/eos/client";
 import { TagSlugsQuery, useTagShowQuery } from "../../generated/graphql";
 import { PageLayout } from "../../components/layouts/PageLayout";
 import { Loading } from "../../components/core/Loading";
@@ -112,7 +112,13 @@ export const getStaticPaths = async () => {
     .query<TagSlugsQuery>(TAG_SLUGS_QUERY, {})
     .toPromise();
 
-  const paths = data?.tags.map(({ slug }) => ({ params: { slug } }));
+  const paths = (data?.tags ?? []).flatMap(({ slug }) => {
+    if (typeof slug !== "string" || slug.length === 0) {
+      return [];
+    }
+
+    return [{ params: { slug } }];
+  });
 
   return { paths, fallback: "blocking" };
 };

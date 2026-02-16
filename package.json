@@ -3,42 +3,41 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
     "gql": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@auspices/eos": "5.0.0",
+    "@auspices/eos": "6.0.0",
     "@seznam/compose-react-refs": "^1.0.4",
     "@styled-system/theme-get": "^5.1.2",
     "graphql": "^16.6.0",
-    "isomorphic-unfetch": "^3.1.0",
-    "next": "13.1.1",
-    "next-urql": "^4.0.2",
+    "next": "16.1.6",
     "openseadragon": "^3.0.0",
     "proportional-scale": "^4.0.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "styled-components": "^5.2.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "styled-components": "^6.3.9",
     "styled-reset": "^4.2.3",
     "styled-system": "^5.1.5",
-    "urql": "^3.0.3",
+    "@urql/core": "^5.2.0",
+    "urql": "^4.2.2",
     "use-keyboard-list-navigation": "^2.4.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.16.1",
     "@graphql-codegen/typescript-operations": "^2.5.10",
     "@graphql-codegen/typescript-urql": "^3.7.3",
-    "@types/node": "^14.14.3",
+    "@types/node": "^22.13.9",
     "@types/openseadragon": "^3.0.0",
-    "@types/react": "^16.9.53",
-    "@types/styled-components": "^5.1.23",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@types/styled-system": "^5.1.10",
     "@types/styled-system__theme-get": "^5.0.1",
-    "typescript": "^4.0.3"
+    "typescript": "^5.9.3"
   },
   "resolutions": {
-    "styled-components": "^5"
+    "styled-components": "^6.3.9"
   }
 }

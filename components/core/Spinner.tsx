@@ -1,4 +1,4 @@
-import { Box, Spinner as _Spinner } from "@auspices/eos";
+import { Box, Spinner as _Spinner } from "@auspices/eos/client";
 import { FC } from "react";
 
 export const Spinner: FC = () => {
