@@ -8,9 +8,14 @@ import Head from "next/head";
 import { UrqlProvider } from "../lib/urql";
 import { Analytics } from "../components/pages/Analytics";
 import { HistoryProvider } from "../lib/useHistory";
+import { SSRData } from "urql";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPageProps = AppProps["pageProps"] & {
+  urqlState?: SSRData;
 };
 
 const App = ({ children }: { children: ReactNode }) => {
@@ -40,17 +45,19 @@ const App = ({ children }: { children: ReactNode }) => {
   );
 };
 
-type AppPropsWithLayout = AppProps & {
+type AppPropsWithLayout = Omit<AppProps, "Component" | "pageProps"> & {
   Component: NextPageWithLayout;
+  pageProps: AppPageProps;
 };
 
 const Provided = ({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page);
+  const { urqlState, ...componentPageProps } = pageProps;
 
   return (
-    <UrqlProvider>
+    <UrqlProvider urqlState={urqlState}>
       <ThemerProvider>
-        <App>{getLayout(<Component {...pageProps} />)}</App>
+        <App>{getLayout(<Component {...componentPageProps} />)}</App>
       </ThemerProvider>
     </UrqlProvider>
   );

@@ -1,24 +1,56 @@
 import { GetStaticPropsContext, NextPage } from "next";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   cacheExchange,
   createClient,
   fetchExchange,
   gql,
   Provider,
+  SSRData,
   ssrExchange,
 } from "urql";
 
 export const GRAPHQL_ENDPOINT = "https://api.damonzucconi.com/graph";
 // export const GRAPHQL_ENDPOINT = "http://localhost:5001/graph";
 
+type UrqlState = SSRData;
+
 export const client = createClient({
   url: GRAPHQL_ENDPOINT,
   exchanges: [cacheExchange, fetchExchange],
 });
 
-export const UrqlProvider = ({ children }: { children: ReactNode }) => {
-  return <Provider value={client}>{children}</Provider>;
+const createHydratedClient = (urqlState?: UrqlState) => {
+  const ssr = ssrExchange({
+    isClient: typeof window !== "undefined",
+    initialState: urqlState,
+  });
+
+  const hydratedClient = createClient({
+    url: GRAPHQL_ENDPOINT,
+    exchanges: [cacheExchange, ssr, fetchExchange],
+  });
+
+  return { hydratedClient, ssr };
+};
+
+export const UrqlProvider = ({
+  children,
+  urqlState,
+}: {
+  children: ReactNode;
+  urqlState?: UrqlState;
+}) => {
+  const [{ hydratedClient, ssr }] = useState(() =>
+    createHydratedClient(urqlState)
+  );
+
+  useEffect(() => {
+    if (!urqlState) return;
+    ssr.restoreData(urqlState);
+  }, [ssr, urqlState]);
+
+  return <Provider value={hydratedClient}>{children}</Provider>;
 };
 
 export const withUrql = <C extends NextPage<any, any>>(AppOrPage: C) => {
