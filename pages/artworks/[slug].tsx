@@ -21,6 +21,8 @@ import {
 import { Loading } from "../../components/core/Loading";
 import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
 import { buildGetStaticProps, client, withUrql } from "../../lib/urql";
+import { isAudioUrl, AudioPlayerList } from "../../components/pages/AudioPlayerList";
+import { useMemo } from "react";
 
 const ARTWORKS_SHOW_QUERY = gql`
   query ArtworksShowQuery($id: ID!) {
@@ -81,8 +83,44 @@ export const ArtworksShowPage = () => {
   }
 
   const { artwork } = data;
-  const figureZoomImages = artwork.images.map((image) => image.zoom.srcs._1x);
-  const thumbnailZoomImages = artwork.images.map((image) => image.url);
+
+  const figureZoomImages = useMemo(
+    () => artwork.images.map((image) => image.zoom.srcs._1x),
+    [artwork.images],
+  );
+
+  const thumbnailZoomImages = useMemo(
+    () => artwork.images.map((image) => image.url),
+    [artwork.images],
+  );
+
+  const audioTracks = useMemo(
+    () =>
+      [
+        ...artwork.attachments.map((attachment) => ({
+          id: `attachment:${attachment.id}`,
+          title: attachment.title,
+          url: attachment.url,
+        })),
+        ...artwork.links.map((link) => ({
+          id: `link:${link.url}`,
+          title: link.title,
+          url: link.url,
+        })),
+      ].filter((track) => isAudioUrl(track.url)),
+    [artwork.attachments, artwork.links],
+  );
+
+  const nonAudioAttachments = useMemo(
+    () =>
+      artwork.attachments.filter((attachment) => !isAudioUrl(attachment.url)),
+    [artwork.attachments],
+  );
+
+  const nonAudioLinks = useMemo(
+    () => artwork.links.filter((link) => !isAudioUrl(link.url)),
+    [artwork.links],
+  );
 
   return (
     <>
@@ -165,9 +203,11 @@ export const ArtworksShowPage = () => {
           </Box>
         )}
 
-        {artwork.attachments.length > 0 && (
-          <Stack direction="vertical" spacing={2} textAlign="center">
-            {artwork.attachments.map((attachment, i) => {
+        {audioTracks.length > 0 && <AudioPlayerList tracks={audioTracks} />}
+
+        {nonAudioAttachments.length > 0 && (
+          <Stack direction="vertical" spacing={3}>
+            {nonAudioAttachments.map((attachment) => {
               return (
                 <Box
                   key={attachment.url}
@@ -177,6 +217,7 @@ export const ArtworksShowPage = () => {
                   lineHeight={2}
                   fontSize={3}
                   color="external"
+                  textAlign="center"
                 >
                   {attachment.title}
                 </Box>
@@ -185,9 +226,9 @@ export const ArtworksShowPage = () => {
           </Stack>
         )}
 
-        {artwork.links.length > 0 && (
+        {nonAudioLinks.length > 0 && (
           <Stack direction="vertical" spacing={2} textAlign="center">
-            {artwork.links.map((link) => {
+            {nonAudioLinks.map((link) => {
               return (
                 <Box
                   key={link.url}
