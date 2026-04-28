@@ -1,4 +1,11 @@
-import { Box, Button, Cell, Stack, useThemer } from "@auspices/eos/client";
+import {
+  Box,
+  BoxProps,
+  Button,
+  Cell,
+  Stack,
+  useThemer,
+} from "@auspices/eos/client";
 import React, {
   MouseEvent,
   useCallback,
@@ -24,7 +31,7 @@ type PlayerAction =
   | { type: "SET_DURATION"; duration: number }
   | { type: "ENDED" };
 
-export type AudioPlayerProps = {
+export type AudioPlayerProps = BoxProps & {
   trackId: string;
   src: string;
   title: string;
@@ -132,8 +139,10 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   onActivate,
   onAutoplayHandled,
   onEnded,
+  ...rest
 }) => {
   const { theme } = useThemer();
+
   const playedColor = theme.colors.primary;
   const unplayedColor = theme.colors.secondary;
   const markerColor = theme.colors.primary;
@@ -148,22 +157,17 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   const { peaks, isPlaying, currentTime, duration } = state;
 
   useEffect(() => {
-    if (isActive) {
-      return;
-    }
+    if (isActive) return;
 
     const audio = audioRef.current;
-    if (!audio || audio.paused) {
-      return;
-    }
+
+    if (!audio || audio.paused) return;
 
     audio.pause();
   }, [isActive]);
 
   useEffect(() => {
-    if (!isPlaying) {
-      return;
-    }
+    if (!isPlaying) return;
 
     let frameId = 0;
 
@@ -183,19 +187,17 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }, [isPlaying]);
 
   useEffect(() => {
-    if (!shouldAutoplay) {
-      return;
-    }
+    if (!shouldAutoplay) return;
 
     const audio = audioRef.current;
-    if (!audio) {
-      return;
-    }
+
+    if (!audio) return;
 
     const play = async () => {
       if (audio.paused) {
         await audio.play().catch(() => undefined);
       }
+
       onAutoplayHandled(trackId);
     };
 
@@ -285,10 +287,10 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
-    const progressX = Math.max(
-      0,
-      Math.min(width - 1, Math.floor(width * visualProgress)),
-    );
+    const progressX =
+      visualProgress <= 0
+        ? -1
+        : Math.min(width - 1, Math.floor(width * visualProgress));
     const peakMaxIndex = Math.max(0, peaks.length - 1);
 
     for (let x = 0; x < width; x += 1) {
@@ -301,8 +303,10 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       ctx.fillRect(x, y, 1, lineHeight);
     }
 
-    ctx.fillStyle = markerColor;
-    ctx.fillRect(0, 0, 1, height);
+    if (progressX >= 0) {
+      ctx.fillStyle = markerColor;
+      ctx.fillRect(progressX, 0, 1, height);
+    }
   }, [markerColor, peaks, playedColor, unplayedColor, visualProgress]);
 
   useEffect(() => {
@@ -355,7 +359,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   };
 
   return (
-    <Box width={["100%", "100%", "75%", "50%"]} mx="auto">
+    <Box width={["100%", "100%", "75%", "50%"]} {...rest} mx="auto">
       <Stack direction="horizontal">
         <Button
           onClick={togglePlayback}
@@ -375,8 +379,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           aria-label={`${title} waveform`}
           title={title}
           p={0}
-          px={0}
-          py={0}
           width="100%"
           height={50}
         />
