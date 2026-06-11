@@ -227,9 +227,6 @@ const InformationPage = () => {
                           THEME_OPTIONS.map((option) => (
                             <PaneOption
                               key={option.value}
-                              fontSize={[0, 0, 1]}
-                              px={3}
-                              py={2}
                               onClick={() => {
                                 setTheme(option.value);
                                 handleClose();
