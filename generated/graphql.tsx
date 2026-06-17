@@ -1206,6 +1206,18 @@ export type ArtworkSlugsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ArtworkSlugsQuery = { __typename?: 'Query', artworks: Array<{ __typename?: 'Artwork', slug: string }> };
 
+export type ArtworkLabelQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type ArtworkLabelQuery = { __typename?: 'Query', artwork: { __typename?: 'Artwork', id: string, slug: string, title: string, year: number, material?: string | null, duration?: string | null, collector_byline?: string | null, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null } };
+
+export type ArtworkLabelSlugsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ArtworkLabelSlugsQuery = { __typename?: 'Query', artworks: Array<{ __typename?: 'Artwork', slug: string }> };
+
 export type CvPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1441,6 +1453,32 @@ export const ArtworkSlugsQueryDocument = gql`
 
 export function useArtworkSlugsQuery(options?: Omit<Urql.UseQueryArgs<ArtworkSlugsQueryVariables>, 'query'>) {
   return Urql.useQuery<ArtworkSlugsQuery, ArtworkSlugsQueryVariables>({ query: ArtworkSlugsQueryDocument, ...options });
+};
+export const ArtworkLabelQueryDocument = gql`
+    query ArtworkLabelQuery($id: ID!) {
+  artwork(id: $id) {
+    ...Tombstone_artwork
+    id
+    slug
+    title
+    year
+  }
+}
+    ${Tombstone_ArtworkFragmentDoc}`;
+
+export function useArtworkLabelQuery(options: Omit<Urql.UseQueryArgs<ArtworkLabelQueryVariables>, 'query'>) {
+  return Urql.useQuery<ArtworkLabelQuery, ArtworkLabelQueryVariables>({ query: ArtworkLabelQueryDocument, ...options });
+};
+export const ArtworkLabelSlugsQueryDocument = gql`
+    query ArtworkLabelSlugsQuery {
+  artworks {
+    slug
+  }
+}
+    `;
+
+export function useArtworkLabelSlugsQuery(options?: Omit<Urql.UseQueryArgs<ArtworkLabelSlugsQueryVariables>, 'query'>) {
+  return Urql.useQuery<ArtworkLabelSlugsQuery, ArtworkLabelSlugsQueryVariables>({ query: ArtworkLabelSlugsQueryDocument, ...options });
 };
 export const CvPageQueryDocument = gql`
     query CvPageQuery {
