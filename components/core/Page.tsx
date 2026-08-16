@@ -3,6 +3,7 @@ import { Box } from "@auspices/eos/client";
 
 export const Page = styled(Box).attrs({
   p: [4, 6],
+  mb: 8,
 })`
   box-sizing: content-box;
 

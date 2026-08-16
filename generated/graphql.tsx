@@ -1354,6 +1354,18 @@ export type ArtworkLabelSlugsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ArtworkLabelSlugsQuery = { __typename?: 'Query', artworks: Array<{ __typename?: 'Artwork', slug: string }> };
 
+export type ArtworksResourcesQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type ArtworksResourcesQuery = { __typename?: 'Query', artwork: { __typename?: 'Artwork', id: string, slug: string, title: string, year: number, state: State, intent: ArtworkIntent, gloss?: string | null, src?: string | null, created_at: string, updated_at: string, description?: string | null, material?: string | null, duration?: string | null, collector_byline?: string | null, descriptionPlain?: string | null, images: Array<{ __typename?: 'Image', id: string, title?: string | null, state: State, width?: number | null, height?: number | null, url: string, placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, thumb: { __typename?: 'ResizedImage', width: number, height: number, srcs: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }>, productionFiles: Array<{ __typename?: 'ProductionFile', id: string, title: string, description?: string | null, file_name: string, file_content_type?: string | null, file_content_length?: any | null, state: State, url: string }>, allLinks: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, kind: Kind, state: State, url: string }>, attachments: Array<{ __typename?: 'Attachment', id: string, title?: string | null, file_name: string, file_type: string, state: State, url: string }>, embeds: Array<{ __typename?: 'Embed', id: string }>, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null } };
+
+export type ArtworkResourcesSlugsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ArtworkResourcesSlugsQuery = { __typename?: 'Query', artworks: Array<{ __typename?: 'Artwork', slug: string }> };
+
 export type CvPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1630,6 +1642,94 @@ export const ArtworkLabelSlugsQueryDocument = gql`
 
 export function useArtworkLabelSlugsQuery(options?: Omit<Urql.UseQueryArgs<ArtworkLabelSlugsQueryVariables>, 'query'>) {
   return Urql.useQuery<ArtworkLabelSlugsQuery, ArtworkLabelSlugsQueryVariables>({ query: ArtworkLabelSlugsQueryDocument, ...options });
+};
+export const ArtworksResourcesQueryDocument = gql`
+    query ArtworksResourcesQuery($id: ID!) {
+  artwork(id: $id) {
+    ...Tombstone_artwork
+    id
+    slug
+    title
+    year
+    state
+    intent
+    gloss
+    src
+    created_at
+    updated_at
+    description(format: HTML)
+    descriptionPlain: description(format: PLAIN)
+    images(state: [DRAFT, SELECTED, PUBLISHED, ARCHIVED]) {
+      id
+      title
+      state
+      width
+      height
+      url
+      placeholder: resized(width: 50, height: 50, blur: 10) {
+        urls {
+          src: _1x
+        }
+      }
+      thumb: resized(width: 200, height: 200) {
+        width
+        height
+        srcs: urls {
+          _1x
+          _2x
+          _3x
+        }
+      }
+    }
+    productionFiles: production_files(state: [DRAFT, SELECTED, PUBLISHED, ARCHIVED]) {
+      id
+      title
+      description
+      file_name
+      file_content_type
+      file_content_length
+      state
+      url
+    }
+    allLinks: links(
+      kind: [DEFAULT, CANONICAL, SOURCE]
+      state: [DRAFT, SELECTED, PUBLISHED, ARCHIVED]
+    ) {
+      id
+      title
+      description
+      kind
+      state
+      url
+    }
+    attachments {
+      id
+      title
+      file_name
+      file_type
+      state
+      url
+    }
+    embeds {
+      id
+    }
+  }
+}
+    ${Tombstone_ArtworkFragmentDoc}`;
+
+export function useArtworksResourcesQuery(options: Omit<Urql.UseQueryArgs<ArtworksResourcesQueryVariables>, 'query'>) {
+  return Urql.useQuery<ArtworksResourcesQuery, ArtworksResourcesQueryVariables>({ query: ArtworksResourcesQueryDocument, ...options });
+};
+export const ArtworkResourcesSlugsQueryDocument = gql`
+    query ArtworkResourcesSlugsQuery {
+  artworks {
+    slug
+  }
+}
+    `;
+
+export function useArtworkResourcesSlugsQuery(options?: Omit<Urql.UseQueryArgs<ArtworkResourcesSlugsQueryVariables>, 'query'>) {
+  return Urql.useQuery<ArtworkResourcesSlugsQuery, ArtworkResourcesSlugsQueryVariables>({ query: ArtworkResourcesSlugsQueryDocument, ...options });
 };
 export const CvPageQueryDocument = gql`
     query CvPageQuery {
