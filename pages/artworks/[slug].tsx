@@ -21,8 +21,15 @@ import {
 import { Loading } from "../../components/core/Loading";
 import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
 import { buildGetStaticProps, client, withUrql } from "../../lib/urql";
-import { isAudioUrl, AudioPlayerList } from "../../components/pages/AudioPlayerList";
+import {
+  isAudioUrl,
+  AudioPlayerList,
+} from "../../components/pages/AudioPlayerList";
 import { useMemo } from "react";
+import {
+  Resources,
+  RESOURCES_ARTWORK_FRAGMENT,
+} from "../../components/pages/Resources";
 
 const ARTWORKS_SHOW_QUERY = gql`
   query ArtworksShowQuery($id: ID!) {
@@ -45,6 +52,7 @@ const ARTWORKS_SHOW_QUERY = gql`
         title
         url
       }
+      ...Resources_artwork
       embeds {
         id
         html
@@ -60,6 +68,7 @@ const ARTWORKS_SHOW_QUERY = gql`
     }
   }
   ${TOMBSTONE_ARTWORK_FRAGMENT}
+  ${RESOURCES_ARTWORK_FRAGMENT}
   ${FIGURE_IMAGE_FRAGMENT}
   ${THUMBNAIL_IMAGE_FRAGMENT}
   ${META_IMAGE_FRAGMENT}
@@ -245,6 +254,8 @@ export const ArtworksShowPage = () => {
             })}
           </Stack>
         )}
+
+        <Resources artwork={artwork} />
 
         {artwork.description && (
           <Box>
