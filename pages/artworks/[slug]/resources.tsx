@@ -1,8 +1,10 @@
 import { gql } from "urql";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { FC } from "react";
 import {
   Box,
+  Button,
   Cell,
   File,
   Grid,
@@ -28,6 +30,7 @@ import { DefinitionList } from "../../../components/core/DefinitionList";
 import { buildGetStaticProps, client, withUrql } from "../../../lib/urql";
 import { formatFileSize } from "../../../lib/formatFileSize";
 import { prettifyUrl } from "../../../lib/prettifyUrl";
+import { toDownloadHref } from "../../../lib/toDownloadHref";
 
 const ARTWORKS_RESOURCES_QUERY = gql`
   query ArtworksResourcesQuery($id: ID!) {
@@ -111,6 +114,24 @@ const SectionLabel = ({ children, ...rest }: { children: React.ReactNode }) => (
     {children}
   </Box>
 );
+
+type DownloadButtonProps = {
+  url: string;
+  filename: string;
+};
+
+const DownloadButton: FC<DownloadButtonProps> = ({ url, filename }) => {
+  return (
+    <Button
+      as="a"
+      variant="small"
+      href={toDownloadHref(url)}
+      download={filename}
+    >
+      Download
+    </Button>
+  );
+};
 
 export const ArtworksResourcesPage = () => {
   const {
@@ -237,10 +258,13 @@ export const ArtworksResourcesPage = () => {
                       size
                     </Cell>
                   </th>
-                  <th>
+                  <Box as="th" display={["none", "table-cell"]}>
                     <Cell variant="small" borderWidth={0}>
                       state
                     </Cell>
+                  </Box>
+                  <th>
+                    <Cell variant="small" borderWidth={0} />
                   </th>
                 </tr>
               </thead>
@@ -268,7 +292,16 @@ export const ArtworksResourcesPage = () => {
                       </Cell>
                     </td>
                     <td>
-                      <Cell variant="small" borderWidth={0}>
+                      <Cell
+                        as="a"
+                        href={file.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        variant="small"
+                        borderWidth={0}
+                        display="block"
+                        style={{ overflowWrap: "anywhere" }}
+                      >
                         {file.file_name}
                       </Cell>
                     </td>
@@ -282,9 +315,17 @@ export const ArtworksResourcesPage = () => {
                         {formatFileSize(file.file_content_length)}
                       </Cell>
                     </td>
-                    <td>
+                    <Box as="td" display={["none", "table-cell"]}>
                       <Cell variant="small" borderWidth={0}>
                         <Tag>{file.state}</Tag>
+                      </Cell>
+                    </Box>
+                    <td>
+                      <Cell variant="small" borderWidth={0}>
+                        <DownloadButton
+                          url={file.url}
+                          filename={file.file_name}
+                        />
                       </Cell>
                     </td>
                   </tr>
@@ -316,11 +357,11 @@ export const ArtworksResourcesPage = () => {
                       kind
                     </Cell>
                   </th>
-                  <th>
+                  <Box as="th" display={["none", "table-cell"]}>
                     <Cell variant="small" borderWidth={0}>
                       state
                     </Cell>
-                  </th>
+                  </Box>
                 </tr>
               </thead>
 
@@ -357,11 +398,11 @@ export const ArtworksResourcesPage = () => {
                         <Tag>{link.kind}</Tag>
                       </Cell>
                     </td>
-                    <td>
+                    <Box as="td" display={["none", "table-cell"]}>
                       <Cell variant="small" borderWidth={0}>
                         <Tag>{link.state}</Tag>
                       </Cell>
-                    </td>
+                    </Box>
                   </tr>
                 ))}
               </tbody>
@@ -393,11 +434,11 @@ export const ArtworksResourcesPage = () => {
                       type
                     </Cell>
                   </th>
-                  <th>
+                  <Box as="th" display={["none", "table-cell"]}>
                     <Cell variant="small" borderWidth={0}>
                       state
                     </Cell>
-                  </th>
+                  </Box>
                 </tr>
               </thead>
 
@@ -427,11 +468,11 @@ export const ArtworksResourcesPage = () => {
                         {attachment.file_type}
                       </Cell>
                     </td>
-                    <td>
+                    <Box as="td" display={["none", "table-cell"]}>
                       <Cell variant="small" borderWidth={0}>
                         <Tag>{attachment.state}</Tag>
                       </Cell>
-                    </td>
+                    </Box>
                   </tr>
                 ))}
               </tbody>
