@@ -1,11 +1,13 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { gql } from "urql";
 import styled, { createGlobalStyle } from "styled-components";
 import QRCode from "qrcode";
 import {
   ArtworkLabelQuery,
   ArtworkLabelSlugsQuery,
+  Tombstone_ArtworkFragment,
 } from "../../../generated/graphql";
 import { client } from "../../../lib/urql";
 import { TOMBSTONE_ARTWORK_FRAGMENT } from "../../../components/pages/Tombstone";
@@ -16,10 +18,6 @@ const ARTWORK_LABEL_QUERY = gql`
   query ArtworkLabelQuery($id: ID!) {
     artwork(id: $id) {
       ...Tombstone_artwork
-      id
-      slug
-      title
-      year
     }
   }
   ${TOMBSTONE_ARTWORK_FRAGMENT}
@@ -34,14 +32,16 @@ const ARTWORK_LABEL_SLUGS_QUERY = gql`
 `;
 
 type LabelPageProps = {
-  artwork: ArtworkLabelQuery["artwork"];
+  artwork: Tombstone_ArtworkFragment;
   artworkUrl: string;
   qrCodeSvg: string;
+  tombstoneQrCodeSvg: string;
+  generatedAt: string;
 };
 
-const dimensionsToString = (
-  dimensions: ArtworkLabelQuery["artwork"]["dimensions"],
-) => {
+const dimensionsToString = (artwork: Tombstone_ArtworkFragment) => {
+  const { dimensions } = artwork;
+
   if (!dimensions) return null;
 
   const inches = dimensions.inches.to_s?.replace("in", "").trim();
@@ -52,63 +52,75 @@ const dimensionsToString = (
     .join(" / ");
 };
 
-const ArtworkLabelPage = ({
-  artwork,
-  artworkUrl,
-  qrCodeSvg,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const details = [
+const createTombstoneLines = (artwork: Tombstone_ArtworkFragment) => {
+  return [
+    "Damon Zucconi",
+    artwork.title,
+    `${artwork.year}`,
     artwork.material,
-    dimensionsToString(artwork.dimensions),
+    dimensionsToString(artwork),
     artwork.duration,
     artwork.collector_byline,
   ].filter(
     (detail): detail is string =>
       typeof detail === "string" && detail.length > 0,
   );
+};
+
+const formatGeneratedAt = (date: Date) => {
+  return `${date.toISOString().slice(0, 16).replace("T", " ")} UTC`;
+};
+
+const ArtworkLabelPage = ({
+  artwork,
+  artworkUrl,
+  qrCodeSvg,
+  tombstoneQrCodeSvg,
+  generatedAt,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const router = useRouter();
+  const half = router.query.half === "bottom" ? "bottom" : "top";
+  const details = createTombstoneLines(artwork).slice(3);
 
   return (
     <>
       <Head>
-        <title>{`${artwork.title} label | Damon Zucconi`}</title>
+        <title>{`${artwork.title} | Damon Zucconi`}</title>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
+
       <PrintStyles />
 
-      <Label>
-        <CropMarks aria-hidden="true">
-          <CropMark $corner="top-left" $axis="horizontal" />
-          <CropMark $corner="top-left" $axis="vertical" />
-          <CropMark $corner="top-right" $axis="horizontal" />
-          <CropMark $corner="top-right" $axis="vertical" />
-          <CropMark $corner="bottom-right" $axis="horizontal" />
-          <CropMark $corner="bottom-right" $axis="vertical" />
-          <CropMark $corner="bottom-left" $axis="horizontal" />
-          <CropMark $corner="bottom-left" $axis="vertical" />
-        </CropMarks>
+      <Sheet $half={half}>
+        <Label>
+          <Qr>
+            <QrCode dangerouslySetInnerHTML={{ __html: qrCodeSvg }} />
+            <QrCode dangerouslySetInnerHTML={{ __html: tombstoneQrCodeSvg }} />
+          </Qr>
 
-        <Qr>
-          <QrCode dangerouslySetInnerHTML={{ __html: qrCodeSvg }} />
-          <QrUrl>{artworkUrl}</QrUrl>
-        </Qr>
+          <Artwork>
+            <Artist>Damon Zucconi</Artist>
+            <Title>{artwork.title}</Title>
+            <Year>{artwork.year}</Year>
 
-        <Artwork>
-          <Title>{artwork.title}</Title>
-          <Year>{artwork.year}</Year>
+            {details.length > 0 && (
+              <Details>
+                {details.map((detail) => (
+                  <Detail key={detail}>{detail}</Detail>
+                ))}
+              </Details>
+            )}
+          </Artwork>
 
-          {details.length > 0 && (
-            <Details>
-              {details.map((detail) => (
-                <Detail key={detail}>{detail}</Detail>
-              ))}
-            </Details>
-          )}
-        </Artwork>
-
-        <Signature>
-          <SignatureLine />
-        </Signature>
-      </Label>
+          <Signature>
+            <SignatureLine />
+            <LabelMeta>
+              <MetaUrl>{artworkUrl}</MetaUrl>
+              <div>Generated {generatedAt}</div>
+            </LabelMeta>
+          </Signature>
+        </Label>
+      </Sheet>
     </>
   );
 };
@@ -140,12 +152,26 @@ export const getStaticProps: GetStaticProps<LabelPageProps> = async (ctx) => {
       light: "#ffffff",
     },
   });
+  const tombstoneQrCodeSvg = await QRCode.toString(
+    createTombstoneLines(result.data.artwork).join("\n"),
+    {
+      type: "svg",
+      margin: 1,
+      width: 192,
+      color: {
+        dark: "#000000",
+        light: "#ffffff",
+      },
+    },
+  );
 
   return {
     props: {
       artwork: result.data.artwork,
       artworkUrl,
       qrCodeSvg,
+      tombstoneQrCodeSvg,
+      generatedAt: formatGeneratedAt(new Date()),
     },
     revalidate: 60,
   };
@@ -167,6 +193,20 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { paths, fallback: "blocking" };
 };
 
+const Sheet = styled.div<{ $half: "top" | "bottom" }>`
+  box-sizing: border-box;
+  width: 8.5in;
+  min-height: 11in;
+  margin: 0 auto;
+  padding: ${({ $half }) => ($half === "bottom" ? "6in" : "0.5in")} 0.75in
+    0.5in;
+  background: white;
+
+  @media screen {
+    margin-top: 2rem;
+  }
+`;
+
 const Label = styled.main`
   position: relative;
   display: flex;
@@ -186,14 +226,10 @@ const Label = styled.main`
   line-height: 1.25;
   text-align: left;
 
-  @media screen {
-    margin-top: 2rem;
-  }
-
   @media print {
     width: 7in;
     min-height: 3.5in;
-    margin: 0.35in auto 0;
+    margin: 0 auto;
     border: 0;
     break-inside: avoid;
     print-color-adjust: exact;
@@ -207,69 +243,20 @@ const Artwork = styled.section`
 const PrintStyles = createGlobalStyle`
   @page {
     size: letter;
-    margin: 0.5in;
+    margin: 0;
   }
 
   @media print {
+    html,
     body {
       margin: 0;
     }
   }
 `;
 
-const CropMarks = styled.div`
-  --crop-mark-length: 0.18in;
-  --crop-mark-gap: 0.12in;
-  --crop-mark-bleed: calc(var(--crop-mark-length) + var(--crop-mark-gap));
-
-  position: absolute;
-  inset: calc(var(--crop-mark-bleed) * -1);
-  z-index: 1;
-  pointer-events: none;
-`;
-
-type CropMarkProps = {
-  $corner: "top-left" | "top-right" | "bottom-right" | "bottom-left";
-  $axis: "horizontal" | "vertical";
-};
-
-const CropMark = styled.span<CropMarkProps>`
-  position: absolute;
-  display: block;
-  background: currentColor;
-
-  ${({ $axis }) =>
-    $axis === "horizontal"
-      ? `
-        width: var(--crop-mark-length);
-        height: 1px;
-      `
-      : `
-        width: 1px;
-        height: var(--crop-mark-length);
-      `}
-
-  ${({ $corner, $axis }) => {
-    const isTop = $corner.startsWith("top");
-    const isLeft = $corner.endsWith("left");
-    const edge = isLeft ? "left" : "right";
-    const side = isTop ? "top" : "bottom";
-
-    if ($axis === "horizontal") {
-      return `
-        ${side}: var(--crop-mark-bleed);
-        ${edge}: 0;
-      `;
-    }
-
-    return `
-      ${side}: 0;
-      ${edge}: var(--crop-mark-bleed);
-    `;
-  }}
-`;
-
 const Title = styled.h1``;
+
+const Artist = styled.div``;
 
 const Year = styled.div``;
 
@@ -279,15 +266,18 @@ const Detail = styled.div``;
 
 const Signature = styled.section`
   align-self: start;
-  width: 2.5in;
+  width: 100%;
 `;
 
 const SignatureLine = styled.div`
+  width: 66%;
   height: 0.65in;
   border-bottom: 1px solid currentColor;
 `;
 
 const Qr = styled.aside`
+  display: flex;
+  gap: 0.125in;
   align-self: start;
 `;
 
@@ -302,8 +292,11 @@ const QrCode = styled.div`
   }
 `;
 
-const QrUrl = styled.div`
-  margin-top: 0.08in;
+const MetaUrl = styled.div`
   overflow-wrap: anywhere;
+`;
+
+const LabelMeta = styled.div`
+  margin-top: 0.08in;
   font-size: 7pt;
 `;

@@ -1211,7 +1211,7 @@ export type ArtworkLabelQueryVariables = Exact<{
 }>;
 
 
-export type ArtworkLabelQuery = { __typename?: 'Query', artwork: { __typename?: 'Artwork', id: string, slug: string, title: string, year: number, material?: string | null, duration?: string | null, collector_byline?: string | null, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null } };
+export type ArtworkLabelQuery = { __typename?: 'Query', artwork: { __typename?: 'Artwork', title: string, material?: string | null, duration?: string | null, year: number, collector_byline?: string | null, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null } };
 
 export type ArtworkLabelSlugsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1458,10 +1458,6 @@ export const ArtworkLabelQueryDocument = gql`
     query ArtworkLabelQuery($id: ID!) {
   artwork(id: $id) {
     ...Tombstone_artwork
-    id
-    slug
-    title
-    year
   }
 }
     ${Tombstone_ArtworkFragmentDoc}`;
