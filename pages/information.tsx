@@ -81,7 +81,7 @@ const InformationPage = () => {
               term: "Representation",
               definition: [
                 {
-                  term: "Florence, IT",
+                  term: "Milan, IT",
                   definition: "Veda",
                   href: "https://www.spazioveda.it/",
                   target: "_blank",
