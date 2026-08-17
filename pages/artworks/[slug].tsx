@@ -255,8 +255,6 @@ export const ArtworksShowPage = () => {
           </Stack>
         )}
 
-        <Resources artwork={artwork} />
-
         {artwork.description && (
           <Box>
             <HTML
@@ -271,6 +269,8 @@ export const ArtworksShowPage = () => {
             />
           </Box>
         )}
+
+        <Resources artwork={artwork} />
       </Stack>
     </>
   );
