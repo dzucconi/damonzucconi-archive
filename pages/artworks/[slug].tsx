@@ -144,6 +144,8 @@ export const ArtworksShowPage = () => {
           <Back />
 
           <Tombstone artwork={artwork} />
+
+          <Resources artwork={artwork} />
         </Stack>
 
         {artwork.src && (
@@ -269,8 +271,6 @@ export const ArtworksShowPage = () => {
             />
           </Box>
         )}
-
-        <Resources artwork={artwork} />
       </Stack>
     </>
   );

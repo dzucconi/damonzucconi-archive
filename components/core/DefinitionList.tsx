@@ -1,10 +1,15 @@
 import { Box, BoxProps, Cell as _Cell, Stack, Clickable } from "@auspices/eos/client";
 import Link from "next/link";
-import { AnchorHTMLAttributes, FC } from "react";
+import {
+  AnchorHTMLAttributes,
+  FC,
+  isValidElement,
+  ReactNode,
+} from "react";
 
 type Definition = {
   term: string;
-  definition?: string | number | null | Definition[];
+  definition?: ReactNode | Definition[];
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
 type DefinitionListProps = BoxProps & {
@@ -24,7 +29,7 @@ export const DefinitionList: FC<DefinitionListProps> = ({
           ({ term, definition, href, onClick, ...link }, index) => {
             if (!definition) return null;
 
-            const isNested = typeof definition === "object";
+            const isNested = Array.isArray(definition);
             const isExternal = href && href.startsWith("http");
             const isInternal = href && href.startsWith("/");
             const isButton = !!onClick;
@@ -43,6 +48,10 @@ export const DefinitionList: FC<DefinitionListProps> = ({
                           definitions={definition}
                         />
                       );
+                    }
+
+                    if (isValidElement(definition)) {
+                      return definition;
                     }
 
                     if (isExternal) {

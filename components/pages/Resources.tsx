@@ -1,9 +1,23 @@
 import { gql } from "urql";
 import { FC } from "react";
-import { Box } from "@auspices/eos/client";
+import styled from "styled-components";
+import {
+  Box,
+  BoxProps,
+  Button,
+  Caret,
+  Dropdown,
+  PaneOption,
+} from "@auspices/eos/client";
 import { Resources_ArtworkFragment } from "../../generated/graphql";
-import { Disclosure } from "../core/Disclosure";
+import { DefinitionList } from "../core/DefinitionList";
 import { formatFileSize } from "../../lib/formatFileSize";
+
+const ResourcesDropdown = styled(Dropdown)`
+  > div:last-child {
+    max-width: inherit;
+  }
+`;
 
 export const RESOURCES_ARTWORK_FRAGMENT = gql`
   fragment Resources_artwork on Artwork {
@@ -23,11 +37,11 @@ export const RESOURCES_ARTWORK_FRAGMENT = gql`
   }
 `;
 
-type ResourcesProps = {
+type ResourcesProps = BoxProps & {
   artwork: Resources_ArtworkFragment;
 };
 
-export const Resources: FC<ResourcesProps> = ({ artwork }) => {
+export const Resources: FC<ResourcesProps> = ({ artwork, ...rest }) => {
   const resources = [
     ...artwork.productionFiles.map((file) => ({
       id: `production:${file.id}`,
@@ -50,23 +64,53 @@ export const Resources: FC<ResourcesProps> = ({ artwork }) => {
   }
 
   return (
-    <Disclosure
-      label="Resources"
-      width="fit-content"
-      maxWidth="100%"
-      textColor="secondary"
+    <ResourcesDropdown
+      placement="bottom-start"
+      width="100%"
+      label={({ open, ref, disabled, onMouseDown, onClick }) => (
+        <DefinitionList
+          nested
+          width="100%"
+          definitions={[
+            {
+              term: "Resources",
+              definition: (
+                <Button
+                  ref={ref}
+                  variant="small"
+                  width="100%"
+                  disabled={disabled}
+                  onMouseDown={onMouseDown}
+                  onClick={onClick}
+                  type="button"
+                  aria-expanded={open}
+                >
+                  {resources.length}{" "}
+                  {resources.length === 1 ? "link" : "links"}
+                  <Caret ml={3} direction={open ? "up" : "down"} />
+                </Button>
+              ),
+            },
+          ]}
+        />
+      )}
+      {...rest}
     >
       {resources.map((resource) => (
-        <Box key={resource.id} fontSize={0}>
-          <Box as="a" href={resource.url} target="_blank" textColor="primary">
-            {resource.title} {resource.size && <>({resource.size})</>}
-          </Box>
-
+        <PaneOption
+          key={resource.id}
+          as="a"
+          href={resource.url}
+          target="_blank"
+        >
+          {resource.title} {resource.size && <>({resource.size})</>}
           {resource.description && (
-            <Box textColor="secondary">{resource.description}</Box>
+            <Box fontSize={0} textColor="secondary">
+              {resource.description}
+            </Box>
           )}
-        </Box>
+        </PaneOption>
       ))}
-    </Disclosure>
+    </ResourcesDropdown>
   );
 };
