@@ -176,8 +176,22 @@ export const ArtworksResourcesPage = () => {
                 definition: artwork.slug,
                 href: `/artworks/${artwork.slug}`,
               },
-              { term: "State", definition: artwork.state },
-              { term: "Intent", definition: artwork.intent },
+              {
+                term: "State",
+                definition: (
+                  <Cell variant="small">
+                    <Tag>{artwork.state}</Tag>
+                  </Cell>
+                ),
+              },
+              {
+                term: "Intent",
+                definition: (
+                  <Cell variant="small">
+                    <Tag>{artwork.intent}</Tag>
+                  </Cell>
+                ),
+              },
               artwork.src
                 ? {
                     term: "Source",
