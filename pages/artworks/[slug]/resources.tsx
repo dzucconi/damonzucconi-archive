@@ -30,7 +30,6 @@ import { DefinitionList } from "../../../components/core/DefinitionList";
 import { buildGetStaticProps, client, withUrql } from "../../../lib/urql";
 import { formatFileSize } from "../../../lib/formatFileSize";
 import { prettifyUrl } from "../../../lib/prettifyUrl";
-import { toDownloadHref } from "../../../lib/toDownloadHref";
 
 const ARTWORKS_RESOURCES_QUERY = gql`
   query ArtworksResourcesQuery($id: ID!) {
@@ -116,16 +115,16 @@ const SectionLabel = ({ children, ...rest }: { children: React.ReactNode }) => (
 
 type DownloadButtonProps = {
   url: string;
-  filename: string;
 };
 
-const DownloadButton: FC<DownloadButtonProps> = ({ url, filename }) => {
+const DownloadButton: FC<DownloadButtonProps> = ({ url }) => {
   return (
     <Button
       as="a"
       variant="small"
-      href={toDownloadHref(url)}
-      download={filename}
+      href={url}
+      target="_blank"
+      rel="noreferrer nofollow"
     >
       Download
     </Button>
@@ -157,6 +156,7 @@ export const ArtworksResourcesPage = () => {
         title={`${artwork.title} (${artwork.year}): Resources`}
         description={artwork.descriptionPlain ?? ""}
         noIndex
+        noFollow={false}
       />
 
       <Stack direction="vertical" spacing={8}>
@@ -289,7 +289,7 @@ export const ArtworksResourcesPage = () => {
                         as="a"
                         href={file.url}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noreferrer nofollow"
                         variant="small"
                         borderWidth={0}
                         display="block"
@@ -308,7 +308,7 @@ export const ArtworksResourcesPage = () => {
                         as="a"
                         href={file.url}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noreferrer nofollow"
                         variant="small"
                         borderWidth={0}
                         display="block"
@@ -334,10 +334,7 @@ export const ArtworksResourcesPage = () => {
                     </Box>
                     <td>
                       <Cell variant="small" borderWidth={0}>
-                        <DownloadButton
-                          url={file.url}
-                          filename={file.file_name}
-                        />
+                        <DownloadButton url={file.url} />
                       </Cell>
                     </td>
                   </tr>

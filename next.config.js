@@ -3,13 +3,16 @@ const path = require("node:path");
 
 const nextConfig = {
   reactStrictMode: true,
-  async rewrites() {
+  async headers() {
     return [
-      // Proxies S3 files through the app's origin so the native `download`
-      // attribute works (browsers ignore it on cross-origin links)
       {
-        source: "/downloads/:key*",
-        destination: "https://zucconi.s3.amazonaws.com/:key*",
+        source: "/artworks/:slug/resources",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, follow, noarchive",
+          },
+        ],
       },
     ];
   },

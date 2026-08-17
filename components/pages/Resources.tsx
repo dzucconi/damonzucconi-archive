@@ -49,6 +49,7 @@ export const Resources: FC<ResourcesProps> = ({ artwork, ...rest }) => {
       description: file.description,
       size: formatFileSize(file.file_content_length),
       url: file.url,
+      noFollow: true,
     })),
     ...artwork.sourceLinks.map((link) => ({
       id: `source:${link.id}`,
@@ -56,6 +57,7 @@ export const Resources: FC<ResourcesProps> = ({ artwork, ...rest }) => {
       description: link.description,
       size: null,
       url: link.url,
+      noFollow: false,
     })),
   ];
 
@@ -102,6 +104,7 @@ export const Resources: FC<ResourcesProps> = ({ artwork, ...rest }) => {
           as="a"
           href={resource.url}
           target="_blank"
+          rel={resource.noFollow ? "noreferrer nofollow" : "noreferrer"}
         >
           {resource.title} {resource.size && <>({resource.size})</>}
           {resource.description && (

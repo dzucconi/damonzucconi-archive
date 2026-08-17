@@ -21,6 +21,7 @@ type MetaProps = {
   /* Crop to 1200x630 */
   image?: string;
   noIndex?: boolean;
+  noFollow?: boolean;
   canonicalUrl?: string;
 };
 
@@ -38,6 +39,7 @@ export const Meta: FC<MetaProps> = ({
   description,
   image,
   noIndex = false,
+  noFollow = noIndex,
   canonicalUrl,
 }) => {
   const router = useRouter();
@@ -52,7 +54,12 @@ export const Meta: FC<MetaProps> = ({
     <Head>
       <title>{title}</title>
       {description && <meta name="description" content={description} />}
-      <meta name="robots" content={noIndex ? "noindex, nofollow" : "index, follow"} />
+      <meta
+        name="robots"
+        content={`${noIndex ? "noindex" : "index"}, ${
+          noFollow ? "nofollow" : "follow"
+        }`}
+      />
       <link rel="canonical" href={url} />
       <meta name="author" content={SITE_NAME} />
 
