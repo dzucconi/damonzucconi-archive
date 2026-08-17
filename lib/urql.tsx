@@ -66,7 +66,11 @@ export const buildGetStaticProps = (
 
     const result = await client.query(...getOptions(ctx)).toPromise();
 
-    if (result.error || !result.data) {
+    if (result.error) {
+      throw result.error;
+    }
+
+    if (!result.data) {
       return { notFound: true };
     }
 
