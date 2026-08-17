@@ -1328,14 +1328,14 @@ export type Thumbnail_ImageFragment = { __typename?: 'Image', width?: number | n
 
 export type ThumbnailArtwork_ArtworkFragment = { __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number, price?: { __typename?: 'Price', amount: string, was?: string | null } | null, images: Array<{ __typename?: 'Image', placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, resized: { __typename?: 'ResizedImage', width: number, height: number, urls: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }> };
 
-export type Tombstone_ArtworkFragment = { __typename?: 'Artwork', title: string, material?: string | null, duration?: string | null, year: number, collector_byline?: string | null, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null };
+export type Tombstone_ArtworkFragment = { __typename?: 'Artwork', title: string, material?: string | null, duration?: string | null, year: number, gloss?: string | null, collector_byline?: string | null, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null };
 
 export type ArtworksShowQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type ArtworksShowQuery = { __typename?: 'Query', artwork: { __typename?: 'Artwork', id: string, slug: string, src?: string | null, title: string, year: number, intent: ArtworkIntent, description?: string | null, material?: string | null, duration?: string | null, collector_byline?: string | null, descriptionPlain?: string | null, attachments: Array<{ __typename?: 'Attachment', id: string, url: string, title?: string | null }>, links: Array<{ __typename?: 'Link', title: string, url: string }>, embeds: Array<{ __typename?: 'Embed', id: string, html: string }>, images: Array<{ __typename?: 'Image', id: string, width?: number | null, height?: number | null, url: string, title?: string | null, description?: string | null, placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, display: { __typename?: 'ResizedImage', width: number, height: number, srcs: { __typename?: 'RetinaImage', _1x: string, _2x: string } }, zoom: { __typename?: 'ResizedImage', srcs: { __typename?: 'RetinaImage', _1x: string } }, thumb: { __typename?: 'ResizedImage', width: number, height: number, srcs: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }>, metaImages: Array<{ __typename?: 'Image', resized: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } } }>, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null, productionFiles: Array<{ __typename?: 'ProductionFile', id: string, title: string, description?: string | null, file_content_length?: any | null, url: string }>, sourceLinks: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, url: string }> } };
+export type ArtworksShowQuery = { __typename?: 'Query', artwork: { __typename?: 'Artwork', id: string, slug: string, src?: string | null, title: string, year: number, intent: ArtworkIntent, description?: string | null, material?: string | null, duration?: string | null, gloss?: string | null, collector_byline?: string | null, descriptionPlain?: string | null, attachments: Array<{ __typename?: 'Attachment', id: string, url: string, title?: string | null }>, links: Array<{ __typename?: 'Link', title: string, url: string }>, embeds: Array<{ __typename?: 'Embed', id: string, html: string }>, images: Array<{ __typename?: 'Image', id: string, width?: number | null, height?: number | null, url: string, title?: string | null, description?: string | null, placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, display: { __typename?: 'ResizedImage', width: number, height: number, srcs: { __typename?: 'RetinaImage', _1x: string, _2x: string } }, zoom: { __typename?: 'ResizedImage', srcs: { __typename?: 'RetinaImage', _1x: string } }, thumb: { __typename?: 'ResizedImage', width: number, height: number, srcs: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }>, metaImages: Array<{ __typename?: 'Image', resized: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } } }>, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null, productionFiles: Array<{ __typename?: 'ProductionFile', id: string, title: string, description?: string | null, file_content_length?: any | null, url: string }>, sourceLinks: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, url: string }> } };
 
 export type ArtworkSlugsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1347,7 +1347,7 @@ export type ArtworkLabelQueryVariables = Exact<{
 }>;
 
 
-export type ArtworkLabelQuery = { __typename?: 'Query', artwork: { __typename?: 'Artwork', title: string, material?: string | null, duration?: string | null, year: number, collector_byline?: string | null, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null } };
+export type ArtworkLabelQuery = { __typename?: 'Query', artwork: { __typename?: 'Artwork', title: string, material?: string | null, duration?: string | null, year: number, gloss?: string | null, collector_byline?: string | null, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null } };
 
 export type ArtworkLabelSlugsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1359,7 +1359,7 @@ export type ArtworksResourcesQueryVariables = Exact<{
 }>;
 
 
-export type ArtworksResourcesQuery = { __typename?: 'Query', artwork: { __typename?: 'Artwork', id: string, slug: string, title: string, year: number, state: State, intent: ArtworkIntent, gloss?: string | null, src?: string | null, created_at: string, updated_at: string, description?: string | null, material?: string | null, duration?: string | null, collector_byline?: string | null, descriptionPlain?: string | null, images: Array<{ __typename?: 'Image', id: string, title?: string | null, state: State, width?: number | null, height?: number | null, url: string, placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, thumb: { __typename?: 'ResizedImage', width: number, height: number, srcs: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }>, productionFiles: Array<{ __typename?: 'ProductionFile', id: string, title: string, description?: string | null, file_name: string, file_content_type?: string | null, file_content_length?: any | null, state: State, url: string }>, allLinks: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, kind: Kind, state: State, url: string }>, attachments: Array<{ __typename?: 'Attachment', id: string, title?: string | null, file_name: string, file_type: string, state: State, url: string }>, embeds: Array<{ __typename?: 'Embed', id: string }>, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null } };
+export type ArtworksResourcesQuery = { __typename?: 'Query', artwork: { __typename?: 'Artwork', id: string, slug: string, title: string, year: number, state: State, intent: ArtworkIntent, src?: string | null, created_at: string, updated_at: string, description?: string | null, material?: string | null, duration?: string | null, gloss?: string | null, collector_byline?: string | null, descriptionPlain?: string | null, images: Array<{ __typename?: 'Image', id: string, title?: string | null, state: State, width?: number | null, height?: number | null, url: string, placeholder: { __typename?: 'ResizedImage', urls: { __typename?: 'RetinaImage', src: string } }, thumb: { __typename?: 'ResizedImage', width: number, height: number, srcs: { __typename?: 'RetinaImage', _1x: string, _2x: string, _3x: string } } }>, productionFiles: Array<{ __typename?: 'ProductionFile', id: string, title: string, description?: string | null, file_name: string, file_content_type?: string | null, file_content_length?: any | null, state: State, url: string }>, allLinks: Array<{ __typename?: 'Link', id: string, title: string, description?: string | null, kind: Kind, state: State, url: string }>, attachments: Array<{ __typename?: 'Attachment', id: string, title?: string | null, file_name: string, file_type: string, state: State, url: string }>, embeds: Array<{ __typename?: 'Embed', id: string }>, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null } };
 
 export type ArtworkResourcesSlugsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1541,6 +1541,7 @@ export const Tombstone_ArtworkFragmentDoc = gql`
   material
   duration
   year
+  gloss
   dimensions {
     inches {
       to_s
@@ -1653,7 +1654,6 @@ export const ArtworksResourcesQueryDocument = gql`
     year
     state
     intent
-    gloss
     src
     created_at
     updated_at

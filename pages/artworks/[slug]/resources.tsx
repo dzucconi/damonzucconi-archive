@@ -42,7 +42,6 @@ const ARTWORKS_RESOURCES_QUERY = gql`
       year
       state
       intent
-      gloss
       src
       created_at
       updated_at
@@ -179,7 +178,6 @@ export const ArtworksResourcesPage = () => {
               },
               { term: "State", definition: artwork.state },
               { term: "Intent", definition: artwork.intent },
-              { term: "Gloss", definition: artwork.gloss },
               artwork.src
                 ? {
                     term: "Source",

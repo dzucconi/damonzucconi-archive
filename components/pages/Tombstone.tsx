@@ -10,6 +10,7 @@ export const TOMBSTONE_ARTWORK_FRAGMENT = gql`
     material
     duration
     year
+    gloss
     dimensions {
       inches {
         to_s
@@ -29,6 +30,7 @@ export type TombstoneProps = StackProps & {
 export const Tombstone: React.FC<TombstoneProps> = ({ artwork, ...rest }) => {
   return (
     <DefinitionList
+      maxWidth={400}
       definitions={[
         { term: "Title", definition: artwork.title },
         { term: "Material", definition: artwork.material },
@@ -41,14 +43,14 @@ export const Tombstone: React.FC<TombstoneProps> = ({ artwork, ...rest }) => {
                   term: "in",
                   definition: artwork.dimensions?.inches.to_s?.replace(
                     "in",
-                    ""
+                    "",
                   ),
                 },
                 {
                   term: "cm",
                   definition: artwork.dimensions?.centimeters.to_s?.replace(
                     "cm",
-                    ""
+                    "",
                   ),
                 },
               ]
@@ -56,6 +58,7 @@ export const Tombstone: React.FC<TombstoneProps> = ({ artwork, ...rest }) => {
         },
         { term: "Year", definition: artwork.year },
         { term: "Notes", definition: artwork.collector_byline },
+        { term: "Gloss", definition: artwork.gloss },
       ]}
       {...rest}
     />
