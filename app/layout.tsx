@@ -3,8 +3,7 @@ import { THEME } from "@auspices/eos/server";
 import StyledRegistry from "../lib/styled-registry";
 
 export const metadata: Metadata = {
-  title: "Damon Zucconi Archive",
-  description: "Archive and works",
+  title: "Damon Zucconi",
 };
 
 export default function RootLayout({
