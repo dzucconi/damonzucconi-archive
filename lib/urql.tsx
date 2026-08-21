@@ -67,11 +67,19 @@ export const buildGetStaticProps = (
     const result = await client.query(...getOptions(ctx)).toPromise();
 
     if (result.error) {
+      const isNotFound = result.error.graphQLErrors.some(
+        (error) => error.extensions?.code === "NOT_FOUND"
+      );
+
+      if (isNotFound) {
+        return { notFound: true, revalidate: 60 };
+      }
+
       throw result.error;
     }
 
     if (!result.data) {
-      return { notFound: true };
+      return { notFound: true, revalidate: 60 };
     }
 
     return { props: { urqlState: ssrCache.extractData() }, revalidate: 60 };
