@@ -1330,6 +1330,16 @@ export type ThumbnailArtwork_ArtworkFragment = { __typename?: 'Artwork', id: str
 
 export type Tombstone_ArtworkFragment = { __typename?: 'Artwork', title: string, material?: string | null, duration?: string | null, year: number, gloss?: string | null, collector_byline?: string | null, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null };
 
+export type NotFoundArtworksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NotFoundArtworksQuery = { __typename?: 'Query', artworks: Array<{ __typename?: 'Artwork', slug: string, title: string }> };
+
+export type NotFoundExhibitionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NotFoundExhibitionsQuery = { __typename?: 'Query', exhibitions: Array<{ __typename?: 'Exhibition', slug: string, title: string }> };
+
 export type ArtworksShowQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -1565,6 +1575,30 @@ export const SearchQueryDocument = gql`
 
 export function useSearchQuery(options?: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'>) {
   return Urql.useQuery<SearchQuery, SearchQueryVariables>({ query: SearchQueryDocument, ...options });
+};
+export const NotFoundArtworksQueryDocument = gql`
+    query NotFoundArtworksQuery {
+  artworks(state: [SELECTED, PUBLISHED]) {
+    slug
+    title
+  }
+}
+    `;
+
+export function useNotFoundArtworksQuery(options?: Omit<Urql.UseQueryArgs<NotFoundArtworksQueryVariables>, 'query'>) {
+  return Urql.useQuery<NotFoundArtworksQuery, NotFoundArtworksQueryVariables>({ query: NotFoundArtworksQueryDocument, ...options });
+};
+export const NotFoundExhibitionsQueryDocument = gql`
+    query NotFoundExhibitionsQuery {
+  exhibitions(state: [SELECTED, PUBLISHED]) {
+    slug
+    title
+  }
+}
+    `;
+
+export function useNotFoundExhibitionsQuery(options?: Omit<Urql.UseQueryArgs<NotFoundExhibitionsQueryVariables>, 'query'>) {
+  return Urql.useQuery<NotFoundExhibitionsQuery, NotFoundExhibitionsQueryVariables>({ query: NotFoundExhibitionsQueryDocument, ...options });
 };
 export const ArtworksShowQueryDocument = gql`
     query ArtworksShowQuery($id: ID!) {
