@@ -82,6 +82,15 @@ const suggest = <T extends { slug: string }>(
 
 const PATH_PATTERN = /^\/(artworks|exhibitions)\/([^/]+)/;
 
+// Malformed percent-encoding (e.g. a bare "%") throws a URIError
+const safeDecodeURIComponent = (value: string) => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
 const Error404Page = () => {
   const { asPath } = useRouter();
 
@@ -93,7 +102,7 @@ const Error404Page = () => {
 
     return {
       kind: match[1] as "artworks" | "exhibitions",
-      slug: decodeURIComponent(match[2]),
+      slug: safeDecodeURIComponent(match[2]),
     };
   }, [asPath]);
 
