@@ -1403,7 +1403,7 @@ export type ArtworksIndexQuery = { __typename?: 'Query', artworks: Array<{ __typ
 export type ArtworksTableQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ArtworksTableQuery = { __typename?: 'Query', artworks: Array<{ __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number }> };
+export type ArtworksTableQuery = { __typename?: 'Query', artworks: Array<{ __typename?: 'Artwork', id: string, slug: string, title: string, material?: string | null, year: number, duration?: string | null, collector_byline?: string | null, dimensions?: { __typename?: 'Dimensions', inches: { __typename?: 'Dimension', to_s?: string | null }, centimeters: { __typename?: 'Dimension', to_s?: string | null } } | null }> };
 
 export type TagShowQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -1861,6 +1861,16 @@ export const ArtworksTableQueryDocument = gql`
     title
     material
     year
+    duration
+    dimensions {
+      inches {
+        to_s
+      }
+      centimeters {
+        to_s
+      }
+    }
+    collector_byline
   }
 }
     `;
