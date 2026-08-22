@@ -9,6 +9,7 @@ const ITEMS = [
   { label: "Mostly Everything", href: "/artworks" },
   { label: "Only Websites", href: "/websites" },
   { label: "Exhibitions", href: "/exhibitions" },
+  { label: "Table", href: "/table" },
   { label: "Information", href: "/information" },
 ];
 
