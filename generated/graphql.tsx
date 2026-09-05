@@ -912,6 +912,7 @@ export type QueryExhibitionArgs = {
 
 /** The query root for this schema */
 export type QueryExhibitionsArgs = {
+  kind?: InputMaybe<ExhibitionKind>;
   state?: InputMaybe<Array<InputMaybe<State>>>;
 };
 
@@ -1793,7 +1794,7 @@ export function useCvPageQuery(options?: Omit<Urql.UseQueryArgs<CvPageQueryVaria
 };
 export const ExhibitionsIndexQueryDocument = gql`
     query ExhibitionsIndexQuery {
-  exhibitions(state: [SELECTED, PUBLISHED]) {
+  exhibitions(state: [SELECTED, PUBLISHED], kind: SOLO) {
     id
     slug
     title

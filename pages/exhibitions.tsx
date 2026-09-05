@@ -1,6 +1,12 @@
 import { gql } from "urql";
 import { useExhibitionsIndexQuery } from "../generated/graphql";
-import { EmptyFrame, File, Grid, ResponsiveImage, Stack } from "@auspices/eos/client";
+import {
+  EmptyFrame,
+  File,
+  Grid,
+  ResponsiveImage,
+  Stack,
+} from "@auspices/eos/client";
 import Link from "next/link";
 import { NavigationLayout } from "../components/layouts/NavigationLayout";
 import { Loading } from "../components/core/Loading";
@@ -9,7 +15,7 @@ import { buildGetStaticProps, withUrql } from "../lib/urql";
 
 const EXHIBITIONS_INDEX_QUERY = gql`
   query ExhibitionsIndexQuery {
-    exhibitions(state: [SELECTED, PUBLISHED]) {
+    exhibitions(state: [SELECTED, PUBLISHED], kind: SOLO) {
       id
       slug
       title
