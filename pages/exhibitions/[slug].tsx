@@ -4,17 +4,22 @@ import {
   useExhibitionsShowQuery,
   ExhibitionSlugsQuery,
 } from "../../generated/graphql";
-import { DefinitionList } from "../../components/core/DefinitionList";
+import { Cell, DefinitionList } from "../../components/core/DefinitionList";
 import { HTML, Stack, Box, Grid } from "@auspices/eos/client";
 import { Back } from "../../components/core/Back";
 import {
   Thumbnail,
   THUMBNAIL_IMAGE_FRAGMENT,
 } from "../../components/pages/Thumbnail";
+import {
+  ThumbnailArtwork,
+  THUMBNAIL_ARTWORK_FRAGMENT,
+} from "../../components/pages/ThumbnailArtwork";
 import { Loading } from "../../components/core/Loading";
 import { Meta, META_IMAGE_FRAGMENT } from "../../components/core/Meta";
 import { gql } from "urql";
 import { buildGetStaticProps, client, withUrql } from "../../lib/urql";
+import { ReactNode } from "react";
 
 const EXHIBITIONS_SHOW_QUERY = gql`
   query ExhibitionsShowQuery($id: ID!) {
@@ -30,6 +35,20 @@ const EXHIBITIONS_SHOW_QUERY = gql`
       external_url
       description(format: HTML)
       descriptionPlain: description(format: PLAIN)
+      curators {
+        id
+        name
+        website_url
+      }
+      artists {
+        id
+        name
+        website_url
+      }
+      artworks(state: [SELECTED, PUBLISHED]) {
+        id
+        ...ThumbnailArtwork_artwork
+      }
       images(state: [SELECTED, PUBLISHED]) {
         id
         ...Thumbnail_image
@@ -39,9 +58,78 @@ const EXHIBITIONS_SHOW_QUERY = gql`
       }
     }
   }
+  ${THUMBNAIL_ARTWORK_FRAGMENT}
   ${THUMBNAIL_IMAGE_FRAGMENT}
   ${META_IMAGE_FRAGMENT}
 `;
+
+const isPresent = (value?: string | number | null): value is string | number =>
+  value !== null && value !== undefined && `${value}` !== "";
+
+const formatExhibitionDates = (exhibition: {
+  start_date?: string | null;
+  end_date?: string | null;
+  start_year?: string | null;
+  end_year?: string | null;
+  year?: number | null;
+}) => {
+  const { start_date, end_date, start_year, end_year, year } = exhibition;
+
+  if (isPresent(start_date) && isPresent(end_date)) {
+    const start =
+      start_year !== end_year && isPresent(start_year)
+        ? `${start_date}, ${start_year}`
+        : start_date;
+    const end = isPresent(end_year) ? `${end_date}, ${end_year}` : end_date;
+
+    return `${start} – ${end}`;
+  }
+
+  if (isPresent(start_date)) {
+    return isPresent(start_year) ? `${start_date}, ${start_year}` : start_date;
+  }
+
+  if (isPresent(end_date)) {
+    return isPresent(end_year) ? `${end_date}, ${end_year}` : end_date;
+  }
+
+  if (isPresent(year)) {
+    return `${year}`;
+  }
+
+  return undefined;
+};
+
+const peopleDefinition = (
+  term: string,
+  people: { id: string; name: string; website_url?: string | null }[],
+): { term: string; definition: ReactNode }[] => {
+  if (people.length === 0) return [];
+
+  return [
+    {
+      term: people.length === 1 ? term : `${term}s`,
+      definition: (
+        <Stack>
+          {people.map((person) =>
+            person.website_url ? (
+              <Cell
+                key={person.id}
+                as="a"
+                href={person.website_url}
+                target="_blank"
+              >
+                {person.name}
+              </Cell>
+            ) : (
+              <Cell key={person.id}>{person.name}</Cell>
+            ),
+          )}
+        </Stack>
+      ),
+    },
+  ];
+};
 
 const ExhibitionsShowPage = () => {
   const {
@@ -63,13 +151,6 @@ const ExhibitionsShowPage = () => {
 
   const { exhibition } = data;
   const zoomImages = exhibition.images.map((image) => image.url);
-
-  const start =
-    exhibition.start_year !== exhibition.end_year
-      ? `${exhibition.start_date}, ${exhibition.start_year}`
-      : exhibition.start_date;
-
-  const end = `${exhibition.end_date}, ${exhibition.end_year}`;
 
   return (
     <>
@@ -93,7 +174,11 @@ const ExhibitionsShowPage = () => {
                 target: "_blank",
               },
               { term: "City", definition: exhibition.city },
-              { term: "Dates", definition: `${start} – ${end}` },
+              { term: "Dates", definition: formatExhibitionDates(exhibition) },
+              ...peopleDefinition("Curator", exhibition.curators),
+              ...(exhibition.artists.length > 1
+                ? peopleDefinition("Artist", exhibition.artists)
+                : []),
             ]}
           />
         </Stack>
@@ -122,6 +207,14 @@ const ExhibitionsShowPage = () => {
                 />
               );
             })}
+          </Grid>
+        )}
+
+        {exhibition.artworks.length > 0 && (
+          <Grid cellSize={["9rem", "10rem", "14rem"]}>
+            {exhibition.artworks.map((artwork) => (
+              <ThumbnailArtwork key={artwork.id} artwork={artwork} />
+            ))}
           </Grid>
         )}
       </Stack>

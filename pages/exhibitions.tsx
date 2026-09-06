@@ -1,5 +1,12 @@
 import { gql } from "urql";
-import { useExhibitionsIndexQuery } from "../generated/graphql";
+import { useMemo } from "react";
+import { useRouter } from "next/router";
+import type { ParsedUrlQuery } from "querystring";
+import {
+  ExhibitionKind,
+  State,
+  useExhibitionsIndexQuery,
+} from "../generated/graphql";
 import {
   EmptyFrame,
   File,
@@ -13,9 +20,47 @@ import { Loading } from "../components/core/Loading";
 import { Meta } from "../components/core/Meta";
 import { buildGetStaticProps, withUrql } from "../lib/urql";
 
+const DEFAULT_STATE = [State.Selected, State.Published];
+const DEFAULT_KIND = ExhibitionKind.Solo;
+
+const STATE_VALUES = new Set<string>(Object.values(State));
+const KIND_VALUES = new Set<string>(Object.values(ExhibitionKind));
+
+const splitQueryValues = (value: string | string[] | undefined) => {
+  if (value === undefined) return [];
+
+  return (Array.isArray(value) ? value : [value]).flatMap((part) =>
+    part
+      .split(",")
+      .map((item) => item.trim().toUpperCase())
+      .filter(Boolean),
+  );
+};
+
+const parseExhibitionFilters = (query: ParsedUrlQuery) => {
+  const states = splitQueryValues(query.state).filter((value): value is State =>
+    STATE_VALUES.has(value),
+  );
+  const [kind] = splitQueryValues(query.kind);
+  const parsedKind = KIND_VALUES.has(kind)
+    ? (kind as ExhibitionKind)
+    : undefined;
+  const hasFilterParams =
+    query.state !== undefined || query.kind !== undefined;
+
+  if (!hasFilterParams) {
+    return { state: DEFAULT_STATE, kind: DEFAULT_KIND };
+  }
+
+  return {
+    state: states.length > 0 ? states : DEFAULT_STATE,
+    kind: parsedKind,
+  };
+};
+
 const EXHIBITIONS_INDEX_QUERY = gql`
-  query ExhibitionsIndexQuery {
-    exhibitions(state: [SELECTED, PUBLISHED], kind: SOLO) {
+  query ExhibitionsIndexQuery($state: [State], $kind: ExhibitionKind) {
+    exhibitions(state: $state, kind: $kind) {
       id
       slug
       title
@@ -42,7 +87,18 @@ const EXHIBITIONS_INDEX_QUERY = gql`
 `;
 
 const ExhibitionsIndexPage = () => {
-  const [{ fetching, error, data }] = useExhibitionsIndexQuery();
+  const router = useRouter();
+  const variables = useMemo(
+    () =>
+      router.isReady
+        ? parseExhibitionFilters(router.query)
+        : { state: DEFAULT_STATE, kind: DEFAULT_KIND },
+    [router.isReady, router.query],
+  );
+
+  const [{ fetching, error, data }] = useExhibitionsIndexQuery({
+    variables,
+  });
 
   if (error) {
     throw error;
@@ -119,4 +175,5 @@ export default withUrql(ExhibitionsIndexPage);
 
 export const getStaticProps = buildGetStaticProps(() => [
   EXHIBITIONS_INDEX_QUERY,
+  { state: DEFAULT_STATE, kind: DEFAULT_KIND },
 ]);
